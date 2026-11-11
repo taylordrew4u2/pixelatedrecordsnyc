@@ -1304,7 +1304,7 @@
   display: contents;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
   .has-street-portrait .scene-photo {
     mask-image: none !important;
   }

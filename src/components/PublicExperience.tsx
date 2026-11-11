@@ -22,6 +22,7 @@ import {
   X,
   Menu as MenuIcon,
   Disc3,
+  BookOpen,
   MapPin,
   CalendarDays,
   Clock,
@@ -354,7 +355,11 @@ function Scene({
         height: h,
         left: !exterior ? 0 : (width - w) / 2,
         top: exterior
-          ? 0
+          ? image.currentSrc.includes(
+              "/assets/storefront-street-mobile.webp",
+            ) && width > height
+            ? (height - h) / 2
+            : 0
           : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
       });
     };
@@ -383,10 +388,11 @@ function Scene({
       ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
       : undefined;
   const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
-  const portrait = exterior && photo === "/assets/storefront-shades.webp";
+  // Use the expanded street photograph on phones, including landscape touch devices.
+  const portrait = exterior && Boolean(skyMask);
   const mobileSource = portrait && (
     <source
-      media="(max-width: 760px)"
+      media="(max-width: 760px), (hover: none) and (pointer: coarse)"
       srcSet="/assets/storefront-street-mobile.webp"
       width={960}
       height={1440}
@@ -1229,12 +1235,27 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
             <button
               ref={menuTrigger}
               type="button"
-              className="pov-link"
+              className="pov-link drinks-trigger"
               aria-haspopup="dialog"
+              aria-expanded={menuOpen}
               aria-controls="bar-menu-dialog"
-              onClick={() => setMenuOpen(true)}
+              onClick={() => {
+                setMenuOpen(true);
+                // One short, optional pulse; unsupported browsers still open the menu.
+                if (
+                  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ) {
+                  try {
+                    navigator.vibrate?.(12);
+                  } catch {
+                    /* Haptics never block navigation. */
+                  }
+                }
+              }}
             >
-              Drinks menu <ArrowUpRight size={17} />
+              <BookOpen size={24} aria-hidden="true" />
+              <span>View drinks menu</span>
+              <ChevronRight size={24} aria-hidden="true" />
             </button>
           </div>
         </div>
