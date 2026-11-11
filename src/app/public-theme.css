@@ -414,7 +414,12 @@
 
 /* Contact details only. All six destinations remain in the Menu. */
 .venue-footer {
-  padding: 26px var(--gutter) 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 28px;
+  padding: 8px 210px 8px 32px;
   border-top: 1px solid var(--rule);
 }
 .venue-footer-main,
@@ -426,33 +431,28 @@
   flex-wrap: wrap;
 }
 .venue-footer-main {
-  justify-content: space-between;
-  gap: 24px;
-}
-.venue-footer-name {
-  font-family: var(--heading-font);
-  text-transform: uppercase;
-  font-size: 25px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  gap: 0;
 }
 .venue-footer-links {
-  gap: 28px;
+  gap: 0 20px;
 }
 .venue-footer-links a {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   min-height: 44px;
-  font-size: 13px;
+  font-size: 11px;
   color: var(--muted);
 }
+.venue-footer-links svg {
+  width: 12px;
+  height: 12px;
+}
 .venue-footer-meta {
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--rule);
+  order: -1;
+  gap: 0 20px;
+  margin: 0;
+  padding: 0;
   color: var(--muted);
   font-size: 11px;
 }
@@ -463,6 +463,7 @@
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+  gap: 5px;
 }
 
 @media (max-width: 760px) {
@@ -605,21 +606,22 @@
     margin: 0;
   }
   .venue-footer {
-    padding-top: 24px;
-    padding-bottom: 82px;
+    display: block;
+    padding: 8px 20px 52px;
   }
   .venue-footer-main {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
+    display: block;
   }
   .venue-footer-links {
-    gap: 8px 24px;
+    gap: 0 20px;
   }
   .venue-footer-links a {
-    font-size: 12px;
+    font-size: 11px;
   }
-  .venue-footer-meta > span:nth-child(2) {
-    display: none;
+  .venue-footer-links a:first-child {
+    flex-basis: 100%;
+  }
+  .venue-footer-meta {
+    justify-content: space-between;
   }
 }

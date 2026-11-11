@@ -1380,26 +1380,24 @@ function Footer({ content }: { content: SiteContent }) {
   return (
     <footer className="venue-footer">
       <div className="venue-footer-main">
-        <span className="venue-footer-name">{content.brand.name}</span>
         <div className="venue-footer-links">
           <A href="/location">
             {content.location.address}
             <ArrowUpRight size={17} />
           </A>
-          {content.location.socials.map((social) => (
-            <A key={social.id} href={social.url}>
-              {social.label}
-              <ArrowUpRight size={14} />
-            </A>
-          ))}
         </div>
       </div>
       <div className="venue-footer-meta">
         <span>
           © {new Date().getFullYear()} {content.brand.name}
         </span>
-        <span>{content.footer.note}</span>
         <div>
+          {content.location.socials.map((social) => (
+            <A key={social.id} href={social.url}>
+              {social.label}
+              <ArrowUpRight size={12} />
+            </A>
+          ))}
           {content.footer.links.map((link) => (
             <A key={link.id} href={link.url}>
               {link.label}

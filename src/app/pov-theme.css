@@ -9,13 +9,7 @@
 }
 .public-site .scene-shade,
 .public-site .interior-scene .scene-shade {
-  background: linear-gradient(
-    180deg,
-    #0004,
-    transparent 23%,
-    transparent 65%,
-    #0005
-  );
+  display: none;
 }
 .public-site .pov-visually-hidden {
   position: absolute;
@@ -39,13 +33,14 @@
   position: absolute;
   height: 88px;
   padding: 20px 32px;
-  background: linear-gradient(180deg, #0007, transparent);
+  background: transparent;
   border: 0;
   color: var(--photo-paper);
   backdrop-filter: none;
 }
 .public-site.is-immersive .brand-link img {
   width: 135px;
+  filter: drop-shadow(0 1px 4px #0008);
 }
 .public-site.is-immersive .header-location {
   display: none;
@@ -81,17 +76,7 @@
   object-position: center 52%;
 }
 .public-site.is-immersive .space-photo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    #0003,
-    transparent 30%,
-    transparent 65%,
-    #0007
-  );
+  content: none;
 }
 .public-site.is-immersive .space-content {
   position: absolute;
@@ -184,6 +169,26 @@
 }
 .public-site.is-immersive .room-hotspot .hotspot-link {
   box-shadow: none;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .public-site.is-immersive[data-motion="playing"] .space-photo > img,
+  .public-site.is-immersive[data-motion="playing"] .scene-plane {
+    transition: transform 650ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .public-site.is-immersive[data-motion="playing"]
+    .space-hero:has(.pov-link:hover)
+    .space-photo
+    > img,
+  .public-site.is-immersive[data-motion="playing"]
+    .scene-plane:has(.hotspot-link:hover) {
+    transform: scale(1.018);
+  }
+  .public-site.is-immersive :is(.pov-link, .hotspot-link) svg {
+    transition: transform 180ms ease;
+  }
+  .public-site.is-immersive :is(.pov-link, .hotspot-link):hover svg {
+    transform: translateY(-2px);
+  }
 }
 .public-site.is-immersive .motion-control {
   bottom: 28px;
