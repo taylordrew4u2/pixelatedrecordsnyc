@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import photoColors from "@/lib/photo-colors.json";
 import { enhancedPhoto } from "@/lib/photo-assets";
+import { storefrontSky, storefrontSkyMask } from "@/lib/storefront-sky";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -281,10 +282,12 @@ function Scene({
   content,
   scene,
   exterior = false,
+  sky,
 }: {
   content: SiteContent;
   scene: SceneType;
   exterior?: boolean;
+  sky?: ReturnType<typeof storefrontSky>;
 }) {
   const view = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
@@ -337,29 +340,18 @@ function Scene({
       const width = parent.clientWidth,
         height = parent.clientHeight;
       const mobile = width < 760;
-      const scale =
-        exterior && mobile
-          ? Math.min(
-              width / image.naturalWidth,
-              Math.max(180, height - 148) / image.naturalHeight,
-            )
-          : Math.max(width / image.naturalWidth, height / image.naturalHeight);
+      const scale = exterior
+        ? Math.min(width / image.naturalWidth, height / image.naturalHeight)
+        : Math.max(width / image.naturalWidth, height / image.naturalHeight);
       const w = image.naturalWidth * scale,
         h = image.naturalHeight * scale;
       setGeometry({
         width: w,
         height: h,
-        left: !exterior
-          ? 0
-          : mobile
-            ? (width - w) / 2
-            : ((width - w) * (mobile ? scene.mobileFocalX : scene.focalX)) /
-              100,
-        top:
-          exterior && mobile
-            ? Math.max(80, 68 + (height - 124 - h) / 2)
-            : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) /
-              100,
+        left: !exterior ? 0 : (width - w) / 2,
+        top: exterior
+          ? (height - h) / 2
+          : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
       });
     };
     fit();
@@ -378,6 +370,8 @@ function Scene({
   const hotspots = scene.hotspots.filter((hotspot) =>
     destinationVisible(hotspot.href, content),
   );
+  const photo = safeHref(enhancedPhoto(scene.image)?.src || scene.image, "");
+  const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
   return (
     <>
       <div
@@ -447,47 +441,79 @@ function Scene({
         }}
       >
         <div className="scene-plane" style={geometry}>
+          {skyMask && sky && (
+            <div
+              className="storefront-sky"
+              aria-hidden="true"
+              data-sky-phase={sky.phase}
+              style={
+                {
+                  "--sky-photo": `url("${photo}")`,
+                  "--sky-daylight": sky.daylight,
+                  "--sky-warmth": sky.warmth,
+                  "--sky-stars": sky.stars,
+                } as CSSProperties
+              }
+            >
+              <div className="sky-day" />
+              <div className="sky-warmth" />
+              <div className="sky-stars" />
+            </div>
+          )}
           <img
             ref={img}
-            src={safeHref(enhancedPhoto(scene.image)?.src || scene.image, "")}
+            src={photo}
             alt={scene.alt}
             className="scene-photo"
+            style={
+              skyMask
+                ? {
+                    maskImage: `url("${skyMask}")`,
+                    WebkitMaskImage: `url("${skyMask}")`,
+                    maskSize: "100% 100%",
+                    WebkitMaskSize: "100% 100%",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskRepeat: "no-repeat",
+                  }
+                : undefined
+            }
             loading="eager"
             fetchPriority="high"
             draggable={exterior ? undefined : false}
             onLoad={() => setLoaded((value) => value + 1)}
           />
-          {hotspots.map((hotspot) => (
-            <div
-              key={hotspot.id}
-              className={`scene-hotspot ${exterior ? "door-hotspot" : "room-hotspot"}`}
-              style={{
-                left: `${hotspot.x}%`,
-                top: `${hotspot.y}%`,
-                width: `${hotspot.width}%`,
-                height: `${hotspot.height}%`,
-              }}
-            >
-              <A
-                href={hotspot.href}
-                className={`hotspot-link ${exterior ? "door-link" : ""}`}
+          {!exterior &&
+            hotspots.map((hotspot) => (
+              <div
+                key={hotspot.id}
+                className={`scene-hotspot ${exterior ? "door-hotspot" : "room-hotspot"}`}
+                style={{
+                  left: `${hotspot.x}%`,
+                  top: `${hotspot.y}%`,
+                  width: `${hotspot.width}%`,
+                  height: `${hotspot.height}%`,
+                }}
               >
-                {exterior ? (
-                  <span>{hotspot.label || content.labels.enter}</span>
-                ) : (
-                  <>
-                    {hotspot.direction === "left" && <ArrowLeft size={17} />}
-                    <span>{hotspot.label || "Explore"}</span>
-                    {hotspot.direction === "right" ? (
-                      <ArrowRight size={17} />
-                    ) : hotspot.direction === "forward" ? (
-                      <ArrowUpRight size={17} />
-                    ) : null}
-                  </>
-                )}
-              </A>
-            </div>
-          ))}
+                <A
+                  href={hotspot.href}
+                  className={`hotspot-link ${exterior ? "door-link" : ""}`}
+                >
+                  {exterior ? (
+                    <span>{hotspot.label || content.labels.enter}</span>
+                  ) : (
+                    <>
+                      {hotspot.direction === "left" && <ArrowLeft size={17} />}
+                      <span>{hotspot.label || "Explore"}</span>
+                      {hotspot.direction === "right" ? (
+                        <ArrowRight size={17} />
+                      ) : hotspot.direction === "forward" ? (
+                        <ArrowUpRight size={17} />
+                      ) : null}
+                    </>
+                  )}
+                </A>
+              </div>
+            ))}
         </div>
         <div className="scene-shade" aria-hidden="true" />
       </div>
@@ -518,12 +544,33 @@ function Scene({
     </>
   );
 }
-function Home({ content, page }: { content: SiteContent; page: Page }) {
+function Home({
+  content,
+  page,
+  now,
+}: {
+  content: SiteContent;
+  page: Page;
+  now: Date;
+}) {
+  const entrance = content.scenes.exterior.hotspots.find(
+    (hotspot) => hotspot.href.split(/[?#]/)[0] === "/inside",
+  );
   return (
     <>
       <section className="home-hero" aria-labelledby="home-title">
-        <Scene content={content} scene={content.scenes.exterior} exterior />
+        <Scene
+          content={content}
+          scene={content.scenes.exterior}
+          exterior
+          sky={storefrontSky(now)}
+        />
       </section>
+      <nav className="home-entry" aria-label="Enter the store">
+        <A href={entrance?.href || "/inside"} className="home-entry-link">
+          {entrance?.label || content.labels.enter}
+        </A>
+      </nav>
       <section className="scene-caption pov-visually-hidden">
         <div>
           <Eyebrow>{page.eyebrow}</Eyebrow>
@@ -546,6 +593,11 @@ function Interior({ content, page }: { content: SiteContent; page: Page }) {
         <p>{page.description}</p>
       </div>
       <section className="interior-hero" aria-label="Explore Pixelated Records">
+        <nav className="room-exit" aria-label="Leave the store">
+          <A href="/" className="room-exit-link">
+            <ArrowLeft size={16} /> Leave
+          </A>
+        </nav>
         <Scene content={content} scene={content.scenes.interior} />
       </section>
       <nav className="room-mobile-links" aria-label="Explore the room">
@@ -1625,7 +1677,7 @@ export function PublicExperience({
   else
     switch (pageId) {
       case "home":
-        body = <Home content={content} page={page} />;
+        body = <Home content={content} page={page} now={now} />;
         break;
       case "inside":
         body = <Interior content={content} page={page} />;

@@ -7,7 +7,9 @@ Prepared November 11, 2026.
 - The homepage source image has been edited: empty matching charcoal windows, matching center mullions, aligned top edges and sills, and a level awning.
 - The original and intermediate source images remain available; `photo-assets.ts` resolves the existing storefront reference to versioned final WebP assets.
 - The homepage has no window destination links or duplicate mobile room links. Mobile preserves the complete storefront and centers it between the header and footer.
-- The entrance is one compact cream speech bubble containing only the editable “Come in” label, with an angular stepped tail, condensed lettering, and a minimum 44px tap target.
+- The entrance is one understated, underlined “Come in” link in a solid brand-black strip below the photograph. It keeps the editable entrance label and a minimum 44px tap target; nothing is positioned on the door or windows.
+- The homepage sky changes with the sun’s altitude over New York City, refreshed every 30 seconds: original blue sky by day, warm sunrise/sunset, brand-black sky with subtle stars at night. The photograph itself is not dimmed.
+- Inside has an explicit “Leave” link to home, separate from the pannable photo and reachable on desktop and phones.
 - Window-light animation and its control have been removed. The rejected slogan has been removed from seed content, the appearance preview, and published site content.
 - The interface uses one shared brand black, `#181614`, for backgrounds, black text, controls, and borders instead of competing near-black colors. The brand color remains editable in Studio.
 - On phones, the inside photo can be swiped horizontally to reveal either edge, with mouse dragging, arrow buttons and keyboard alternatives. Room links stay outside the moving photo. Other scene photos retain their natural proportions; menus and longer pages can scroll.
@@ -20,7 +22,7 @@ Prepared November 11, 2026.
 | Requirement                                        | Implementation / content status                                                                  |
 | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Records left, booth ahead, bar right               | Shared editable interior room hotspots; homepage uses a single entrance                          |
-| Phone storefront preserves sign, entrance, windows | Full image fit and one compact entrance bubble                                                   |
+| Phone storefront preserves sign, entrance, windows | Full image fit and one entrance link below the photo                                             |
 | Shared Events destination                          | Booth and menu link to `/events`; booth also embeds the same collection                          |
 | Tonight, then upcoming posters                     | Same event selectors and cards on both pages; private fixtures verify ordering and hidden drafts |
 | Calendar and event details                         | Existing shared collection and dated calendar retained                                           |
@@ -33,8 +35,19 @@ Prepared November 11, 2026.
 
 ## Validation
 
-All 44 tests passed after the mobile and shared-color update. The custom exterior label check now verifies there is no extra invitation text or direction icon. Live visual verification and deployment confirmation are recorded in BUILD_STATUS.md.
+All 49 tests passed after the sky, entrance and exit update. The exterior check verifies one editable entrance outside the photograph, and an inside check verifies Leave returns to home. Sky tests cover dawn/day/dusk/night, seasonal changes, equivalent instants across time zones, DST, and uploaded-image fallback. Live visual verification and deployment confirmation are recorded in BUILD_STATUS.md.
 
 ## Content still needed
 
 The published event collection is empty. The owner must supply or enter real dates and flyers before actual posters appear. Confirmed weekly hours and bar items/prices also remain unsupplied.
+
+## Sky asset and calculation
+
+`public/assets/storefront-sky-mask.webp` is an alpha mask generated with the built-in image editor from `storefront-clear.webp`, then converted to WebP (74,556 bytes). Only the mask’s alpha is used: the displayed storefront pixels still come from the existing photo. The original blue-sky texture is retained as the daytime background. Replacement uploads bypass this asset-specific mask.
+
+Edit prompt: remove only the blue sky/clouds to true transparency; preserve full framing, neighboring buildings, pole, awning/lettering, matching empty windows, stickers, plants, furniture and pavement. Do not crop, change lighting or invent objects. The output is used as a precision mask over the original.
+
+SunCalc 2.1.4 calculates apparent altitude in degrees at fixed New York City coordinates 40.7167, -74.0167, sourced from NOAA’s solar calculator (whose legacy longitude is west-positive). Absolute timestamps avoid visitor-time-zone and DST offsets. Layer opacity interpolates between civil night (-6°), the horizon and daytime (+6°); no weather service, location permission or paid API is involved.
+
+- https://github.com/mourner/suncalc
+- https://gml.noaa.gov/grad/solcalc/sunrise.html

@@ -159,7 +159,7 @@ test("draft-preview links preserve existing queries and put preview before the f
   assert.ok(!links.some((href) => href.includes("#drinks?preview")));
 });
 
-test("custom exterior labels render without extra invitation text or direction icons", () => {
+test("the editable entrance sits outside the photo with no window or door buttons", () => {
   const content = fixture();
   content.scenes.exterior.hotspots = [
     {
@@ -182,15 +182,27 @@ test("custom exterior labels render without extra invitation text or direction i
       height: 10,
     },
   ];
-  const hotspots = anchors(render(content)).filter((anchor) =>
-    /class="hotspot-link/.test(anchor.attributes),
+  const html = render(content);
+  const entrances = anchors(html).filter((anchor) =>
+    /class="home-entry-link/.test(anchor.attributes),
   );
-  assert.equal(hotspots.length, 2);
-  assert.match(hotspots[0].inner, /Step into the listening room/);
-  assert.doesNotMatch(hotspots[0].inner, /<svg\b|Click here to/);
-  assert.match(hotspots[1].inner, /Browse the shelves/);
-  assert.doesNotMatch(hotspots[1].inner, /<svg\b/);
-  assert.doesNotMatch(hotspots[1].inner, /Come in/);
+  assert.equal(entrances.length, 1);
+  assert.equal(entrances[0].href, "/inside");
+  assert.match(entrances[0].inner, /Step into the listening room/);
+  assert.doesNotMatch(entrances[0].inner, /<svg\b|Click here to/);
+  assert.doesNotMatch(html, /door-hotspot|Browse the shelves/);
+  assert.match(html, /<\/section><nav class="home-entry"/);
+});
+
+test("inside has an explicit leave link to home, including draft preview", () => {
+  for (const preview of [false, true]) {
+    const leave = anchors(render(fixture(), "inside", preview)).find((anchor) =>
+      /class="room-exit-link/.test(anchor.attributes),
+    );
+    assert.ok(leave);
+    assert.equal(leave.href, preview ? "/?preview=1" : "/");
+    assert.match(leave.inner, /Leave/);
+  }
 });
 
 test("bar item photos render alongside readable menu text, while unavailable items stay hidden", () => {
