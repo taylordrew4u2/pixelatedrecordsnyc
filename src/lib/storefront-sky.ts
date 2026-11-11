@@ -33,7 +33,8 @@ export function storefrontSky(now: Date) {
 export function storefrontSkyMask(image: string) {
   return image === "/assets/storefront.webp" ||
     image === "/assets/storefront-clear.webp" ||
-    image === "/assets/storefront-blinds.webp"
+    image === "/assets/storefront-blinds.webp" ||
+    image === "/assets/storefront-shades.webp"
     ? "/assets/storefront-sky-mask.webp"
     : undefined;
 }

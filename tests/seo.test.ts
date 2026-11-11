@@ -20,7 +20,7 @@ test("legacy published defaults gain local SEO without changing custom editor co
     updated.pages[0].seoTitle,
     "Pixelated Records | Record Store & Bar in Ridgewood, Queens",
   );
-  assert.equal(updated.pages[0].shareImage, "/assets/storefront-blinds.webp");
+  assert.equal(updated.pages[0].shareImage, "/assets/storefront-shades.webp");
   assert.deepEqual(
     updated.pages.find((page) => page.id === "bar"),
     bar,
@@ -41,7 +41,7 @@ test("legacy published defaults gain local SEO without changing custom editor co
 test("business schema uses the published address and enhanced photo, without unconfirmed details", () => {
   const data = businessStructuredData(seedContent, "https://example.com");
   assert.equal(data["@id"], "https://example.com/#business");
-  assert.equal(data.image, "https://example.com/assets/storefront-blinds.webp");
+  assert.equal(data.image, "https://example.com/assets/storefront-shades.webp");
   assert.deepEqual(data.address, {
     "@type": "PostalAddress",
     streetAddress: "792 Onderdonk Avenue",

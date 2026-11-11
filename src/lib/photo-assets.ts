@@ -22,13 +22,18 @@ const roomPhotos = {
     width: 1672,
   },
   "/assets/storefront.webp": {
-    src: "/assets/storefront-blinds.webp",
-    small: "/assets/storefront-blinds-small.webp",
+    src: "/assets/storefront-shades.webp",
+    small: "/assets/storefront-shades-small.webp",
     width: 1452,
   },
   "/assets/storefront-clear.webp": {
-    src: "/assets/storefront-blinds.webp",
-    small: "/assets/storefront-blinds-small.webp",
+    src: "/assets/storefront-shades.webp",
+    small: "/assets/storefront-shades-small.webp",
+    width: 1452,
+  },
+  "/assets/storefront-blinds.webp": {
+    src: "/assets/storefront-shades.webp",
+    small: "/assets/storefront-shades-small.webp",
     width: 1452,
   },
 };

@@ -580,11 +580,6 @@ function Home({
           sky={storefrontSky(now)}
         />
       </section>
-      <nav className="home-entry" aria-label="Enter the store">
-        <A href={entrance?.href || "/inside"} className="home-entry-link">
-          {entrance?.label || content.labels.enter}
-        </A>
-      </nav>
       <section className="scene-caption pov-visually-hidden">
         <div>
           <Eyebrow>{page.eyebrow}</Eyebrow>
@@ -592,6 +587,11 @@ function Home({
         </div>
         <p>{page.description}</p>
       </section>
+      <nav className="home-entry" aria-label="Enter the store">
+        <A href={entrance?.href || "/inside"} className="home-entry-link">
+          {entrance?.label || content.labels.enter}
+        </A>
+      </nav>
       <Sections sections={page.sections} content={content} />
     </>
   );
