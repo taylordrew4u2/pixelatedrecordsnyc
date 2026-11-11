@@ -379,3 +379,141 @@
     padding: 18px 20px 24px;
   }
 }
+
+/* Storefront navigation lives in opaque glass, keeping window objects hidden.
+   The extra edge allowance covers the full pane beyond the original glow mask. */
+.public-site .storefront-window {
+  position: absolute;
+  z-index: 2;
+}
+.public-site .storefront-window-glass {
+  position: absolute;
+  inset: -1px -1px -6%;
+  overflow: hidden;
+  background: #101518;
+  box-shadow: inset 0 0 26px #0009;
+}
+.public-site .storefront-window-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, #ffffff08, transparent 46%, #0003);
+}
+.public-site .storefront-window-glass .window-light {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: none;
+  mix-blend-mode: normal;
+}
+.public-site .storefront-window-links {
+  position: absolute;
+  inset: 10% 6%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.public-site .window-room-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 4px;
+  color: var(--photo-paper);
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: clamp(14px, 1.2vw, 20px);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  text-shadow: 0 1px 8px #0008;
+}
+.public-site .window-room-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 7px;
+}
+.public-site .window-room-link:focus-visible,
+.public-site .storefront-mobile-links a:focus-visible {
+  outline: 2px solid var(--photo-paper);
+  outline-offset: 5px;
+}
+.public-site.is-immersive .door-hotspot .door-link {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: clamp(130px, 11vw, 158px);
+  min-height: 76px;
+  padding: 12px 14px;
+  background: var(--photo-ink);
+  border: 1px solid var(--photo-paper);
+  border-radius: 2px;
+  color: var(--photo-paper);
+  box-shadow: 0 4px 18px #0006;
+  text-shadow: none;
+}
+.public-site.is-immersive .door-hotspot .door-link::before,
+.public-site.is-immersive .door-hotspot .door-link::after {
+  content: none;
+}
+.public-site.is-immersive .door-hotspot .door-link:hover {
+  background: var(--photo-paper);
+  color: var(--photo-ink);
+  text-decoration: none;
+}
+.public-site .door-invitation {
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.public-site .door-invitation-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.public-site .storefront-mobile-links {
+  display: none;
+}
+@media (max-width: 760px) {
+  /* The portrait photo crops the side windows. Show their links once, below
+     the door, instead of leaving clipped or duplicate tap targets. */
+  .public-site .storefront-window-links {
+    display: none;
+  }
+  .public-site .storefront-mobile-links {
+    position: absolute;
+    z-index: 4;
+    top: max(420px, calc(100svh - 140px));
+    left: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .public-site .storefront-mobile-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 44px;
+    color: var(--photo-paper);
+    font-size: 12px;
+    text-shadow: 0 1px 3px #000, 0 0 12px #000b;
+    white-space: nowrap;
+  }
+  .public-site.is-immersive .home-hero .motion-control {
+    bottom: 68px;
+  }
+  .public-site.is-immersive .door-hotspot .door-link {
+    width: 138px;
+    min-height: 74px;
+  }
+}
