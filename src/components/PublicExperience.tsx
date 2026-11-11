@@ -667,10 +667,6 @@ function EventsPage({
                 )}
               </span>
               <h2>{content.eventSettings.tonightEmpty}</h2>
-              <A href="/calendar" className="button outline">
-                {content.labels.viewCalendar}
-                <ArrowUpRight size={17} />
-              </A>
             </div>
           </div>
         )}
