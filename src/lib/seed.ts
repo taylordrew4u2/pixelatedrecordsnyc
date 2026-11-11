@@ -1,4 +1,5 @@
 import type { SiteContent, Page, Asset } from "./types";
+import { applyEditorialDefaults } from "./site-seo";
 
 const photo = (id: string, label: string, alt: string): Asset => ({
   id,
@@ -28,7 +29,7 @@ const page = (
   sections: [],
 });
 
-export const seedContent: SiteContent = {
+export const legacySeedContent: SiteContent = {
   schemaVersion: 1,
   brand: {
     name: "Pixelated Records",
@@ -376,3 +377,8 @@ export const seedContent: SiteContent = {
     links: [],
   },
 };
+
+export const seedContent = applyEditorialDefaults(
+  legacySeedContent,
+  legacySeedContent,
+);

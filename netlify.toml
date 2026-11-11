@@ -1,7 +1,7 @@
 # Netlify automatically applies its current OpenNext adapter for Next.js.
 # Runtime secrets and storage settings belong in Netlify's environment settings.
 [build]
-  command = "npm run build"
+  command = "node scripts/check-deploy-env.mjs && npm run build"
   publish = ".next"
 
 # Local branch names may contain slashes. Use the actual production URL for

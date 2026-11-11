@@ -6,7 +6,7 @@ Prepared November 11, 2026.
 
 - The homepage source image has been edited: empty matching charcoal windows, matching center mullions, aligned top edges and sills, and a level awning.
 - The original and intermediate source images remain available; `photo-assets.ts` resolves the existing storefront reference to versioned final WebP assets.
-- The homepage has no window destination links or duplicate mobile room links. Mobile preserves the complete storefront and centers it between the header and footer.
+- The homepage has no window destination links or duplicate mobile room links. Mobile preserves the complete storefront. The pending audit update places it directly below the header without a forced vertical-centering gap.
 - The entrance is one understated, underlined “Come in” link in a solid brand-black strip below the photograph. It keeps the editable entrance label and a minimum 44px tap target; nothing is positioned on the door or windows.
 - The homepage sky changes with the sun’s altitude over New York City, refreshed every 30 seconds: original blue sky by day, warm sunrise/sunset, brand-black sky with subtle stars at night. The photograph itself is not dimmed.
 - Inside has an explicit “Leave” link to home, separate from the pannable photo and reachable on desktop and phones.
@@ -51,3 +51,9 @@ SunCalc 2.1.4 calculates apparent altitude in degrees at fixed New York City coo
 
 - https://github.com/mourner/suncalc
 - https://gml.noaa.gov/grad/solcalc/sunrise.html
+
+## Patio and blind edit (pending production deployment)
+
+The owner requested clean patio paving and glass windows backed by matching closed black blinds. Built-in Image Generator edited `storefront-clear.webp` with those two localized changes, preserving the storefront, furniture, railing, sign, door and framing. The result is saved as `public/assets/storefront-blinds.webp` (1452 × 1083) and `public/assets/storefront-blinds-small.webp` (960px wide). Original assets remain untouched. The aligned sky mask is retained. Both current and previous storefront references resolve to this version.
+
+Prompt summary: remove dark ground stains while retaining paving texture and furniture shadows; add matching closed black horizontal Venetian blinds behind both glass panes, with subtle reflections and no visible interior; preserve all other objects, lettering, composition, exposure and sky. WebP conversion and responsive resizing use Sharp; the image edit itself uses the built-in image tool.

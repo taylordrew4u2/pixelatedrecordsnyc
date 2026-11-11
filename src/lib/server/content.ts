@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { cache } from "react";
 import type { ContentState, SiteContent } from "@/lib/types";
-import { seedContent } from "@/lib/seed";
+import { seedContent, legacySeedContent } from "@/lib/seed";
+import { applyEditorialDefaults } from "@/lib/site-seo";
 import { getStorageMode } from "./config";
 import { ApiError, storageUnavailable } from "./errors";
 import { readLocalJson, withLocalLock, writeLocalJson } from "./local";
@@ -82,8 +83,8 @@ async function readStoredState(
 
 function toContentState(state: StoredContentState): ContentState {
   return {
-    draft: structuredClone(state.draft),
-    published: structuredClone(state.published),
+    draft: applyEditorialDefaults(state.draft, legacySeedContent),
+    published: applyEditorialDefaults(state.published, legacySeedContent),
     revision: state.revision,
     publishedRevision: state.publishedRevision,
     updatedAt: state.updatedAt,
@@ -101,11 +102,15 @@ export async function getContentState(): Promise<ContentState> {
 // Metadata and page rendering therefore share a read without a stale global cache.
 export const getPublishedContent = cache(async (): Promise<SiteContent> => {
   if (getStorageMode() === "netlify") {
-    return (
-      (await getNetlifyAdapter().readPublished()) || publicContent(seedContent)
+    return applyEditorialDefaults(
+      (await getNetlifyAdapter().readPublished()) || publicContent(seedContent),
+      legacySeedContent,
     );
   }
-  return publicContent((await readStoredState(true)).published);
+  return applyEditorialDefaults(
+    publicContent((await readStoredState(true)).published),
+    legacySeedContent,
+  );
 });
 
 function saveSnapshot(state: StoredContentState, label: string) {

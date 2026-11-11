@@ -1,5 +1,20 @@
 # Build and verification status
 
+## Pending mobile, SEO and badge update
+
+The November 11 audit follow-up is implemented in source and is verified in deployment preview `6af4ab317e0efb465276f950` at https://6af4ab317e0efb465276f950--pixelatedrecordsnyc.netlify.app/. Production still runs `6af48b8e075ed0cb2606ec14`. Automatic approval review blocked production deployment because that command would re-send the existing admin password hash and session secret to Netlify. The production site, secrets, and stored content have not been changed by this update.
+
+- Edited the storefront photo with clean paving and matching closed black blinds behind the glass; originals are retained.
+- Removed forced vertical centering on the phone homepage; the full storefront follows the header and the entrance remains below it. Removed reserved badge spacing from footers.
+- Added a nonce-based Content Security Policy. Next.js scripts receive a fresh nonce on every document; untrusted inline scripts, including the Netlify badge, are blocked. Public and admin pages use dynamic rendering. No paid plan or browser-only dismissal is involved.
+- Added distinct local-search page titles/descriptions, canonical URLs, social metadata using the enhanced photos, and business JSON-LD on home/location. Unconfirmed hours, zero coordinates and empty contact fields are omitted.
+- Upgraded only the untouched launch defaults when reading content, consistently in the editor and public pages. Custom SEO copy, images and notices remain intact. This does not overwrite storage or increment revisions.
+- Made empty event/menu states explicit, with Instagram and visit links. Added responsive sources to the storefront and sky layer; the pannable interior retains full resolution.
+- The preview check caught local-only development credentials being included by the Netlify adapter. They differ from production secrets. They have been moved to `.env.development.local`, and a deployment guard rejects runtime-readable env files containing admin credentials. The replacement preview is built without those credentials.
+- All 55 tests, TypeScript, formatting and the production build pass. The full Netlify preview build/deploy completed with exit code 0. All ten public routes and `/admin` return 200; the private content API returns 401 anonymously. Document scripts carry matching request nonces, canonical URLs target the production site, and the home/location pages emit business structured data. Preview admin authentication is unconfigured, and no local environment file is bundled.
+
+The actual browser verified the badge is absent on desktop and at 447px, with no badge iframe. On the 447px homepage the header ends and the full photo begins at y=72; the image is 333px tall and uses the 153,950-byte responsive asset. There is no horizontal page overflow. Home → Inside → Bar → menu dialog, and Back to room → Leave → Home work. Panning reached the right edge (385px), disabled the right arrow, and kept the Bar link reachable. The booth photo, Tonight notice, Instagram link and upcoming-events state remain readable. No physical touch device was tested.
+
 ## Live website
 
 The website is public at https://pixelatedrecordsnyc.netlify.app. The owner approved public access and private admin credentials. The supplied venue photos and official logo remain in use. Records are on the left, the booth is ahead, and the bar is on the right. Booking uses the shared Google Form.
@@ -83,7 +98,7 @@ Earlier production checks are retained below for context.
 
 ## Platform presentation limitation
 
-The Free-plan Netlify badge remains enabled. Although Netlify's published documentation says it can be switched off, the site's API returned 422: “Removing the Netlify badge is not available on this plan.” No upgrade or CSS workaround was used. Mobile photo height and footer spacing were adjusted to leave more room around controls.
+On the current production deployment, the Free-plan Netlify badge remains enabled. Although Netlify's published documentation says it can be switched off, the site's API returned 422: “Removing the Netlify badge is not available on this plan.” No upgrade was enabled. The pending update uses the nonce-based CSP behavior documented by Netlify at https://docs.netlify.com/manage/projects/powered-by-netlify-badge/ to prevent its script from running, rather than a visitor-only dismissal.
 
 ## Content still needed
 

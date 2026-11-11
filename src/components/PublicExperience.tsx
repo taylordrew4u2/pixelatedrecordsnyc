@@ -370,7 +370,14 @@ function Scene({
   const hotspots = scene.hotspots.filter((hotspot) =>
     destinationVisible(hotspot.href, content),
   );
-  const photo = safeHref(enhancedPhoto(scene.image)?.src || scene.image, "");
+  const enhanced = enhancedPhoto(scene.image);
+  const photo = safeHref(enhanced?.src || scene.image, "");
+  // The exterior is contained on phones; the interior stays full resolution
+  // because visitors can pan across its much wider rendered image.
+  const sourceSet =
+    exterior && enhanced
+      ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
+      : undefined;
   const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
   return (
     <>
@@ -448,14 +455,19 @@ function Scene({
               data-sky-phase={sky.phase}
               style={
                 {
-                  "--sky-photo": `url("${photo}")`,
                   "--sky-daylight": sky.daylight,
                   "--sky-warmth": sky.warmth,
                   "--sky-stars": sky.stars,
                 } as CSSProperties
               }
             >
-              <div className="sky-day" />
+              <img
+                className="sky-day"
+                src={photo}
+                srcSet={sourceSet}
+                sizes="100vw"
+                alt=""
+              />
               <div className="sky-warmth" />
               <div className="sky-stars" />
             </div>
@@ -463,6 +475,8 @@ function Scene({
           <img
             ref={img}
             src={photo}
+            srcSet={sourceSet}
+            sizes={exterior ? "100vw" : undefined}
             alt={scene.alt}
             className="scene-photo"
             style={
@@ -812,6 +826,14 @@ function EventsPage({
                 )}
               </span>
               <h2>{content.eventSettings.tonightEmpty}</h2>
+              {content.location.instagram && (
+                <A
+                  href={content.location.instagram}
+                  className="text-link empty-state-link"
+                >
+                  Latest on Instagram <ArrowUpRight size={17} />
+                </A>
+              )}
             </div>
           </div>
         )}
@@ -1255,6 +1277,9 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
           ) : (
             <div className="menu-empty">
               <p>{content.bar.menuNotice}</p>
+              <A href="/location" className="text-link empty-state-link">
+                Plan your visit <ArrowUpRight size={17} />
+              </A>
             </div>
           )}
           {categories.length > 0 && content.bar.menuNotice && (

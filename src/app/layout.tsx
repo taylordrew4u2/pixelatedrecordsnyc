@@ -9,6 +9,8 @@ import "@fontsource/barlow-condensed/600.css";
 import "./globals.css";
 import "./public-theme.css";
 import "./pov-theme.css";
+// A fresh request nonce is required for public pages and the admin UI alike.
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || "http://localhost:3000"),
   title: "Pixelated Records | Vinyl, Bar & Events in Ridgewood",

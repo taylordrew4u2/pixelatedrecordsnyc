@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { getContentState, getPublishedContent } from "@/lib/server/content";
 import { isAuthenticated } from "@/lib/server/auth";
 import { PublicExperience } from "@/components/PublicExperience";
 import type { SiteContent } from "@/lib/types";
+import { enhancedPhoto } from "@/lib/photo-assets";
+import {
+  businessStructuredData,
+  serializeStructuredData,
+} from "@/lib/site-seo";
 export const dynamic = "force-dynamic";
 type Props = {
   params: Promise<{ slug?: string[] }>;
@@ -31,19 +37,40 @@ export async function generateMetadata({
             event.slug === route.slug![1] && (preview || event.published),
         )
       : undefined;
+  const title = event
+    ? `${event.title} | ${content.brand.name}`
+    : page?.seoTitle ||
+      `${page?.title.replace(/\n/g, " ") || ""} | ${content.brand.name}`;
+  const description =
+    event?.description || page?.seoDescription || page?.description;
+  const source = event?.image || page?.shareImage || content.brand.mark;
+  const image = enhancedPhoto(source)?.src || source;
+  const canonical = `/${route.slug?.map(encodeURIComponent).join("/") || ""}`;
   return {
-    title: event
-      ? `${event.title} | ${content.brand.name}`
-      : page?.seoTitle ||
-        `${page?.title.replace(/\n/g, " ") || ""} | ${content.brand.name}`,
-    description:
-      event?.description || page?.seoDescription || page?.description,
+    title,
+    description,
+    alternates: { canonical },
     icons: { icon: content.brand.favicon },
     robots: preview ? { index: false, follow: false } : undefined,
     openGraph: {
-      title: event?.title || page?.title.replace(/\n/g, " "),
-      description: event?.description || page?.seoDescription,
-      images: [event?.image || page?.shareImage || content.brand.mark],
+      type: "website",
+      siteName: content.brand.name,
+      locale: "en_US",
+      url: canonical,
+      title,
+      description,
+      images: [
+        {
+          url: image,
+          alt: event?.imageAlt || page?.imageAlt || content.brand.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
     },
   };
 }
@@ -70,13 +97,30 @@ export default async function Route({ params, searchParams }: Props) {
         )
       : undefined;
   if (id === "events" && route.slug?.[1] && !event) notFound();
+  const nonce = (await headers()).get("x-nonce") || undefined;
   return (
-    <PublicExperience
-      content={content}
-      pageId={id}
-      eventId={event?.id}
-      preview={preview}
-      initialNow={new Date().toISOString()}
-    />
+    <>
+      {!preview && (id === "home" || id === "location") && (
+        <script
+          type="application/ld+json"
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: serializeStructuredData(
+              businessStructuredData(
+                content,
+                process.env.SITE_URL || "http://localhost:3000",
+              ),
+            ),
+          }}
+        />
+      )}
+      <PublicExperience
+        content={content}
+        pageId={id}
+        eventId={event?.id}
+        preview={preview}
+        initialNow={new Date().toISOString()}
+      />
+    </>
   );
 }

@@ -148,3 +148,13 @@ Public server routes must remain dynamic or revalidate on publication. Use `getP
 ## Local production deploy warmup
 
 Keep the production `DEPLOY_PRIME_URL` override in `netlify.toml`. The installed Netlify config package otherwise interpolates the local Git branch directly into a hostname. A slash-containing branch can generate an invalid warmup destination. The Next.js adapter fetches this URL after publication; the explicit canonical URL prevents that unintended request.
+
+## Document script policy and SEO defaults
+
+`src/proxy.ts` generates a fresh script nonce for each document and sends the policy to both Next.js and the browser. The root layout must stay dynamic so public pages and `/admin` receive matching script nonces. Keep `unsafe-inline` out of `script-src`; adding it permits injected inline code, including the Netlify badge. Inline styles remain allowed for editable brand colors and scene geometry. HTTPS images and map frames support owner uploads and map overrides.
+
+A production deployment must still include the two existing Functions-only authentication secrets as documented above. The audit follow-up is pending explicit approval to re-send those secrets; do not deploy without them or put production secrets into an ordinary preview.
+
+`applyEditorialDefaults` replaces exact untouched launch SEO/empty-state defaults on reads. Custom owner text and uploaded social images survive; existing source photo references resolve to the enhanced files. Canonical URLs use `SITE_URL`. The business schema includes confirmed hours only. Keep supplied address, social links, hours and menu information current in Studio.
+
+Local test credentials belong in `.env.development.local`, not `.env.local`: the Next.js Netlify adapter copies production-readable `.env*` files into its server bundle. `scripts/check-deploy-env.mjs` now stops a deployment if one of those files declares admin credentials. These local test credentials differ from production. Preview checks must confirm `/api/auth/session` reports `configured: false`.

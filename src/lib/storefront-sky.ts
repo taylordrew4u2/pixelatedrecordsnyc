@@ -32,7 +32,8 @@ export function storefrontSky(now: Date) {
 // A replacement uploaded in the editor must not inherit the old silhouette.
 export function storefrontSkyMask(image: string) {
   return image === "/assets/storefront.webp" ||
-    image === "/assets/storefront-clear.webp"
+    image === "/assets/storefront-clear.webp" ||
+    image === "/assets/storefront-blinds.webp"
     ? "/assets/storefront-sky-mask.webp"
     : undefined;
 }

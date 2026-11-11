@@ -423,7 +423,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0 28px;
-  padding: 8px 210px 8px 32px;
+  padding: 8px 32px;
   border-top: 1px solid var(--rule);
 }
 .venue-footer-main,
