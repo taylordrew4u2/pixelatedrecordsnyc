@@ -10,7 +10,7 @@ Prepared November 11, 2026.
 - The entrance is one compact cream speech bubble containing only the editable “Come in” label, with an angular stepped tail, condensed lettering, and a minimum 44px tap target.
 - Window-light animation and its control have been removed. The rejected slogan has been removed from seed content, the appearance preview, and published site content.
 - The interface uses one shared brand black, `#181614`, for backgrounds, black text, controls, and borders instead of competing near-black colors. The brand color remains editable in Studio.
-- On portrait and short landscape phones, the complete scene photos retain their natural proportions. Room links and action buttons flow below the images; menus and longer pages can scroll.
+- On phones, the inside photo can be swiped horizontally to reveal either edge, with mouse dragging, arrow buttons and keyboard alternatives. Room links stay outside the moving photo. Other scene photos retain their natural proportions; menus and longer pages can scroll.
 - Header and footer use solid charcoal backgrounds. Photo labels and controls have opaque backplates, and photographs have no faded overlay.
 - Public navigation and footer do not advertise Admin; direct `/admin` access remains authenticated.
 - The booth includes Tonight followed by the same chronological poster carousel as Events. Posters preserve their complete artwork. Touch scrolling, keyboard arrows, and previous/next buttons are supported; there is no autoplay.

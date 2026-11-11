@@ -144,3 +144,7 @@ References: [API](https://supabase.com/docs/guides/api) · [Storage access contr
 Errors are JSON objects containing `error` and `code`, with suitable HTTP status. Revision conflicts include the current revision when available; throttles include `Retry-After`. Storage failures never return a fake successful save.
 
 Public server routes must remain dynamic or revalidate on publication. Use `getPublishedContent()` from `src/lib/server/content.ts`. Before reading `getContentState().draft` for a preview, require `isAuthenticated()` from `src/lib/server/auth.ts`. Never send private content to a client component or response before the server authentication check.
+
+## Local production deploy warmup
+
+Keep the production `DEPLOY_PRIME_URL` override in `netlify.toml`. The installed Netlify config package otherwise interpolates the local Git branch directly into a hostname. A slash-containing branch can generate an invalid warmup destination. The Next.js adapter fetches this URL after publication; the explicit canonical URL prevents that unintended request.

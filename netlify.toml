@@ -3,3 +3,8 @@
 [build]
   command = "npm run build"
   publish = ".next"
+
+# Local branch names may contain slashes. Use the actual production URL for
+# the Next.js adapter's post-deploy warmup instead of a branch-derived host.
+[context.production.environment]
+  DEPLOY_PRIME_URL = "https://pixelatedrecordsnyc.netlify.app"

@@ -288,6 +288,40 @@ function Scene({
 }) {
   const view = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
+  const panPosition = useRef<number | null>(null);
+  const drag = useRef<{ x: number; scroll: number; moved: boolean } | null>(
+    null,
+  );
+  const suppressClick = useRef(false);
+  const [pan, setPan] = useState({ enabled: false, left: false, right: false });
+  const syncPan = () => {
+    const element = view.current;
+    if (!element || exterior) return;
+    const maximum = element.scrollWidth - element.clientWidth;
+    if (maximum > 1) panPosition.current = element.scrollLeft / maximum;
+    const next = {
+      enabled: maximum > 1,
+      left: element.scrollLeft > 1,
+      right: element.scrollLeft < maximum - 1,
+    };
+    setPan((previous) =>
+      previous.enabled === next.enabled &&
+      previous.left === next.left &&
+      previous.right === next.right
+        ? previous
+        : next,
+    );
+  };
+  const look = (direction: number) => {
+    const element = view.current;
+    if (!element) return;
+    element.scrollBy({
+      left: direction * element.clientWidth * 0.7,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+  };
   const [geometry, setGeometry] = useState<CSSProperties>({
     width: "100%",
     height: "100%",
@@ -315,8 +349,9 @@ function Scene({
       setGeometry({
         width: w,
         height: h,
-        left:
-          exterior && mobile
+        left: !exterior
+          ? 0
+          : mobile
             ? (width - w) / 2
             : ((width - w) * (mobile ? scene.mobileFocalX : scene.focalX)) /
               100,
@@ -332,58 +367,155 @@ function Scene({
     if (view.current) observer.observe(view.current);
     return () => observer.disconnect();
   }, [loaded, scene, exterior]);
+  useEffect(() => {
+    const element = view.current;
+    if (!element || exterior) return;
+    const maximum = element.scrollWidth - element.clientWidth;
+    const focal = element.clientWidth < 760 ? scene.mobileFocalX : scene.focalX;
+    element.scrollLeft = maximum * (panPosition.current ?? focal / 100);
+    syncPan();
+  }, [geometry, exterior, scene.focalX, scene.mobileFocalX]);
   const hotspots = scene.hotspots.filter((hotspot) =>
     destinationVisible(hotspot.href, content),
   );
   return (
-    <div
-      className={`scene-viewport ${exterior ? "exterior-scene" : "interior-scene"}`}
-      ref={view}
-    >
-      <div className="scene-plane" style={geometry}>
-        <img
-          ref={img}
-          src={safeHref(enhancedPhoto(scene.image)?.src || scene.image, "")}
-          alt={scene.alt}
-          className="scene-photo"
-          loading="eager"
-          fetchPriority="high"
-          onLoad={() => setLoaded((value) => value + 1)}
-        />
-        {hotspots.map((hotspot) => (
-          <div
-            key={hotspot.id}
-            className={`scene-hotspot ${exterior ? "door-hotspot" : "room-hotspot"}`}
-            style={{
-              left: `${hotspot.x}%`,
-              top: `${hotspot.y}%`,
-              width: `${hotspot.width}%`,
-              height: `${hotspot.height}%`,
-            }}
-          >
-            <A
-              href={hotspot.href}
-              className={`hotspot-link ${exterior ? "door-link" : ""}`}
+    <>
+      <div
+        className={`scene-viewport ${exterior ? "exterior-scene" : "interior-scene"}`}
+        ref={view}
+        role={exterior ? undefined : "region"}
+        aria-label={exterior ? undefined : "Look around Pixelated Records"}
+        aria-describedby={
+          !exterior && pan.enabled ? "room-pan-hint" : undefined
+        }
+        tabIndex={!exterior && pan.enabled ? 0 : undefined}
+        onScroll={exterior ? undefined : syncPan}
+        onKeyDown={(event) => {
+          if (exterior || event.target !== event.currentTarget) return;
+          if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            event.preventDefault();
+            look(event.key === "ArrowLeft" ? -1 : 1);
+          } else if (event.key === "Home" || event.key === "End") {
+            event.preventDefault();
+            event.currentTarget.scrollLeft =
+              event.key === "Home" ? 0 : event.currentTarget.scrollWidth;
+          }
+        }}
+        onPointerDown={(event) => {
+          if (
+            exterior ||
+            !pan.enabled ||
+            event.pointerType !== "mouse" ||
+            event.button !== 0
+          )
+            return;
+          suppressClick.current = false;
+          drag.current = {
+            x: event.clientX,
+            scroll: event.currentTarget.scrollLeft,
+            moved: false,
+          };
+        }}
+        onPointerMove={(event) => {
+          const current = drag.current;
+          if (!current) return;
+          const offset = event.clientX - current.x;
+          if (Math.abs(offset) > 5) {
+            current.moved = true;
+            suppressClick.current = true;
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }
+          if (current.moved) {
+            event.preventDefault();
+            event.currentTarget.scrollLeft = current.scroll - offset;
+          }
+        }}
+        onPointerUp={(event) => {
+          drag.current = null;
+          if (event.currentTarget.hasPointerCapture(event.pointerId))
+            event.currentTarget.releasePointerCapture(event.pointerId);
+        }}
+        onPointerCancel={() => {
+          drag.current = null;
+          suppressClick.current = false;
+        }}
+        onClickCapture={(event) => {
+          if (!suppressClick.current) return;
+          suppressClick.current = false;
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+      >
+        <div className="scene-plane" style={geometry}>
+          <img
+            ref={img}
+            src={safeHref(enhancedPhoto(scene.image)?.src || scene.image, "")}
+            alt={scene.alt}
+            className="scene-photo"
+            loading="eager"
+            fetchPriority="high"
+            draggable={exterior ? undefined : false}
+            onLoad={() => setLoaded((value) => value + 1)}
+          />
+          {hotspots.map((hotspot) => (
+            <div
+              key={hotspot.id}
+              className={`scene-hotspot ${exterior ? "door-hotspot" : "room-hotspot"}`}
+              style={{
+                left: `${hotspot.x}%`,
+                top: `${hotspot.y}%`,
+                width: `${hotspot.width}%`,
+                height: `${hotspot.height}%`,
+              }}
             >
-              {exterior ? (
-                <span>{hotspot.label || content.labels.enter}</span>
-              ) : (
-                <>
-                  {hotspot.direction === "left" && <ArrowLeft size={17} />}
-                  <span>{hotspot.label || "Explore"}</span>
-                  {hotspot.direction === "right" ? (
-                    <ArrowRight size={17} />
-                  ) : hotspot.direction === "forward" ? (
-                    <ArrowUpRight size={17} />
-                  ) : null}
-                </>
-              )}
-            </A>
-          </div>
-        ))}
+              <A
+                href={hotspot.href}
+                className={`hotspot-link ${exterior ? "door-link" : ""}`}
+              >
+                {exterior ? (
+                  <span>{hotspot.label || content.labels.enter}</span>
+                ) : (
+                  <>
+                    {hotspot.direction === "left" && <ArrowLeft size={17} />}
+                    <span>{hotspot.label || "Explore"}</span>
+                    {hotspot.direction === "right" ? (
+                      <ArrowRight size={17} />
+                    ) : hotspot.direction === "forward" ? (
+                      <ArrowUpRight size={17} />
+                    ) : null}
+                  </>
+                )}
+              </A>
+            </div>
+          ))}
+        </div>
+        <div className="scene-shade" aria-hidden="true" />
       </div>
-      <div className="scene-shade" aria-hidden="true" />
-    </div>
+      {!exterior && pan.enabled && (
+        <div className="scene-pan-controls">
+          <button
+            type="button"
+            aria-label="Look left"
+            disabled={!pan.left}
+            onClick={() => look(-1)}
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <span id="room-pan-hint">
+            <span className="pan-touch">Swipe</span>
+            <span className="pan-mouse">Drag</span> to look around
+          </span>
+          <button
+            type="button"
+            aria-label="Look right"
+            disabled={!pan.right}
+            onClick={() => look(1)}
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 function Home({ content, page }: { content: SiteContent; page: Page }) {
