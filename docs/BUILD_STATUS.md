@@ -24,6 +24,7 @@ The site is deployed through the CLI. GitHub-triggered automatic deployments are
 - A temporary private draft was saved; authenticated preview displayed it while an anonymous preview request did not.
 - A stale save returned 409. Restore returned the exact original draft. Publishing that original content succeeded. No test copy was published.
 - Logout invalidated the old session cookie.
+- A subsequent production redeploy preserved draft/live revision 3 and all three restore-history entries; sign-in still worked and the published palette remained unchanged.
 - Desktop room, booth, menu and bar were visually checked in the browser. Room and booth were also captured at a 390px mobile viewport.
 
 ## Platform presentation limitation
