@@ -1,89 +1,134 @@
 # Content, authentication, and publishing
 
-## What works locally
+## Chosen deployment
 
-The editor uses real draft/live content, atomic saves, a publishing revision, and recent restore points. Its local backend stores content, images, session records, and sign-in throttles in the ignored .data directory. Refreshing, signing out, restarting the local server, or opening another browser against that server does not erase saved content.
+The owner has approved **Netlify Free**, with Netlify Blobs for persistent content, uploaded images, sessions, and sign-in throttles. This path does not require a Supabase account, database migration, or paid integration. The optional Supabase adapter is documented separately below.
 
-This is a local preview backend. A copy of .data on a development machine is not a production database, is not committed, and will not survive a serverless redeployment. Vercel filesystem storage is never enabled by this application.
+Build configuration alone does not establish a live deployment, working production login, or live storage integration. See [BUILD_STATUS.md](BUILD_STATUS.md) for the current account-connection state and completed or outstanding checks.
 
-For local development, use CONTENT_STORAGE=local. To run a production build locally for review, this same explicit setting opts into local persistence only when the VERCEL environment variable is absent.
+### Build settings
+
+| Setting           | Value                                                      |
+| ----------------- | ---------------------------------------------------------- |
+| Repository        | `taylordrew4u2/pixelatedrecordsnyc`                        |
+| Base directory    | Repository root; leave blank in the UI                     |
+| Build command     | `npm run build`                                            |
+| Publish directory | `.next`                                                    |
+| Node version      | `22`, from `.nvmrc`                                        |
+| Next.js adapter   | Netlify's current, automatically supplied OpenNext adapter |
+
+These settings are recorded in `netlify.toml` and `.nvmrc`. Keep the server-capable Next.js build: a static export or an SPA redirect to `index.html` would prevent the administration APIs from working. Do not pin an older adapter or downgrade Next.js as part of routine deployment. Refer to [Netlify's Next.js support](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/), [build settings](https://docs.netlify.com/snippets/frameworks/nextjs-config-values/), and [Node selection](https://docs.netlify.com/build/configure-builds/manage-dependencies/).
+
+### Free-plan operation
+
+As checked on November 11, 2026, Netlify's credit-based Free plan includes 300 monthly credits with a hard limit and no auto recharge. Exhausting the allowance pauses all projects on that team until the next billing cycle. Keep the approved Free plan; do not enable paid add-ons, trials, credit purchases, or upgrades. Review usage before repeated production deployments. [Plan limits](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/) · [Pause behavior](https://docs.netlify.com/manage/accounts-and-billing/billing/resume-paused-projects/)
 
 ## Private environment configuration
 
-Configure these values in an ignored .env.local for local work and in the deployment platform's secret environment settings for production:
+For local work, copy `.env.example` to the ignored `.env.local`. For Netlify, enter production values through the project's environment settings, CLI, or API, with availability to the Functions runtime. Do not put runtime secrets in `netlify.toml`; variables declared there are unavailable to Functions. Environment changes require another deployment. See [Netlify's runtime environment documentation](https://docs.netlify.com/build/functions/environment-variables/).
 
-| Name                      | Purpose                                                                                                       |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| ADMIN_PASSWORD_HASH       | scrypt password hash produced by the included script                                                          |
-| SESSION_SECRET            | Independent, cryptographically random secret of at least 32 characters                                        |
-| CONTENT_STORAGE           | local for local review; supabase for production                                                               |
-| SUPABASE_URL              | Dedicated project's HTTPS API URL                                                                             |
-| SUPABASE_SERVICE_ROLE_KEY | Server-only service-role JWT or secret API key                                                                |
-| SUPABASE_STORAGE_BUCKET   | Optional; defaults to pixelated-private                                                                       |
-| APP_ORIGIN                | Optional canonical origin for write-request origin checks; omit when using several preview deployment origins |
-| PIXELATED_DATA_DIR        | Optional local-only data directory override, useful for isolated tests                                        |
+| Name                  | Production value or purpose                                                         |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| `CONTENT_STORAGE`     | `netlify`                                                                           |
+| `ADMIN_PASSWORD_HASH` | Server-only scrypt hash generated by `npm run hash-password`.                       |
+| `SESSION_SECRET`      | Independent, cryptographically random secret of at least 32 characters.             |
+| `APP_ORIGIN`          | Exact canonical origin for write requests, such as `https://your-site.netlify.app`. |
+| `SITE_URL`            | The same canonical origin, used by public metadata and site links.                  |
 
-Never prefix credentials with NEXT_PUBLIC_, include them in repository content, or paste them into the editor. The browser never receives the storage key or password hash.
+Use origins without a path or query. Set both origin values to the actual HTTPS site address, and update them together when adopting a custom domain. Do not leave `localhost` values in a deployment. Netlify supplies the Blobs runtime credentials; no storage token or Supabase variable is required for this path. Never prefix credentials with `NEXT_PUBLIC_`, commit them, or enter them in the public content editor.
 
-Run **node scripts/hash-password.mjs** and type the password at the hidden prompt. Put only the resulting hash into ADMIN_PASSWORD_HASH. Generate SESSION_SECRET using a cryptographic random generator. Changing either secret invalidates existing sessions; changing the password requires a new hash and a deployment/server restart.
+Run `npm run hash-password` and type the chosen password at the hidden prompt. Store only the generated hash in `ADMIN_PASSWORD_HASH`. Generate `SESSION_SECRET` using a cryptographic random generator. Changing either secret invalidates existing sessions; apply the new values with a deployment or local server restart. No plaintext password is included in this guide or the example environment file.
 
-## Production storage setup
+### Deployment previews
 
-Production publishing is deliberately unavailable until storage is configured. Do not use an unrelated existing project or enable a paid plan.
+Keep administration disabled on ordinary Deploy Previews and branch deploys by withholding production authentication secrets from those contexts. Do not remove the canonical-origin check to make a preview writable.
 
-Once the owner has chosen a dedicated, eligible Supabase project:
+Netlify's site-wide Blobs stores are normally shared across deploy contexts. This application's adapter explicitly separates them: production uses `pixelated-production-v1`, and every nonproduction deployment uses `pixelated-preview-` followed by the first 24 characters of the SHA-256 hash of its trusted deployment ID. The adapter reads Netlify's request context; missing context fails closed. There is no store-namespace environment variable to set. [Netlify Blobs stores](https://docs.netlify.com/build/data-and-storage/netlify-blobs/)
 
-1. Review and run storage/pixelated.sql in that project. It creates three private tables, two restricted database functions, and a private WebP image bucket.
-2. Confirm that pixelated-private is private and has no public read/write policies. If that bucket already exists, inspect it; the migration deliberately does not change an existing bucket.
-3. Set the server environment variables above, choosing CONTENT_STORAGE=supabase.
-4. Verify login, draft save, publish, logout, and the same content in a fresh browser after a deployment.
-5. Confirm the plan, commercial eligibility, usage limits, and pause behavior with current official documentation before launch.
+If editing on a deployment preview is deliberately needed, give that preview separate authentication secrets and matching `APP_ORIGIN`/`SITE_URL` for its exact URL. Writes then affect only its isolated store. A new preview deployment gets a different store and starts from seed content. The application does not copy production drafts, images, sessions, or rate counters into previews.
 
-No Supabase project has been provisioned or configured by the included code. The adapter is implemented against the REST, RPC, and private Storage interfaces; a real project integration still needs verification once credentials are supplied.
+The Studio's **Preview** button on the production site is different: its authenticated `/?preview=1` route shows the production site's private draft. It does not create a Netlify deployment preview.
 
-Official documentation:
+## Netlify persistent storage
 
-- https://supabase.com/docs/guides/api
-- https://supabase.com/docs/guides/storage/security/access-control
-- https://supabase.com/docs/guides/storage/uploads/standard-uploads
+The adapter opens its site-wide Blobs store lazily during request handling, using automatically supplied runtime credentials. Production data stays in the same store across code deployments. An ordinary `npm run dev` session uses the local adapter unless explicitly configured otherwise.
 
-Do not change to another host or incur charges to resolve Vercel's commercial Hobby restriction without the owner's choice. Hosting eligibility is separate from the application's storage configuration.
+Content updates use strongly consistent reads and conditional writes against the stored version. This compare-and-swap check complements the editor's `expectedRevision`: two editors saving the same revision cannot silently overwrite each other. Content, media, and authentication records are stored outside the deployment bundle. A successful save represents a completed persistent write, not a temporary in-memory update.
+
+Uploaded images stay behind the application media endpoint. The browser receives `/api/media/<id>` links, not public storage URLs or provider credentials. Session records and rate-limit counters also persist across function instances. Local filesystem publishing is refused when Netlify or Vercel deployment markers are present. An unavailable persistent store must not fall back to local files or report a successful save.
+
+An empty store starts with the repository's seed content. Existing local `.data` content is not automatically imported. Do not delete or rename the production store as a routine deployment step. Retained edit history is useful recovery, but it is not a permanent backup service.
+
+### First live verification
+
+After authenticating to the intended Netlify account and confirming the Free plan:
+
+1. Connect the repository with the build settings above. Configure `CONTENT_STORAGE=netlify`, authentication secrets, and canonical origins in the production runtime environment.
+2. Deploy and confirm the public pages and `/api/auth/session` respond. This endpoint reports readiness without exposing secrets; readiness alone is not proof of a successful storage round trip.
+3. Sign in at `/admin`, save a recognizable draft, and verify an unauthenticated browser still sees the published version. Check the authenticated draft preview separately.
+4. Publish, open a fresh browser, and confirm the change. Verify an unpublished uploaded image is inaccessible anonymously and becomes available only when referenced by live content.
+5. Open two editor tabs and confirm a stale save reports a conflict. Restore a recent version, then publish it as a separate step.
+6. Sign out and confirm the old session no longer works. Confirm ordinary deploy previews cannot sign in or modify production data; deliberately writable previews must remain isolated.
+7. Redeploy the code and verify production content and referenced uploads remain present. Review desktop/mobile rendering, keyboard access, navigation, and touch controls.
+
+Editing and publishing venue content uses the application APIs; it does not create a new code deployment. Code changes and runtime environment changes still require deployment. Do not mark live integration complete until these checks actually pass.
+
+## Local development and review
+
+Set `CONTENT_STORAGE=local` on your own machine. The editor stores content, images, session records, and throttles in the ignored `.data` directory. Atomic local saves survive refreshes, sign-out, and server restarts. `PIXELATED_DATA_DIR` optionally selects another local directory for isolated tests.
+
+The explicit local setting also supports `npm run build` followed by `npm start` for local production-build review, without deployment-platform environment variables. The directory is not a serverless production database, is not committed, and does not migrate to Netlify automatically. Keep local test credentials separate from production values.
 
 ## Publishing behavior
 
-- **Save draft** validates and stores the draft. It does not change the live site.
-- **Preview** must be rendered only after the server confirms an authenticated session.
-- **Publish** copies the saved draft into the live version in one atomic operation.
-- **Restore** copies a recent version into the draft. Publishing the restored draft is a separate action.
-- Recent history keeps up to 15 previous draft snapshots, bounded by a storage-size budget. This is a practical undo history, not a permanent backup service.
-- Every mutation carries the editor's revision. If another tab has saved first, the request returns a conflict instead of overwriting its work.
-- An uploaded image is private until a live page, visible section, published event, available menu item, or other live content references it. Merely adding it to the asset library does not make it public.
-- Unpublished events and hidden pages/sections are filtered from the public API. The admin API is never cached.
-- Removing a media reference from published content revokes anonymous retrieval. Existing copies someone downloaded while an image was public cannot be recalled.
+- **Save draft** validates and stores the draft without changing the public site.
+- **Preview** renders private draft content only after server-side authentication.
+- **Publish** copies the saved draft into the live version in one conditional update.
+- **Restore** copies a recent version into the draft; publishing it is a separate action.
+- History retains up to 15 previous draft snapshots within a size budget.
+- Every mutation includes the editor's revision. Stale saves return a conflict rather than overwrite another editor's changes.
+- An uploaded image is private until visible published content references it. Adding it to the asset library alone does not make it public.
+- Unpublished events and hidden pages or sections are filtered from the public API. Administrative responses are not cached.
+- Removing an image's final live reference revokes anonymous access through this application. Copies already downloaded cannot be recalled.
 
-The application keeps uploaded originals out of the public folder. Uploaded JPEG, PNG, and WebP files up to 4 MB are decoded, orientation-corrected, resized to a maximum of 2560 pixels per side, and re-encoded as WebP without source metadata. SVG, animated, malformed, and oversized uploads are rejected. Old uploaded files are retained to support history restoration; future storage cleanup must consider draft, live, and retained history references.
+The Studio accepts JPEG, PNG, and WebP originals up to 25 MB and automatically reduces large photos before upload. The server independently enforces a 4 MB image limit, decodes the file, corrects orientation, limits dimensions to 2560 pixels per side, and re-encodes WebP without source metadata. Unsupported, animated, malformed, and oversized uploads are rejected. Stored media is retained to support restoration; future cleanup must account for draft, live, and history references.
 
 ## Sign-in protections
 
-Sessions last 12 hours and use HttpOnly, SameSite=Strict cookies; production cookies are Secure. Logout deletes the server session as well as the browser cookie. Password changes invalidate old sessions.
+Sessions last 12 hours. Cookies use `HttpOnly` and `SameSite=Strict`, with `Secure` in production. Logout revokes the server session and clears the browser cookie. Password changes invalidate old sessions.
 
-Login attempts are persisted: 10 per client per 15-minute window and 100 per site per window. Local preview shares one client bucket. On Vercel, the trusted forwarded address is hashed before storage. No raw client address is retained. State-changing requests must carry an exact matching Origin; requests from another website are rejected.
+Sign-in attempts are persisted: 10 per client and 100 per site per 15-minute window. Client addresses are keyed with a server-secret hash; raw addresses are not stored by this application. Local review shares one client bucket. Netlify client identity comes from its trusted request context, not an arbitrary forwarded header. State-changing requests require an exact matching `Origin`.
+
+## Optional Supabase alternative
+
+The Supabase adapter remains available for a separately authorized dedicated project. It is not part of the chosen Netlify Blobs setup. Leave its credentials unset when using Netlify Blobs.
+
+| Name                        | Value or purpose                                |
+| --------------------------- | ----------------------------------------------- |
+| `CONTENT_STORAGE`           | `supabase`                                      |
+| `SUPABASE_URL`              | Dedicated project's HTTPS API URL.              |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only service-role JWT or secret API key. |
+| `SUPABASE_STORAGE_BUCKET`   | Optional; defaults to `pixelated-private`.      |
+
+Review and run `storage/pixelated.sql` only in that dedicated project. The migration creates private tables, restricted database functions, and a private WebP image bucket. If the bucket already exists, inspect its privacy settings: the migration deliberately does not change an existing bucket. No unrelated project should be modified. Verify its plan and run the same live persistence, privacy, and authentication checks before using it. No live Supabase integration has been verified.
+
+References: [API](https://supabase.com/docs/guides/api) · [Storage access control](https://supabase.com/docs/guides/storage/security/access-control) · [Uploads](https://supabase.com/docs/guides/storage/uploads/standard-uploads)
 
 ## API summary
 
-| Endpoint                | Access                  | Behavior                                                        |
-| ----------------------- | ----------------------- | --------------------------------------------------------------- |
-| GET /api/auth/session   | Public                  | Authentication and storage readiness; never secrets             |
-| POST /api/auth/login    | Same origin             | Verifies password, consumes persisted throttle, creates session |
-| POST /api/auth/logout   | Same origin             | Revokes current session                                         |
-| GET /api/admin/content  | Admin                   | Draft, live version, revisions, restore labels                  |
-| PUT /api/admin/content  | Admin + same origin     | Saves content and expectedRevision                              |
-| POST /api/admin/publish | Admin + same origin     | Publishes expectedRevision                                      |
-| POST /api/admin/restore | Admin + same origin     | Restores historyId and expectedRevision into draft              |
-| POST /api/admin/media   | Admin + same origin     | Accepts multipart file; returns an asset object                 |
-| GET /api/media/[id]     | Live reference or admin | Serves a validated uploaded image                               |
-| GET /api/site           | Public                  | Returns the filtered live content only                          |
+| Endpoint                  | Access                  | Behavior                                                          |
+| ------------------------- | ----------------------- | ----------------------------------------------------------------- |
+| `GET /api/auth/session`   | Public                  | Authentication and storage readiness; never secrets.              |
+| `POST /api/auth/login`    | Same origin             | Verifies password, consumes persistent throttle, creates session. |
+| `POST /api/auth/logout`   | Same origin             | Revokes the current session.                                      |
+| `GET /api/admin/content`  | Admin                   | Draft, live version, revisions, restore labels.                   |
+| `PUT /api/admin/content`  | Admin + same origin     | Saves `content` and `expectedRevision`.                           |
+| `POST /api/admin/publish` | Admin + same origin     | Publishes `expectedRevision`.                                     |
+| `POST /api/admin/restore` | Admin + same origin     | Restores `historyId` and `expectedRevision` into draft.           |
+| `POST /api/admin/media`   | Admin + same origin     | Accepts multipart `file`; returns an asset.                       |
+| `GET /api/media/[id]`     | Live reference or admin | Serves a validated uploaded image.                                |
+| `GET /api/site`           | Public                  | Returns filtered live content only.                               |
 
-Errors are JSON objects containing error and code, with suitable HTTP status. Revision conflicts include the current revision when available. Rate limits include Retry-After. Storage failures never return a fake successful save.
+Errors are JSON objects containing `error` and `code`, with suitable HTTP status. Revision conflicts include the current revision when available; throttles include `Retry-After`. Storage failures never return a fake successful save.
 
-Server-rendered public routes must be dynamic or otherwise revalidated on publication. Use getPublishedContent() from src/lib/server/content.ts. For an authenticated preview, first call isAuthenticated() from src/lib/server/auth.ts, then read getContentState().draft. Never pass private content to a client component or response before that server check.
+Public server routes must remain dynamic or revalidate on publication. Use `getPublishedContent()` from `src/lib/server/content.ts`. Before reading `getContentState().draft` for a preview, require `isAuthenticated()` from `src/lib/server/auth.ts`. Never send private content to a client component or response before the server authentication check.

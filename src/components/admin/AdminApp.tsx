@@ -172,7 +172,7 @@ async function request<T>(url: string, init: RequestInit = {}): Promise<T> {
   return body as T;
 }
 async function prepareImageUpload(file: File): Promise<File> {
-  const limit = 4 * 1024 * 1024;
+  const limit = 4_000_000;
   if (file.size > 25 * 1024 * 1024)
     throw new Error(
       "Choose an original photo smaller than 25 MB. Large photos within that limit are optimized automatically.",
@@ -615,7 +615,7 @@ export default function AdminApp() {
       const added: Asset[] = [];
       for (const file of Array.from(files)) {
         setUploadStage(
-          file.size > 4 * 1024 * 1024
+          file.size > 4_000_000
             ? `Preparing ${file.name}…`
             : `Uploading ${file.name}…`,
         );

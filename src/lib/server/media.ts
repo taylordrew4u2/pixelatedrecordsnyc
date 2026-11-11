@@ -10,6 +10,7 @@ import { ApiError, storageUnavailable } from "./errors";
 import { readBody } from "./http";
 import { supabaseRequest } from "./supabase";
 import { publishedMediaIds } from "./validation";
+import { getNetlifyAdapter } from "./netlify";
 
 export const MAX_IMAGE_BYTES = 4_000_000;
 const MAX_MULTIPART_BYTES = 4_200_000;
@@ -99,6 +100,11 @@ export async function uploadMedia(request: Request): Promise<Asset> {
     } finally {
       await handle.close();
     }
+  } else if (mode === "netlify") {
+    await getNetlifyAdapter().saveMedia(
+      id,
+      new Uint8Array(encoded.data).buffer,
+    );
   } else {
     const { bucket } = getSupabaseConfig();
     const bucketResponse = await supabaseRequest(
@@ -167,6 +173,10 @@ export async function mediaResponse(
       "/storage/v1/object/authenticated/" + bucket + "/media/" + id + ".webp",
     );
     image = new Uint8Array(await response.arrayBuffer());
+  } else if (mode === "netlify") {
+    const bytes = await getNetlifyAdapter().readMedia(id);
+    if (!bytes) throw new ApiError(404, "Image not found.", "NOT_FOUND");
+    image = new Uint8Array(bytes);
   } else {
     return storageUnavailable();
   }

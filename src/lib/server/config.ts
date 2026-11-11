@@ -1,9 +1,10 @@
 import path from "node:path";
 
-export type StorageMode = "local" | "supabase" | "unconfigured";
+export type StorageMode = "local" | "supabase" | "netlify" | "unconfigured";
 
 export function getStorageMode(): StorageMode {
   const requested = process.env.CONTENT_STORAGE;
+  if (requested === "netlify") return "netlify";
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (requested === "supabase" || url || key) {
@@ -28,8 +29,10 @@ export function getStorageMode(): StorageMode {
     }
     return "supabase";
   }
-  // Vercel filesystem writes cannot be used as durable publishing storage.
-  if (process.env.VERCEL) return "unconfigured";
+  // Hosted function filesystems cannot provide durable publishing storage.
+  // SITE_ID is a documented Netlify runtime variable; NETLIFY alone is not.
+  if (process.env.VERCEL || process.env.NETLIFY || process.env.SITE_ID)
+    return "unconfigured";
   if (requested === "local") return "local";
   if (requested && requested !== "local") return "unconfigured";
   return process.env.NODE_ENV === "production" ? "unconfigured" : "local";
@@ -37,7 +40,7 @@ export function getStorageMode(): StorageMode {
 
 export function getDataDirectory() {
   // This is runtime-created local state, not an asset directory to trace into a
-  // deployment bundle. Vercel never enables the local storage adapter.
+  // deployment bundle. Hosted runtimes never enable the local storage adapter.
   return path.resolve(
     /* turbopackIgnore: true */ process.env.PIXELATED_DATA_DIR ||
       path.join(process.cwd(), ".data"),
@@ -70,7 +73,7 @@ export function getBackendStatus() {
   return {
     configured: authIsConfigured(),
     storage,
-    persistent: storage === "supabase",
+    persistent: storage === "supabase" || storage === "netlify",
     writable: storage !== "unconfigured",
     localPreview: storage === "local",
   };

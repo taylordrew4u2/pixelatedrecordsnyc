@@ -1,6 +1,6 @@
 # Pixelated Records
 
-The website for Pixelated Records: a record shop, bar, and event space at 792 Onderdonk Avenue in Ridgewood, Queens.
+The website for Pixelated Records: a record shop, bar, and event space at 792 Onderdonk Avenue in Ridgewood, Queens. Venue details are based on [Pixelated's own page](https://linktr.ee/pixelatedrecordsnyc).
 
 Built with Next.js, React, and TypeScript. The public experience uses the venue’s supplied photographs and official logos. The owner’s Studio at `/admin` controls content, photographs, events, menus, navigation, hours, scene hotspots, and appearance.
 
@@ -28,7 +28,7 @@ There are no sample event dates, invented menu prices, or fabricated business ho
 
 ## Local development
 
-Use Node.js 22 or newer.
+Use Node.js 22, as specified in `.nvmrc`.
 
 ```bash
 npm ci
@@ -48,7 +48,7 @@ Then start the site:
 npm run dev
 ```
 
-The site runs at `http://localhost:3000`. Local drafts, publications, media, sessions, and login throttles are stored in the ignored `.data` directory and survive process restarts. This is suitable for local review, not Vercel production storage.
+The site runs at `http://localhost:3000`. Local drafts, publications, media, sessions, and login throttles are stored in the ignored `.data` directory and survive process restarts. This local store is for development and review. Netlify production uses durable storage instead of the deployed filesystem.
 
 ## Checks
 
@@ -60,25 +60,24 @@ npm run build
 
 The tests cover draft/public separation, authentication and origin checks, persistence, concurrent saves, restoration, private media, unsafe content rejection, login throttling, logout revocation, overnight/DST event rules, calendar dates, public-link visibility, draft-preview URLs, and editable public controls.
 
-A production build can be reviewed locally with `CONTENT_STORAGE=local` while `VERCEL` is absent:
+A production build can be reviewed on your own machine with `CONTENT_STORAGE=local`, without deployment-platform environment variables:
 
 ```bash
 npm run build
 npm start
 ```
 
-## Production and the free-only requirement
+## Production: Netlify Free
 
-The code is ready for Vercel’s Next.js runtime, but **Vercel Hobby is restricted to non-commercial personal use**. This venue website advertises a business, so a Hobby launch would not satisfy Vercel’s current rules. No paid plan, trial, upgrade, or substitute hosting service has been activated.
+The owner has approved **Netlify Free** for this website. The production design uses Netlify’s Next.js runtime and Netlify Blobs for content, private uploads, sessions, and sign-in throttles. A separate Supabase project is not required for this setup; its adapter remains an optional alternative.
 
-Production administration needs a durable backend. This repository includes a Supabase adapter, private-table/private-bucket migration, server-side password verification, and authenticated media delivery. A dedicated, authorized project and its credentials must be configured before production publishing works. The application explicitly refuses to use Vercel’s ephemeral filesystem for content storage.
+`netlify.toml` builds from the repository root with `npm run build` and publishes `.next`. `.nvmrc` selects Node 22. Netlify supplies its current OpenNext adapter automatically; do not change the application to a static export or add an SPA catch-all redirect. See Netlify’s [Next.js support](https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/) and [build settings](https://docs.netlify.com/snippets/frameworks/nextjs-config-values/).
 
-See [the publishing setup](docs/PUBLISHING.md) and [verification status](docs/BUILD_STATUS.md) before launch. Set `SITE_URL` to the real canonical site origin in the production environment.
+Configure `CONTENT_STORAGE=netlify` and private runtime environment variables for the password hash, session secret, and matching canonical HTTPS origins for `APP_ORIGIN` and `SITE_URL`. Production and deployment-preview data use separate stores. Withhold production authentication secrets from ordinary previews; explicitly configured preview editing uses its own isolated store. Follow [the publishing setup](docs/PUBLISHING.md) for the exact values and isolation rules.
 
-Primary references:
+Netlify’s current Free plan has a hard monthly credit allowance. Exhausting it pauses the team’s projects until the allowance refreshes; Free has no automatic recharge. Keep the project on Free, without paid add-ons or upgrades. This is a usage-limited service, not a promise of unlimited availability. See [Netlify’s Free plan limits](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/) and [pause behavior](https://docs.netlify.com/manage/accounts-and-billing/billing/resume-paused-projects/).
 
-- [Vercel fair-use guidelines](https://vercel.com/docs/limits/fair-use-guidelines)
-- [Pixelated’s venue-owned page](https://linktr.ee/pixelatedrecordsnyc)
+Configuration in this repository is not evidence of a live deployment. Account connection, live storage, production sign-in, and browser behavior must be verified separately. See [the current verification status](docs/BUILD_STATUS.md) for actual results.
 
 ## Main files
 
@@ -89,7 +88,8 @@ Primary references:
 - `src/lib/server/` — content storage, authentication, validation, and uploads.
 - `src/app/api/` — authenticated administration and published-content endpoints.
 - `public/assets/` — optimized derivatives of the provided photographs and logos.
-- `storage/pixelated.sql` — private Supabase production schema.
+- `netlify.toml` and `.nvmrc` — Netlify build configuration and Node version.
+- `storage/pixelated.sql` — schema for the optional Supabase adapter.
 - `tests/` — meaningful behavior and rendering regressions.
 
 The supplied original photographs and logo archives are not duplicated in the repository. Web derivatives retain the original artwork, signage, furniture, and room orientation.

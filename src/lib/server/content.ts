@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { cache } from "react";
 import type { ContentState, SiteContent } from "@/lib/types";
 import { seedContent } from "@/lib/seed";
 import { getStorageMode } from "./config";
@@ -6,6 +7,7 @@ import { ApiError, storageUnavailable } from "./errors";
 import { readLocalJson, withLocalLock, writeLocalJson } from "./local";
 import { supabaseRequest, supabaseRpc } from "./supabase";
 import { publicContent, validateContent } from "./validation";
+import { getNetlifyAdapter } from "./netlify";
 
 type Snapshot = { id: string; at: string; label: string; content: SiteContent };
 export type StoredContentState = Omit<ContentState, "history"> & {
@@ -67,6 +69,10 @@ async function readStoredState(
     const stored = await readLocalJson<StoredContentState>("content.json");
     return stored ? assertStoredState(stored) : initialState();
   }
+  if (mode === "netlify") {
+    const stored = await getNetlifyAdapter().readContent();
+    return stored ? assertStoredState(stored) : initialState();
+  }
   const response = await supabaseRequest(
     "/rest/v1/pixelated_content?id=eq.main&select=document",
   );
@@ -91,9 +97,16 @@ export async function getContentState(): Promise<ContentState> {
   return toContentState(await readStoredState());
 }
 
-export async function getPublishedContent(): Promise<SiteContent> {
+// React memoizes only within a server render/request, not across publications.
+// Metadata and page rendering therefore share a read without a stale global cache.
+export const getPublishedContent = cache(async (): Promise<SiteContent> => {
+  if (getStorageMode() === "netlify") {
+    return (
+      (await getNetlifyAdapter().readPublished()) || publicContent(seedContent)
+    );
+  }
   return publicContent((await readStoredState(true)).published);
-}
+});
 
 function saveSnapshot(state: StoredContentState, label: string) {
   state.history.unshift({
@@ -116,6 +129,11 @@ async function mutateContent(
 ): Promise<ContentState> {
   const mode = getStorageMode();
   if (mode === "unconfigured") return storageUnavailable();
+  if (mode === "netlify") {
+    return toContentState(
+      await getNetlifyAdapter().mutateContent(expected, initialState, mutation),
+    );
+  }
   async function prepare() {
     const state = await readStoredState();
     if (state.revision !== expected)

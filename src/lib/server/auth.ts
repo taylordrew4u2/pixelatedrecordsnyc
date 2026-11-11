@@ -9,6 +9,7 @@ import { authIsConfigured, getStorageMode } from "./config";
 import { ApiError, storageUnavailable } from "./errors";
 import { readLocalJson, withLocalLock, writeLocalJson } from "./local";
 import { supabaseRequest, supabaseRpc } from "./supabase";
+import { getNetlifyAdapter, trustedNetlifyClientIp } from "./netlify";
 
 const COOKIE = "pixelated_admin";
 const SESSION_SECONDS = 12 * 60 * 60;
@@ -84,6 +85,11 @@ async function storeSession(session: Session) {
       };
       await writeLocalJson("sessions.json", sessions);
     });
+  } else if (mode === "netlify") {
+    await getNetlifyAdapter().createSession(key, {
+      expiresAt: session.exp * 1_000,
+      version: session.version,
+    });
   } else {
     await supabaseRequest("/rest/v1/pixelated_sessions", {
       method: "POST",
@@ -109,6 +115,13 @@ async function validStoredSession(session: Session) {
       record &&
       record.expiresAt > Date.now() &&
       record.version === session.version,
+    );
+  }
+  if (mode === "netlify") {
+    return getNetlifyAdapter().sessionIsActive(
+      key,
+      session.exp * 1_000,
+      session.version,
     );
   }
   const response = await supabaseRequest(
@@ -171,6 +184,13 @@ async function takeAttempt(
       p_window_seconds: ATTEMPT_WINDOW_SECONDS,
     });
   }
+  if (mode === "netlify") {
+    return getNetlifyAdapter().takeLoginAttempt(
+      key,
+      limit,
+      ATTEMPT_WINDOW_SECONDS,
+    );
+  }
   return withLocalLock(async () => {
     const attempts =
       (await readLocalJson<Record<string, Attempt>>("login-attempts.json")) ||
@@ -208,11 +228,15 @@ export async function authenticatePassword(
     password.length > 1_024
   )
     throw new ApiError(400, "Enter your admin password.", "INVALID_PASSWORD");
-  // Forwarded headers are only trusted on Vercel. A global cap also bounds attacks
-  // if a deployment proxy supplies unstable client addresses.
-  const address = process.env.VERCEL
-    ? request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown"
-    : "local";
+  // Netlify supplies a trusted native request context. Never infer its client IP
+  // from caller-controlled forwarded headers. Missing context shares a safe cap.
+  const address =
+    getStorageMode() === "netlify"
+      ? trustedNetlifyClientIp() || "netlify-shared"
+      : process.env.VERCEL
+        ? request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+          "unknown"
+        : "local";
   const key = createHmac("sha256", process.env.SESSION_SECRET!)
     .update("login:" + address)
     .digest("hex");
@@ -279,6 +303,8 @@ export async function endSession(request: Request) {
       await supabaseRequest("/rest/v1/pixelated_sessions?key_hash=eq." + key, {
         method: "DELETE",
       });
+    } else if (mode === "netlify") {
+      await getNetlifyAdapter().revokeSession(key, session.exp * 1_000);
     }
   }
   return cookieHeader("", 0);
