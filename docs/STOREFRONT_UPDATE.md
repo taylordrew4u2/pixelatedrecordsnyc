@@ -6,8 +6,8 @@ Prepared November 11, 2026.
 
 - The homepage source image has been edited: empty matching charcoal windows, matching center mullions, aligned top edges and sills, and a level awning.
 - The original and intermediate source images remain available; `photo-assets.ts` resolves the existing storefront reference to versioned final WebP assets.
-- Desktop window links use the existing interior destinations. Mobile preserves the full storefront and shows one set of room links below the entrance.
-- The entrance reads “Click here to” / the editable entry label on an opaque cream sign.
+- The homepage has no window destination links or duplicate mobile room links. Mobile preserves the complete storefront and centers it between the header and footer.
+- The entrance is one compact cream speech bubble containing only the editable “Come in” label, with a small tail pointing into the door and a minimum 44px tap target.
 - Window-light animation and its control have been removed. The rejected slogan has been removed from seed content, the appearance preview, and published site content.
 - Header and footer use solid charcoal backgrounds. Photo labels and controls have opaque backplates, and photographs have no faded overlay.
 - Public navigation and footer do not advertise Admin; direct `/admin` access remains authenticated.
@@ -17,8 +17,8 @@ Prepared November 11, 2026.
 
 | Requirement | Implementation / content status |
 | --- | --- |
-| Records left, booth ahead, bar right | Shared editable room hotspots and storefront navigation |
-| Phone storefront preserves sign, entrance, windows | Full image fit and separated mobile controls |
+| Records left, booth ahead, bar right | Shared editable interior room hotspots; homepage uses a single entrance |
+| Phone storefront preserves sign, entrance, windows | Full image fit and one compact entrance bubble |
 | Shared Events destination | Booth and menu link to `/events`; booth also embeds the same collection |
 | Tonight, then upcoming posters | Same event selectors and cards on both pages; private fixtures verify ordering and hidden drafts |
 | Calendar and event details | Existing shared collection and dated calendar retained |
@@ -31,7 +31,7 @@ Prepared November 11, 2026.
 
 ## Validation
 
-Production build and TypeScript passed. All 44 tests passed. Live visual verification and deployment confirmation are recorded in BUILD_STATUS.md when complete.
+All 44 tests passed after the entrance simplification. The custom exterior label check now verifies there is no extra invitation text or direction icon. Live visual verification and deployment confirmation are recorded in BUILD_STATUS.md.
 
 ## Content still needed
 

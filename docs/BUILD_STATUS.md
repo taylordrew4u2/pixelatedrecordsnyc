@@ -4,7 +4,7 @@
 
 The website is public at https://pixelatedrecordsnyc.netlify.app. The owner approved public access and private admin credentials. The supplied venue photos and official logo remain in use. Records are on the left, the booth is ahead, and the bar is on the right. Booking uses the shared Google Form.
 
-The November 11, 2026 update presents the storefront, interior, bar, booth and record shop as full-viewport photographic POV scenes. The bar menu opens in a native dialog rather than rendering an empty section beneath the photo. Headers and footers use slim opaque charcoal backgrounds. Scene controls use compact opaque backplates, and the entrance has a cream sign with dark text. Hovering an action gently moves the view forward, except with reduced motion. Full-screen images now declare a full-viewport responsive size.
+The November 11, 2026 update presents the storefront, interior, bar, booth and record shop as full-viewport photographic POV scenes. The bar menu opens in a native dialog rather than rendering an empty section beneath the photo. Headers and footers use slim opaque charcoal backgrounds. Scene controls use compact opaque backplates, and the entrance has a compact cream speech bubble with dark text. Hovering an action gently moves the view forward, except with reduced motion. Full-screen images now declare a full-viewport responsive size.
 
 All five main room/storefront views use versioned AI-enhanced image assets with deeper blacks and clearer color. The latest storefront asset also has matching empty windows and aligned architectural edges. Their originals remain in the repository; `src/lib/photo-assets.ts` resolves existing content references to the enhanced files. Uploaded replacements remain owner-controlled. The image editor prompt requested color/detail correction, richer natural color, preserved composition and venue objects, and no haze, vignette or invented objects. Generated files were inspected before integration; these are enhanced depictions, not untouched originals. Additional detail photos remain unchanged. Scene label RGB samples in `src/lib/photo-colors.json` were updated to colors present in both enhanced image sizes.
 
@@ -19,7 +19,11 @@ The site is deployed through the CLI. GitHub-triggered automatic deployments are
 
 ## Verification completed
 
-The current production deployment is `6af46905d70da09ff8bef28f` (November 11, 2026). Its full build, Next.js adapter, and upload succeeded.
+The latest entrance update is deployment `6af46bf64ef69f682f9fa802` (November 11, 2026). The homepage window links and duplicate mobile room links are removed. One 96 × 44px speech bubble reads only “Come in,” with a 15px label and a small tail pointing into the door. Mobile keeps the complete storefront centered between the solid header and footer.
+
+The full production build and all 44 tests passed. Live desktop inspection confirmed the bubble dimensions, visible tail, absent window buttons, and no horizontal page overflow. Clicking the bubble opened `/inside`. Captures at 390 × 844 and 320 × 568 confirmed the smaller entrance and uncluttered windows.
+
+The preceding broader readability update was deployment `6af46905d70da09ff8bef28f`. Its full build, Next.js adapter, and upload succeeded.
 
 - Current-deployment admin login and logout returned 200, anonymous admin content returned 401, and persisted draft/live revisions both remained 5. The served storefront WebP exactly matched the reviewed local asset.
 - Desktop browser inspection confirmed the edited matching windows, level awning, cream entrance sign, and opaque header/footer. The page had no horizontal overflow and no public Admin links.

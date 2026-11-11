@@ -159,7 +159,7 @@ test("draft-preview links preserve existing queries and put preview before the f
   assert.ok(!links.some((href) => href.includes("#drinks?preview")));
 });
 
-test("custom exterior hotspot labels render and an unset direction renders no arrow", () => {
+test("custom exterior labels render without extra invitation text or direction icons", () => {
   const content = fixture();
   content.scenes.exterior.hotspots = [
     {
@@ -187,7 +187,7 @@ test("custom exterior hotspot labels render and an unset direction renders no ar
   );
   assert.equal(hotspots.length, 2);
   assert.match(hotspots[0].inner, /Step into the listening room/);
-  assert.match(hotspots[0].inner, /<svg\b/);
+  assert.doesNotMatch(hotspots[0].inner, /<svg\b|Click here to/);
   assert.match(hotspots[1].inner, /Browse the shelves/);
   assert.doesNotMatch(hotspots[1].inner, /<svg\b/);
   assert.doesNotMatch(hotspots[1].inner, /Come in/);

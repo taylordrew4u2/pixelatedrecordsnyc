@@ -307,7 +307,7 @@ function Scene({
         exterior && mobile
           ? Math.min(
               width / image.naturalWidth,
-              Math.max(180, height - 320) / image.naturalHeight,
+              Math.max(180, height - 148) / image.naturalHeight,
             )
           : Math.max(width / image.naturalWidth, height / image.naturalHeight);
       const w = image.naturalWidth * scale,
@@ -322,7 +322,7 @@ function Scene({
               100,
         top:
           exterior && mobile
-            ? Math.max(80, (height - h - 180) / 2)
+            ? Math.max(80, 68 + (height - 124 - h) / 2)
             : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) /
               100,
       });
@@ -335,15 +335,6 @@ function Scene({
   const hotspots = scene.hotspots.filter((hotspot) =>
     destinationVisible(hotspot.href, content),
   );
-  const roomLinks = content.scenes.interior.hotspots.filter((hotspot) =>
-    destinationVisible(hotspot.href, content),
-  );
-  const windowLinks = content.scenes.windows.map(() => [] as typeof roomLinks);
-  roomLinks.forEach((hotspot) => {
-    if (!windowLinks.length) return;
-    const index = hotspot.direction === "right" ? windowLinks.length - 1 : 0;
-    windowLinks[index].push(hotspot);
-  });
   return (
     <div
       className={`scene-viewport ${exterior ? "exterior-scene" : "interior-scene"}`}
@@ -359,39 +350,6 @@ function Scene({
           fetchPriority="high"
           onLoad={() => setLoaded((value) => value + 1)}
         />
-        {exterior &&
-          content.scenes.windows.map((mask, i) => (
-            <div
-              key={mask.id}
-              className="storefront-window"
-              style={{
-                left: `${mask.x}%`,
-                top: `${mask.y}%`,
-                width: `${mask.width}%`,
-                height: `${mask.height}%`,
-              }}
-            >
-              <nav
-                className="storefront-window-links"
-                aria-label={
-                  i === 0
-                    ? "Explore the record shop and booth"
-                    : "Explore the bar"
-                }
-              >
-                {windowLinks[i].map((hotspot) => (
-                  <A
-                    key={hotspot.id}
-                    href={hotspot.href}
-                    className="window-room-link"
-                  >
-                    <span>{hotspot.label || "Explore"}</span>
-                    <ArrowUpRight size={16} />
-                  </A>
-                ))}
-              </nav>
-            </div>
-          ))}
         {hotspots.map((hotspot) => (
           <div
             key={hotspot.id}
@@ -408,19 +366,7 @@ function Scene({
               className={`hotspot-link ${exterior ? "door-link" : ""}`}
             >
               {exterior ? (
-                <>
-                  <span className="door-invitation">Click here to</span>
-                  <span className="door-invitation-title">
-                    {hotspot.label || content.labels.enter}
-                    {hotspot.direction === "left" ? (
-                      <ArrowLeft size={18} />
-                    ) : hotspot.direction === "right" ? (
-                      <ArrowRight size={18} />
-                    ) : hotspot.direction === "forward" ? (
-                      <ArrowUpRight size={18} />
-                    ) : null}
-                  </span>
-                </>
+                <span>{hotspot.label || content.labels.enter}</span>
               ) : (
                 <>
                   {hotspot.direction === "left" && <ArrowLeft size={17} />}
@@ -435,21 +381,6 @@ function Scene({
             </A>
           </div>
         ))}
-        {exterior && (
-          <nav
-            className="storefront-mobile-links"
-            aria-label="Explore Pixelated Records"
-          >
-            {content.scenes.interior.hotspots
-              .filter((hotspot) => destinationVisible(hotspot.href, content))
-              .map((hotspot) => (
-                <A key={hotspot.id} href={hotspot.href}>
-                  {hotspot.label || "Explore"}
-                  <ArrowUpRight size={14} />
-                </A>
-              ))}
-          </nav>
-        )}
       </div>
       <div className="scene-shade" aria-hidden="true" />
     </div>
