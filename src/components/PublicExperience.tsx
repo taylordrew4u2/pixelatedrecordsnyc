@@ -11,11 +11,11 @@ import {
 } from "react";
 import Link from "next/link";
 import photoColors from "@/lib/photo-colors.json";
+import { enhancedPhoto } from "@/lib/photo-assets";
 import {
   ArrowUpRight,
   ArrowRight,
   ArrowLeft,
-  ArrowDown,
   ChevronLeft,
   ChevronRight,
   X,
@@ -25,7 +25,6 @@ import {
   CalendarDays,
   Pause,
   Play,
-  Wine,
   Clock,
   ExternalLink,
   Instagram,
@@ -121,18 +120,21 @@ function Photo({
   priority?: boolean;
 }) {
   if (!src) return null;
+  const enhanced = enhancedPhoto(src);
   const isBuiltIn =
     /^\/assets\/[^/]+\.webp$/.test(src) && !src.includes("-small");
   return (
     <img
       className={`venue-photo ${className}`}
-      src={safeHref(src, "")}
+      src={safeHref(enhanced?.src || src, "")}
       srcSet={
-        isBuiltIn
-          ? `${src.replace(".webp", "-small.webp")} 960w, ${src} 1920w`
-          : undefined
+        enhanced
+          ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
+          : isBuiltIn
+            ? `${src.replace(".webp", "-small.webp")} 960w, ${src} 1920w`
+            : undefined
       }
-      sizes="(max-width: 700px) 100vw, 75vw"
+      sizes={priority ? "100vw" : "(max-width: 700px) 100vw, 75vw"}
       alt={alt}
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : "auto"}
@@ -335,7 +337,7 @@ function Scene({
       <div className="scene-plane" style={geometry}>
         <img
           ref={img}
-          src={safeHref(scene.image, "")}
+          src={safeHref(enhancedPhoto(scene.image)?.src || scene.image, "")}
           alt={scene.alt}
           className="scene-photo"
           loading="eager"
@@ -994,6 +996,23 @@ function EventDetail({
   );
 }
 function BarPage({ content, page }: { content: SiteContent; page: Page }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuDialog = useRef<HTMLDialogElement>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const dialog = menuDialog.current;
+    if (!dialog) return;
+    if (menuOpen) {
+      dialog.showModal();
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = previousOverflow;
+        dialog.close();
+        menuTrigger.current?.focus();
+      };
+    }
+  }, [menuOpen]);
   const categories = content.bar.categories.filter(
     (category) =>
       category.visible && category.items.some((item) => item.available),
@@ -1009,71 +1028,94 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
           <h1>{page.eyebrow || page.title}</h1>
           <p>{page.description}</p>
           <div className="button-row">
-            <a href="#drinks" className="pov-link">
-              The menu <ArrowDown size={17} />
-            </a>
+            <button
+              ref={menuTrigger}
+              type="button"
+              className="pov-link"
+              aria-haspopup="dialog"
+              aria-controls="bar-menu-dialog"
+              onClick={() => setMenuOpen(true)}
+            >
+              The menu <ArrowUpRight size={17} />
+            </button>
           </div>
         </div>
       </section>
-      <section id="drinks" className="bar-menu section-wrap">
-        <div className="section-heading">
-          <div>
-            <Eyebrow>{page.eyebrow}</Eyebrow>
-            <h2>{content.bar.intro}</h2>
+      <dialog
+        id="bar-menu-dialog"
+        ref={menuDialog}
+        className="bar-menu-dialog"
+        aria-labelledby="bar-menu-title"
+        onCancel={() => setMenuOpen(false)}
+        onClick={(event) => {
+          if (event.target === menuDialog.current) setMenuOpen(false);
+        }}
+      >
+        <section id="drinks" className="bar-menu">
+          <div className="bar-menu-top">
+            <h2 id="bar-menu-title">The bar menu</h2>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Close bar menu"
+              onClick={() => setMenuOpen(false)}
+            >
+              <X size={22} />
+            </button>
           </div>
-        </div>
-        {categories.length ? (
-          <>
-            <nav className="category-nav" aria-label="Drink categories">
-              {categories.map((category) => (
-                <a key={category.id} href={`#category-${category.id}`}>
-                  {category.title}
-                </a>
-              ))}
-            </nav>
-            <div className="menu-categories">
-              {categories.map((category) => (
-                <section
-                  key={category.id}
-                  id={`category-${category.id}`}
-                  className="drink-category"
-                >
-                  <h3>{category.title}</h3>
-                  {category.description && (
-                    <p className="category-description">
-                      {category.description}
-                    </p>
-                  )}
-                  <div>
-                    {category.items
-                      .filter((item) => item.available)
-                      .map((item) => (
-                        <article key={item.id} className="drink-item">
-                          {item.image && (
-                            <Photo src={item.image} alt={item.name} />
-                          )}
-                          <div>
-                            <h4>{item.name}</h4>
-                            {item.description && <p>{item.description}</p>}
-                          </div>
-                          <span>{item.price}</span>
-                        </article>
-                      ))}
-                  </div>
-                </section>
-              ))}
+          <p className="bar-menu-intro">{content.bar.intro}</p>
+          {categories.length ? (
+            <>
+              <nav className="category-nav" aria-label="Drink categories">
+                {categories.map((category) => (
+                  <a key={category.id} href={`#category-${category.id}`}>
+                    {category.title}
+                  </a>
+                ))}
+              </nav>
+              <div className="menu-categories">
+                {categories.map((category) => (
+                  <section
+                    key={category.id}
+                    id={`category-${category.id}`}
+                    className="drink-category"
+                  >
+                    <h3>{category.title}</h3>
+                    {category.description && (
+                      <p className="category-description">
+                        {category.description}
+                      </p>
+                    )}
+                    <div>
+                      {category.items
+                        .filter((item) => item.available)
+                        .map((item) => (
+                          <article key={item.id} className="drink-item">
+                            {item.image && (
+                              <Photo src={item.image} alt={item.name} />
+                            )}
+                            <div>
+                              <h4>{item.name}</h4>
+                              {item.description && <p>{item.description}</p>}
+                            </div>
+                            <span>{item.price}</span>
+                          </article>
+                        ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="menu-empty">
+              <p>{content.bar.menuNotice}</p>
             </div>
-          </>
-        ) : (
-          <div className="menu-empty">
-            <Wine size={32} strokeWidth={1} />
-            <p>{content.bar.menuNotice}</p>
-          </div>
-        )}
-        {categories.length > 0 && content.bar.menuNotice && (
-          <p className="menu-note">{content.bar.menuNotice}</p>
-        )}
-      </section>
+          )}
+          {categories.length > 0 && content.bar.menuNotice && (
+            <p className="menu-note">{content.bar.menuNotice}</p>
+          )}
+        </section>
+      </dialog>
       <Sections sections={page.sections} content={content} />
     </>
   );
@@ -1376,13 +1418,19 @@ function BookingSection({ content }: { content: SiteContent }) {
     </section>
   );
 }
-function Footer({ content }: { content: SiteContent }) {
+function Footer({
+  content,
+  immersive = false,
+}: {
+  content: SiteContent;
+  immersive?: boolean;
+}) {
   return (
     <footer className="venue-footer">
       <div className="venue-footer-main">
         <div className="venue-footer-links">
-          <A href="/location">
-            {content.location.address}
+          <A href="/location" ariaLabel={content.location.address}>
+            {immersive ? "Visit" : content.location.address}
             <ArrowUpRight size={17} />
           </A>
         </div>
@@ -1549,7 +1597,7 @@ export function PublicExperience({
           )}
           <SiteHeader content={content} now={now} />
           <main id="main-content">{body}</main>
-          <Footer content={content} />
+          <Footer content={content} immersive={immersive} />
         </div>
       </ContentContext.Provider>
     </PreviewContext.Provider>

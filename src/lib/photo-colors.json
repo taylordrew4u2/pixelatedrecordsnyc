@@ -15,9 +15,9 @@
     "accent": "#d41a24"
   },
   "/assets/bar.webp": {
-    "paper": "#f1ece0",
-    "ink": "#161714",
-    "accent": "#cf1d2b"
+    "paper": "#f2eedf",
+    "ink": "#181614",
+    "accent": "#d21d25"
   },
   "/assets/cocktail.webp": {
     "paper": "#e6e3e6",
@@ -40,9 +40,9 @@
     "accent": "#cd2129"
   },
   "/assets/interior.webp": {
-    "paper": "#f1edde",
+    "paper": "#f3ecde",
     "ink": "#181614",
-    "accent": "#d11d2d"
+    "accent": "#ce222a"
   },
   "/assets/record-bins.webp": {
     "paper": "#f1ece0",
