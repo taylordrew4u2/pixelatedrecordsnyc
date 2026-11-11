@@ -25,7 +25,8 @@ The site is deployed through the CLI. GitHub-triggered automatic deployments are
 - A stale save returned 409. Restore returned the exact original draft. Publishing that original content succeeded. No test copy was published.
 - Logout invalidated the old session cookie.
 - A subsequent production redeploy preserved draft/live revision 3 and all three restore-history entries; sign-in still worked and the published palette remained unchanged.
-- Desktop room, booth, menu and bar were visually checked in the browser. Room and booth were also captured at a 390px mobile viewport.
+- The POV update passed TypeScript, all 42 tests, formatting checks and the full production build. All 90 sampled RGB values were verified against the 30 original/small image files.
+- The published bar and interior were visually checked on desktop; room navigation and the bar menu anchor worked. A 390px mobile capture confirmed the full-screen room and single navigation overlay. Mobile overlay spacing was increased to leave clearance above the platform badge.
 
 ## Platform presentation limitation
 

@@ -233,7 +233,7 @@
   .public-site.is-immersive .room-mobile-links {
     position: absolute;
     z-index: 4;
-    top: max(460px, calc(100svh - 100px));
+    top: max(440px, calc(100svh - 120px));
     left: 20px;
     right: 20px;
     display: flex;
