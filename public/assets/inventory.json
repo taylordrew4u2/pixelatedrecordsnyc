@@ -1,0 +1,137 @@
+[
+  {
+    "id": "storefront",
+    "src": "/assets/storefront.webp",
+    "label": "Storefront",
+    "alt": "",
+    "width": 1920,
+    "height": 1432,
+    "mime": "image/webp"
+  },
+  {
+    "id": "interior",
+    "src": "/assets/interior.webp",
+    "label": "Interior",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "dj-booth",
+    "src": "/assets/dj-booth.webp",
+    "label": "Dj Booth",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "bar",
+    "src": "/assets/bar.webp",
+    "label": "Bar",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "record-shop",
+    "src": "/assets/record-shop.webp",
+    "label": "Record Shop",
+    "alt": "",
+    "width": 1920,
+    "height": 1080,
+    "mime": "image/webp"
+  },
+  {
+    "id": "shop-window",
+    "src": "/assets/shop-window.webp",
+    "label": "Shop Window",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "record-bins",
+    "src": "/assets/record-bins.webp",
+    "label": "Record Bins",
+    "alt": "",
+    "width": 1080,
+    "height": 1920,
+    "mime": "image/webp"
+  },
+  {
+    "id": "sticker-door",
+    "src": "/assets/sticker-door.webp",
+    "label": "Sticker Door",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "room",
+    "src": "/assets/room.webp",
+    "label": "Room",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "bar-detail",
+    "src": "/assets/bar-detail.webp",
+    "label": "Bar Detail",
+    "alt": "",
+    "width": 1920,
+    "height": 1223,
+    "mime": "image/webp"
+  },
+  {
+    "id": "bar-shelves",
+    "src": "/assets/bar-shelves.webp",
+    "label": "Bar Shelves",
+    "alt": "",
+    "width": 1920,
+    "height": 1440,
+    "mime": "image/webp"
+  },
+  {
+    "id": "bar-corner",
+    "src": "/assets/bar-corner.webp",
+    "label": "Bar Corner",
+    "alt": "",
+    "width": 1920,
+    "height": 1515,
+    "mime": "image/webp"
+  },
+  {
+    "id": "cocktail",
+    "src": "/assets/cocktail.webp",
+    "label": "Cocktail",
+    "alt": "",
+    "width": 1080,
+    "height": 1920,
+    "mime": "image/webp"
+  },
+  {
+    "id": "coffee",
+    "src": "/assets/coffee.webp",
+    "label": "Coffee",
+    "alt": "",
+    "width": 1080,
+    "height": 1920,
+    "mime": "image/webp"
+  },
+  {
+    "id": "coffee-detail",
+    "src": "/assets/coffee-detail.webp",
+    "label": "Coffee Detail",
+    "alt": "",
+    "width": 1080,
+    "height": 1920,
+    "mime": "image/webp"
+  }
+]
