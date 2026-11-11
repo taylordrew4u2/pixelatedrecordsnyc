@@ -10,6 +10,7 @@ import {
   publicEvents,
   shiftDay,
   tonightEvents,
+  headerTonightEvent,
   upcomingEvents,
 } from "../src/lib/events";
 import { seedContent } from "../src/lib/seed";
@@ -294,4 +295,46 @@ test("calendar applies Gregorian century leap rules and pads complete weeks", ()
   assert.equal(sixWeeks[6], "2026-08-01");
   assert.equal(sixWeeks[36], "2026-08-31");
   assert.equal(sixWeeks.length % 7, 0);
+});
+
+test("header promotes the event running now over a later show", () => {
+  const first = event(
+    "early-set",
+    "2026-11-11T23:00:00Z",
+    "2026-11-12T01:00:00Z",
+  );
+  const next = event(
+    "late-set",
+    "2026-11-12T02:00:00Z",
+    "2026-11-12T05:00:00Z",
+  );
+  const site = content([next, first]);
+  assert.deepEqual(headerTonightEvent(site, new Date("2026-11-12T00:00:00Z")), {
+    event: first,
+    live: true,
+  });
+  assert.deepEqual(headerTonightEvent(site, new Date("2026-11-12T01:00:00Z")), {
+    event: next,
+    live: false,
+  });
+  assert.equal(
+    headerTonightEvent(site, new Date("2026-11-12T05:00:00Z")),
+    null,
+  );
+});
+
+test("header never advertises drafts, cancelled shows, or the following night", () => {
+  const site = content([
+    event("private", "2026-11-11T23:00:00Z", "2026-11-12T01:00:00Z", {
+      published: false,
+    }),
+    event("cancelled", "2026-11-11T23:00:00Z", "2026-11-12T01:00:00Z", {
+      status: "cancelled",
+    }),
+    event("tomorrow", "2026-11-12T23:00:00Z", "2026-11-13T01:00:00Z"),
+  ]);
+  assert.equal(
+    headerTonightEvent(site, new Date("2026-11-11T23:30:00Z")),
+    null,
+  );
 });

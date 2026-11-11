@@ -516,3 +516,98 @@
     transform: none;
   }
 }
+
+/* A live clock and tonight's real event stay reachable on every page. */
+.public-site.photo-layout .site-header {
+  display: grid;
+  grid-template-columns: minmax(135px, 1fr) minmax(0, 560px) minmax(100px, 1fr);
+  gap: 16px;
+  height: auto;
+  flex-basis: auto;
+  padding: 10px 24px;
+}
+.public-site.photo-layout .site-header .menu-trigger {
+  justify-self: end;
+}
+.public-site.photo-layout .header-now {
+  display: block;
+  min-width: 0;
+  min-height: 48px;
+  padding: 6px 12px;
+  color: var(--photo-paper);
+  background: var(--ink);
+  border: 1px solid var(--photo-paper);
+  border-radius: 6px;
+  text-decoration: none;
+}
+.public-site.photo-layout .header-now-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.public-site.photo-layout .header-now-meta > span:not(.live-dot) {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.public-site.photo-layout .header-now-meta time {
+  margin-left: auto;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.public-site.photo-layout .header-now-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 3px;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.public-site.photo-layout .header-now-title {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.public-site.photo-layout .header-now-start {
+  flex: 0 0 auto;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.public-site.photo-layout .header-now-detail > svg {
+  flex: 0 0 18px;
+}
+.public-site.photo-layout .header-now:active {
+  background: var(--photo-paper);
+  color: var(--ink);
+}
+@media (max-width: 760px) {
+  .public-site.photo-layout .site-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 16px;
+    padding: 8px 16px 10px;
+  }
+  .public-site.photo-layout .site-header .brand-link {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .public-site.photo-layout .site-header .menu-trigger {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .public-site.photo-layout .header-now {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    padding: 7px 0 0;
+    border-width: 1px 0 0;
+    border-radius: 0;
+  }
+  .public-site.photo-layout .header-now-detail {
+    font-size: 15px;
+  }
+}

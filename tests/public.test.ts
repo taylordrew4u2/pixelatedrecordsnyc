@@ -386,3 +386,34 @@ test("custom public navigation cannot advertise the direct-only admin route", ()
     ),
   );
 });
+
+test("header links tonight's event flyer with local start time and an accurate live label", () => {
+  const content = fixture();
+  content.events = [event("tonight-flyer", "2026-01-14T21:00:00-05:00")];
+  let header = anchors(render(content)).find((anchor) =>
+    anchor.attributes.includes("header-now"),
+  );
+  assert.equal(header?.href, "/events/tonight-flyer");
+  assert.match(header?.inner || "", /tonight-flyer/);
+  assert.match(header?.inner || "", /9 PM/);
+  assert.doesNotMatch(header?.inner || "", /Live now/);
+  content.events[0] = event("live-flyer", "2026-01-14T18:00:00-05:00");
+  header = anchors(render(content, "home", true)).find((anchor) =>
+    anchor.attributes.includes("header-now"),
+  );
+  assert.equal(header?.href, "/events/live-flyer?preview=1");
+  assert.match(header?.inner || "", /Live now/);
+  assert.match(header?.inner || "", /6 PM/);
+});
+
+test("header falls back to the events page without inventing a live show", () => {
+  const content = fixture();
+  content.events = [];
+  const header = anchors(render(content)).find((anchor) =>
+    anchor.attributes.includes("header-now"),
+  );
+  assert.equal(header?.href, "/events");
+  assert.match(header?.inner || "", /See tonight/);
+  assert.match(header?.inner || "", /Now 7:00 PM/);
+  assert.doesNotMatch(header?.inner || "", /Live now/);
+});

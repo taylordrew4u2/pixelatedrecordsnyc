@@ -57,6 +57,17 @@ export function tonightEvents(content: SiteContent, now: Date) {
       eventEnd(event) > Math.max(window.start.getTime(), now.getTime()),
   );
 }
+export function headerTonightEvent(content: SiteContent, now: Date) {
+  const tonight = tonightEvents(content, now).filter(
+    (event) => event.status !== "cancelled",
+  );
+  const current = tonight.find(
+    (event) => Date.parse(event.start) <= now.getTime(),
+  );
+  const event = current || tonight[0];
+  return event ? { event, live: Boolean(current) } : null;
+}
+
 export function upcomingEvents(content: SiteContent, now: Date) {
   const tonight = new Set(tonightEvents(content, now).map((event) => event.id));
   return publicEvents(content).filter(

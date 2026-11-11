@@ -45,6 +45,7 @@ import {
   eventTime,
   publicEvents,
   tonightEvents,
+  headerTonightEvent,
   upcomingEvents,
 } from "@/lib/events";
 import { destinationVisible, safeHref } from "@/lib/links";
@@ -175,6 +176,11 @@ function useClock(initialNow: string) {
   return now;
 }
 function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
+  const tonight = headerTonightEvent(content, now);
+  const headerEvent = tonight?.event;
+  const eventStart = headerEvent
+    ? eventTime(headerEvent.start, content.eventSettings.timeZone)
+    : "";
   const [open, setOpen] = useState(false);
   const modal = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -212,13 +218,36 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
             alt={content.brand.name}
           />
         </A>
-        <div className="header-location">
-          <span className="live-dot" />
-          <span>{content.location.neighborhood}</span>
-          <span className="header-time" suppressHydrationWarning>
-            {formatInTimeZone(now, content.eventSettings.timeZone, "h:mm a")}
+        <A
+          href={headerEvent ? `/events/${headerEvent.slug}` : "/events"}
+          className={`header-now${tonight?.live ? " is-live" : ""}`}
+          ariaLabel={
+            headerEvent
+              ? `${tonight?.live ? "Live now" : "Tonight"}: ${headerEvent.title}, ${eventStart}. View event flyer.`
+              : "See tonight’s events at Pixelated Records"
+          }
+        >
+          <span className="header-now-meta">
+            <span className="live-dot" aria-hidden="true" />
+            <span>{tonight?.live ? "Live now" : "Tonight at Pixelated"}</span>
+            <time dateTime={now.toISOString()} suppressHydrationWarning>
+              Now{" "}
+              {formatInTimeZone(now, content.eventSettings.timeZone, "h:mm a")}
+            </time>
           </span>
-        </div>
+          <span className="header-now-detail">
+            <span className="header-now-title">
+              {headerEvent?.title || "See tonight’s events"}
+            </span>
+            {headerEvent && (
+              <span className="header-now-start">
+                {headerEvent.status === "sold-out" ? "Sold out · " : ""}
+                {eventStart}
+              </span>
+            )}
+            <ChevronRight size={18} aria-hidden="true" />
+          </span>
+        </A>
         <button
           ref={trigger}
           className="menu-trigger"
