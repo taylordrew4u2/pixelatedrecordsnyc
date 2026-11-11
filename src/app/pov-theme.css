@@ -1,5 +1,5 @@
-/* Room views are photographic scenes. Labels use RGB values present in both
-   sizes of the supplied photo; originals keep their natural color and detail. */
+/* Room views fill the viewport. Labels sample the displayed image assets;
+   no screen-wide color filter or overlay is applied to those assets. */
 .public-site .venue-photo,
 .public-site .scene-photo,
 .public-site

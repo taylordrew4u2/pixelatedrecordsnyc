@@ -35,7 +35,7 @@
     "accent": "#b74d0f"
   },
   "/assets/dj-booth.webp": {
-    "paper": "#f3ebe0",
+    "paper": "#f3ecde",
     "ink": "#181614",
     "accent": "#cd2129"
   },
@@ -50,9 +50,9 @@
     "accent": "#c32d1e"
   },
   "/assets/record-shop.webp": {
-    "paper": "#f2eadf",
+    "paper": "#f3ecde",
     "ink": "#181614",
-    "accent": "#c2342b"
+    "accent": "#cc1f27"
   },
   "/assets/room.webp": {
     "paper": "#f3ecde",
@@ -70,8 +70,8 @@
     "accent": "#c12933"
   },
   "/assets/storefront.webp": {
-    "paper": "#f1edde",
+    "paper": "#f3ecde",
     "ink": "#181614",
-    "accent": "#bb363a"
+    "accent": "#d5222a"
   }
 }
