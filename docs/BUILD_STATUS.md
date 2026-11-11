@@ -4,9 +4,9 @@
 
 The website is public at https://pixelatedrecordsnyc.netlify.app. The owner approved public access and private admin credentials. The supplied venue photos and official logo remain in use. Records are on the left, the booth is ahead, and the bar is on the right. Booking uses the shared Google Form.
 
-The November 11, 2026 update presents the storefront, interior, bar, booth and record shop as full-viewport photographic POV scenes. The bar menu opens in a native dialog rather than rendering an empty section beneath the photo. Room footers are small transparent links over the scene, and scene actions use unboxed labels. Hovering an action gently moves the view forward, except with reduced or paused motion. Full-screen images now declare a full-viewport responsive size.
+The November 11, 2026 update presents the storefront, interior, bar, booth and record shop as full-viewport photographic POV scenes. The bar menu opens in a native dialog rather than rendering an empty section beneath the photo. Headers and footers use slim opaque charcoal backgrounds. Scene controls use compact opaque backplates, and the entrance has a cream sign with dark text. Hovering an action gently moves the view forward, except with reduced motion. Full-screen images now declare a full-viewport responsive size.
 
-All five main room/storefront views use versioned AI-enhanced image assets with deeper blacks and clearer color. Their originals remain in the repository; `src/lib/photo-assets.ts` resolves existing content references to the enhanced files. Uploaded replacements remain owner-controlled. The image editor prompt requested color/detail correction, richer natural color, preserved composition and venue objects, and no haze, vignette or invented objects. Generated files were inspected before integration; these are enhanced depictions, not untouched originals. Additional detail photos remain unchanged. Scene label RGB samples in `src/lib/photo-colors.json` were updated to colors present in both enhanced image sizes.
+All five main room/storefront views use versioned AI-enhanced image assets with deeper blacks and clearer color. The latest storefront asset also has matching empty windows and aligned architectural edges. Their originals remain in the repository; `src/lib/photo-assets.ts` resolves existing content references to the enhanced files. Uploaded replacements remain owner-controlled. The image editor prompt requested color/detail correction, richer natural color, preserved composition and venue objects, and no haze, vignette or invented objects. Generated files were inspected before integration; these are enhanced depictions, not untouched originals. Additional detail photos remain unchanged. Scene label RGB samples in `src/lib/photo-colors.json` were updated to colors present in both enhanced image sizes.
 
 
 ## Deployment and credentials
@@ -19,7 +19,17 @@ The site is deployed through the CLI. GitHub-triggered automatic deployments are
 
 ## Verification completed
 
-- TypeScript passed and all **42 tests** passed after the redesign.
+The current production deployment is `6af46905d70da09ff8bef28f` (November 11, 2026). Its full build, Next.js adapter, and upload succeeded.
+
+- Current-deployment admin login and logout returned 200, anonymous admin content returned 401, and persisted draft/live revisions both remained 5. The served storefront WebP exactly matched the reviewed local asset.
+- Desktop browser inspection confirmed the edited matching windows, level awning, cream entrance sign, and opaque header/footer. The page had no horizontal overflow and no public Admin links.
+- Live mobile captures at 390 × 844 and 320 × 568 confirmed the complete storefront, readable entrance and room links, and footer clearance.
+- Entry, interior navigation, booth Events link, and public menu were exercised in the live browser. The booth uses the same Events route and Google Form destination as the public menu.
+- The mobile booth capture showed Tonight followed by the upcoming-events section. Published events remain empty; event ordering, poster rendering, and draft suppression were verified with isolated fixtures in tests. Live carousel gestures cannot be exercised without real events or a temporary private fixture.
+
+Earlier production checks are retained below for context.
+
+- TypeScript and the production build passed. All **44 tests** passed, including shared Booth/Events poster ordering and suppression of public admin links.
 - The production Next.js build, Netlify adapter, server function bundling, and production deployment succeeded.
 - All principal public pages, admin page, public content API, sitemap, robots file, and venue photos returned HTTP 200.
 - Unauthenticated admin reads and writes returned 401; attempted source/environment file URLs returned 404.

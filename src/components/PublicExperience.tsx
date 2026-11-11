@@ -23,8 +23,6 @@ import {
   Disc3,
   MapPin,
   CalendarDays,
-  Pause,
-  Play,
   Clock,
   ExternalLink,
   Instagram,
@@ -68,6 +66,7 @@ function A({
   const content = useContext(ContentContext);
   let target = safeHref(href);
   if (target.startsWith("/") && !target.startsWith("//")) {
+    if (!preview && target.split(/[?#]/)[0] === "/admin") return null;
     if (content && !preview && !destinationVisible(target, content))
       return null;
     if (preview && !target.startsWith("/admin")) {
@@ -282,12 +281,10 @@ function Scene({
   content,
   scene,
   exterior = false,
-  paused,
 }: {
   content: SiteContent;
   scene: SceneType;
   exterior?: boolean;
-  paused: boolean;
 }) {
   const view = useRef<HTMLDivElement>(null);
   const img = useRef<HTMLImageElement>(null);
@@ -305,27 +302,36 @@ function Scene({
       if (!parent || !image?.naturalWidth) return;
       const width = parent.clientWidth,
         height = parent.clientHeight;
-      const scale = Math.max(
-        width / image.naturalWidth,
-        height / image.naturalHeight,
-      );
+      const mobile = width < 760;
+      const scale =
+        exterior && mobile
+          ? Math.min(
+              width / image.naturalWidth,
+              Math.max(180, height - 320) / image.naturalHeight,
+            )
+          : Math.max(width / image.naturalWidth, height / image.naturalHeight);
       const w = image.naturalWidth * scale,
         h = image.naturalHeight * scale;
-      const mobile = width < 760;
       setGeometry({
         width: w,
         height: h,
         left:
-          ((width - w) * (mobile ? scene.mobileFocalX : scene.focalX)) / 100,
+          exterior && mobile
+            ? (width - w) / 2
+            : ((width - w) * (mobile ? scene.mobileFocalX : scene.focalX)) /
+              100,
         top:
-          ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
+          exterior && mobile
+            ? Math.max(80, (height - h - 180) / 2)
+            : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) /
+              100,
       });
     };
     fit();
     const observer = new ResizeObserver(fit);
     if (view.current) observer.observe(view.current);
     return () => observer.disconnect();
-  }, [loaded, scene]);
+  }, [loaded, scene, exterior]);
   const hotspots = scene.hotspots.filter((hotspot) =>
     destinationVisible(hotspot.href, content),
   );
@@ -365,29 +371,20 @@ function Scene({
                 height: `${mask.height}%`,
               }}
             >
-              <div className="storefront-window-glass" aria-hidden="true">
-                {content.scenes.lights.enabled && (
-                  <div
-                    className="window-light"
-                    style={
-                      {
-                        opacity: content.scenes.lights.intensity,
-                        animationDelay: `${i * -2.7}s`,
-                        animationPlayState: paused ? "paused" : "running",
-                        "--light-1": content.scenes.lights.colors[0] || "#ef3550",
-                        "--light-2": content.scenes.lights.colors[1] || "#e09638",
-                        "--light-3": content.scenes.lights.colors[2] || "#9064d9",
-                      } as CSSProperties
-                    }
-                  />
-                )}
-              </div>
               <nav
                 className="storefront-window-links"
-                aria-label={i === 0 ? "Explore the record shop and booth" : "Explore the bar"}
+                aria-label={
+                  i === 0
+                    ? "Explore the record shop and booth"
+                    : "Explore the bar"
+                }
               >
                 {windowLinks[i].map((hotspot) => (
-                  <A key={hotspot.id} href={hotspot.href} className="window-room-link">
+                  <A
+                    key={hotspot.id}
+                    href={hotspot.href}
+                    className="window-room-link"
+                  >
                     <span>{hotspot.label || "Explore"}</span>
                     <ArrowUpRight size={16} />
                   </A>
@@ -415,15 +412,19 @@ function Scene({
                   <span className="door-invitation">Click here to</span>
                   <span className="door-invitation-title">
                     {hotspot.label || content.labels.enter}
-                    <ArrowUpRight size={18} />
+                    {hotspot.direction === "left" ? (
+                      <ArrowLeft size={18} />
+                    ) : hotspot.direction === "right" ? (
+                      <ArrowRight size={18} />
+                    ) : hotspot.direction === "forward" ? (
+                      <ArrowUpRight size={18} />
+                    ) : null}
                   </span>
                 </>
               ) : (
                 <>
                   {hotspot.direction === "left" && <ArrowLeft size={17} />}
-                  <span>
-                    {hotspot.label || "Explore"}
-                  </span>
+                  <span>{hotspot.label || "Explore"}</span>
                   {hotspot.direction === "right" ? (
                     <ArrowRight size={17} />
                   ) : hotspot.direction === "forward" ? (
@@ -434,65 +435,32 @@ function Scene({
             </A>
           </div>
         ))}
+        {exterior && (
+          <nav
+            className="storefront-mobile-links"
+            aria-label="Explore Pixelated Records"
+          >
+            {content.scenes.interior.hotspots
+              .filter((hotspot) => destinationVisible(hotspot.href, content))
+              .map((hotspot) => (
+                <A key={hotspot.id} href={hotspot.href}>
+                  {hotspot.label || "Explore"}
+                  <ArrowUpRight size={14} />
+                </A>
+              ))}
+          </nav>
+        )}
       </div>
       <div className="scene-shade" aria-hidden="true" />
     </div>
   );
 }
-function Home({
-  content,
-  page,
-  now,
-  paused,
-  setPaused,
-}: {
-  content: SiteContent;
-  page: Page;
-  now: Date;
-  paused: boolean;
-  setPaused: (value: boolean) => void;
-}) {
-  const hr = Number(formatInTimeZone(now, content.eventSettings.timeZone, "H"));
-  const light = content.scenes.lights;
-  const phase =
-    hr < light.dayStart || hr >= light.nightStart
-      ? "night"
-      : hr >= light.duskStart
-        ? "dusk"
-        : "day";
+function Home({ content, page }: { content: SiteContent; page: Page }) {
   return (
     <>
-      <section
-        className={`home-hero phase-${phase}`}
-        aria-labelledby="home-title"
-      >
-        <Scene
-          content={content}
-          scene={content.scenes.exterior}
-          exterior
-          paused={paused}
-        />
-        <button
-          className="motion-control"
-          onClick={() => setPaused(!paused)}
-          aria-pressed={paused}
-        >
-          {paused ? <Play size={13} /> : <Pause size={13} />}
-          <span>
-            {paused ? content.labels.resumeMotion : content.labels.pauseMotion}
-          </span>
-        </button>
+      <section className="home-hero" aria-labelledby="home-title">
+        <Scene content={content} scene={content.scenes.exterior} exterior />
       </section>
-      <nav className="storefront-mobile-links" aria-label="Explore Pixelated Records">
-        {content.scenes.interior.hotspots
-          .filter((hotspot) => destinationVisible(hotspot.href, content))
-          .map((hotspot) => (
-            <A key={hotspot.id} href={hotspot.href}>
-              {hotspot.label || "Explore"}
-              <ArrowUpRight size={14} />
-            </A>
-          ))}
-      </nav>
       <section className="scene-caption pov-visually-hidden">
         <div>
           <Eyebrow>{page.eyebrow}</Eyebrow>
@@ -504,15 +472,7 @@ function Home({
     </>
   );
 }
-function Interior({
-  content,
-  page,
-  paused,
-}: {
-  content: SiteContent;
-  page: Page;
-  paused: boolean;
-}) {
+function Interior({ content, page }: { content: SiteContent; page: Page }) {
   return (
     <>
       <div className="room-intro pov-visually-hidden">
@@ -523,11 +483,7 @@ function Interior({
         <p>{page.description}</p>
       </div>
       <section className="interior-hero" aria-label="Explore Pixelated Records">
-        <Scene
-          content={content}
-          scene={content.scenes.interior}
-          paused={paused}
-        />
+        <Scene content={content} scene={content.scenes.interior} />
       </section>
       <nav className="room-mobile-links" aria-label="Explore the room">
         {content.scenes.interior.hotspots
@@ -561,10 +517,12 @@ function SpacePage({
   content,
   page,
   kind,
+  now,
 }: {
   content: SiteContent;
   page: Page;
   kind: "booth" | "record-shop";
+  now: Date;
 }) {
   return (
     <>
@@ -603,6 +561,16 @@ function SpacePage({
           </div>
         </div>
       </section>
+      {kind === "booth" && destinationVisible("/events", content) && (
+        <div className="booth-events">
+          <EventsPage
+            content={content}
+            page={content.pages.find((entry) => entry.id === "events") || page}
+            now={now}
+            embedded
+          />
+        </div>
+      )}
       <Sections sections={page.sections} content={content} />
     </>
   );
@@ -628,23 +596,18 @@ function EventCard({
           }
           alt={event.imageAlt || event.title}
         />
-        <span className="event-date">
-          <strong>{eventDate(event.start, zone, "dd")}</strong>
-          <span>{eventDate(event.start, zone, "MMM")}</span>
-        </span>
-        {event.featured && <span className="featured-badge">Featured</span>}
-        {event.status !== "scheduled" && (
-          <span className={`status-badge ${event.status}`}>
-            {event.status === "sold-out" ? "Sold out" : "Cancelled"}
-          </span>
-        )}
-        <span className="circle-arrow">
-          <ArrowUpRight size={22} />
-        </span>
       </A>
       <div className="event-card-text">
+        <div className="event-flags">
+          {event.featured && <span className="featured-badge">Featured</span>}
+          {event.status !== "scheduled" && (
+            <span className={`status-badge ${event.status}`}>
+              {event.status === "sold-out" ? "Sold out" : "Cancelled"}
+            </span>
+          )}
+        </div>
         <p className="event-meta">
-          {eventDate(event.start, zone, "EEE")}
+          {eventDate(event.start, zone, "EEE, MMM d")}
           <span>·</span>
           {eventTime(event.start, zone)}
           {event.price && (
@@ -666,10 +629,12 @@ function EventsPage({
   content,
   page,
   now,
+  embedded = false,
 }: {
   content: SiteContent;
   page: Page;
   now: Date;
+  embedded?: boolean;
 }) {
   const tonight = tonightEvents(content, now).sort(
       (a, b) =>
@@ -678,13 +643,26 @@ function EventsPage({
     ),
     upcoming = upcomingEvents(content, now),
     rail = useRef<HTMLDivElement>(null);
+  const Heading = embedded ? "h2" : "h1";
+  const scrollPosters = (direction: number) => {
+    const list = rail.current;
+    if (!list) return;
+    const card = list.querySelector<HTMLElement>(".event-card");
+    const gap = Number.parseFloat(getComputedStyle(list).columnGap) || 24;
+    list.scrollBy({
+      left: direction * ((card?.offsetWidth || 300) + gap),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
   return (
     <>
       <section className="events-intro section-wrap">
         <div className="page-heading">
           <div>
             <Eyebrow>{page.eyebrow}</Eyebrow>
-            <h1>{content.labels.tonight}</h1>
+            <Heading>{content.labels.tonight}</Heading>
           </div>
           <p>{page.description}</p>
         </div>
@@ -739,18 +717,14 @@ function EventsPage({
                 <button
                   className="icon-button"
                   aria-label="Previous upcoming events"
-                  onClick={() =>
-                    rail.current?.scrollBy({ left: -340, behavior: "smooth" })
-                  }
+                  onClick={() => scrollPosters(-1)}
                 >
                   <ChevronLeft />
                 </button>
                 <button
                   className="icon-button"
                   aria-label="Next upcoming events"
-                  onClick={() =>
-                    rail.current?.scrollBy({ left: 340, behavior: "smooth" })
-                  }
+                  onClick={() => scrollPosters(1)}
                 >
                   <ChevronRight />
                 </button>
@@ -764,6 +738,13 @@ function EventsPage({
             className="events-rail"
             tabIndex={0}
             aria-label="Upcoming events — scroll horizontally"
+            onKeyDown={(event) => {
+              if (event.target !== event.currentTarget) return;
+              if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                event.preventDefault();
+                scrollPosters(event.key === "ArrowLeft" ? -1 : 1);
+              }
+            }}
           >
             {upcoming.map((event) => (
               <EventCard
@@ -781,8 +762,8 @@ function EventsPage({
           </div>
         )}
       </section>
-      <Sections sections={page.sections} content={content} />
-      <BookingSection content={content} />
+      {!embedded && <Sections sections={page.sections} content={content} />}
+      {!embedded && <BookingSection content={content} />}
     </>
   );
 }
@@ -931,7 +912,7 @@ function CalendarPage({
               >
                 <div className="agenda-date">
                   <strong>{eventDate(event.start, zone, "dd")}</strong>
-                  <span>{eventDate(event.start, zone, "EEE")}</span>
+                  <span>{eventDate(event.start, zone, "EEE, MMM d")}</span>
                 </div>
                 <div>
                   <p>
@@ -1501,7 +1482,6 @@ function Footer({
               {link.label}
             </A>
           ))}
-          <A href="/admin">Admin</A>
         </div>
       </div>
     </footer>
@@ -1541,18 +1521,11 @@ export function PublicExperience({
     page = content.pages.find((p) => p.id === pageId)!;
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () =>
-      setPaused(
-        media.matches || localStorage.getItem("pixelated-motion") === "paused",
-      );
+    const update = () => setPaused(media.matches);
     update();
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, []);
-  const changePaused = (value: boolean) => {
-    setPaused(value);
-    localStorage.setItem("pixelated-motion", value ? "paused" : "playing");
-  };
   const immersive = ["home", "inside", "booth", "bar", "record-shop"].includes(
     pageId,
   );
@@ -1588,22 +1561,16 @@ export function PublicExperience({
   else
     switch (pageId) {
       case "home":
-        body = (
-          <Home
-            content={content}
-            page={page}
-            now={now}
-            paused={paused}
-            setPaused={changePaused}
-          />
-        );
+        body = <Home content={content} page={page} />;
         break;
       case "inside":
-        body = <Interior content={content} page={page} paused={paused} />;
+        body = <Interior content={content} page={page} />;
         break;
       case "booth":
       case "record-shop":
-        body = <SpacePage content={content} page={page} kind={pageId} />;
+        body = (
+          <SpacePage content={content} page={page} kind={pageId} now={now} />
+        );
         break;
       case "events":
         body = <EventsPage content={content} page={page} now={now} />;

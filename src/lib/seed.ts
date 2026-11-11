@@ -32,7 +32,7 @@ export const seedContent: SiteContent = {
   schemaVersion: 1,
   brand: {
     name: "Pixelated Records",
-    tagline: "Good records. Better nights.",
+    tagline: "",
     descriptor: "VINYL · BAR · DJS · EVENTS",
     logoLight: "/assets/logo-light.png",
     logoDark: "/assets/logo-dark.png",
@@ -156,7 +156,7 @@ export const seedContent: SiteContent = {
   pages: [
     page(
       "home",
-      "Good records.\nBetter nights.",
+      "Pixelated Records",
       "RIDGEWOOD, NEW YORK CITY",
       "A record store, a bar, and a place to find your people. Come on in.",
       "/assets/storefront.webp",
@@ -301,7 +301,7 @@ export const seedContent: SiteContent = {
       { id: "right-window", x: 63.7, y: 44.1, width: 17.8, height: 23.5 },
     ],
     lights: {
-      enabled: true,
+      enabled: false,
       intensity: 0.48,
       colors: ["#ce2029", "#d99253", "#f2ecdf"],
       dayStart: 7,
@@ -371,7 +371,7 @@ export const seedContent: SiteContent = {
       "Got a reason to get everyone together? Let’s make a night of it.",
   },
   footer: {
-    tagline: "Good records. Better nights.",
+    tagline: "",
     note: "Made for the neighborhood.",
     links: [],
   },

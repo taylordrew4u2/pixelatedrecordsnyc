@@ -22,8 +22,8 @@ const roomPhotos = {
     width: 1672,
   },
   "/assets/storefront.webp": {
-    src: "/assets/storefront-rich.webp",
-    small: "/assets/storefront-rich-small.webp",
+    src: "/assets/storefront-clear.webp",
+    small: "/assets/storefront-clear-small.webp",
     width: 1452,
   },
 };

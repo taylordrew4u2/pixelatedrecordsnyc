@@ -1878,7 +1878,7 @@ export function AppearanceEditor({ content, update }: EditorProps) {
           }}
         >
           <span className="ad-eyebrow">APPEARANCE PREVIEW</span>
-          <h3>Good records. Better nights.</h3>
+          <h3>{brand.name}</h3>
           <p>Keep the words easy to read, day or night.</p>
           <span
             style={{

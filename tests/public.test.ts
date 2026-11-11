@@ -88,7 +88,11 @@ test("archived pages disappear from hardcoded scene, menu, and footer links", ()
         `${pageId} must not link to archived /${id}`,
       );
     }
-    assert.ok(links.includes("/admin"), "the admin route remains reachable");
+    assert.equal(
+      links.includes("/admin"),
+      false,
+      "admin is never advertised publicly",
+    );
     assert.ok(
       links.includes(content.booking.url),
       "venue booking remains reachable",
@@ -287,4 +291,53 @@ test("featuring an upcoming event exposes its description and badge", () => {
   rendered = cards(render(content, "events"));
   assert.match(rendered[0], /next-show description/);
   assert.match(rendered[0], /class="featured-badge">Featured<\/span>/);
+});
+
+test("the booth shares Tonight and the chronological poster rail with Events", () => {
+  const content = fixture();
+  content.events = [
+    event("later-poster", "2026-01-18T21:00:00-05:00", {
+      image: "/assets/poster-later.webp",
+    }),
+    event("tonight-poster", "2026-01-14T21:00:00-05:00", {
+      image: "/assets/poster-tonight.webp",
+    }),
+    event("next-poster", "2026-01-16T21:00:00-05:00", {
+      image: "/assets/poster-next.webp",
+    }),
+    event("draft-poster", "2026-01-15T21:00:00-05:00", { published: false }),
+  ];
+  const booth = render(content, "booth");
+  const events = render(content, "events");
+  assert.deepEqual(cards(booth), cards(events));
+  assert.equal(cards(booth).length, 3);
+  assert.ok(
+    booth.indexOf("/events/next-poster") <
+      booth.indexOf("/events/later-poster"),
+  );
+  assert.doesNotMatch(booth, /draft-poster/);
+  assert.match(booth, /Upcoming events — scroll horizontally/);
+  assert.match(booth, /Next upcoming events/);
+  assert.match(booth, /poster-next.webp/);
+  assert.equal((booth.match(/<h1\b/g) || []).length, 1);
+});
+
+test("custom public navigation cannot advertise the direct-only admin route", () => {
+  const content = fixture();
+  content.navigation.push({
+    id: "admin-link",
+    label: "Admin",
+    href: "/admin?tab=events",
+    visible: true,
+  });
+  content.footer.links.push({
+    id: "admin-footer",
+    label: "Admin",
+    url: "/admin#content",
+  });
+  assert.ok(
+    anchors(render(content)).every(
+      (link) => link.href.split(/[?#]/)[0] !== "/admin",
+    ),
+  );
 });
