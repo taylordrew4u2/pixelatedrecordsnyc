@@ -379,6 +379,15 @@ function Scene({
       ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
       : undefined;
   const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
+  const portrait = exterior && photo === "/assets/storefront-shades.webp";
+  const mobileSource = portrait && (
+    <source
+      media="(max-width: 760px)"
+      srcSet="/assets/storefront-street-mobile.webp"
+      width={960}
+      height={1440}
+    />
+  );
   return (
     <>
       <div
@@ -447,7 +456,10 @@ function Scene({
           event.stopPropagation();
         }}
       >
-        <div className="scene-plane" style={geometry}>
+        <div
+          className={`scene-plane${portrait ? " has-street-portrait" : ""}`}
+          style={geometry}
+        >
           {skyMask && sky && (
             <div
               className="storefront-sky"
@@ -461,41 +473,47 @@ function Scene({
                 } as CSSProperties
               }
             >
-              <img
-                className="sky-day"
-                src={photo}
-                srcSet={sourceSet}
-                sizes="100vw"
-                alt=""
-              />
+              <picture>
+                {mobileSource}
+                <img
+                  className="sky-day"
+                  src={photo}
+                  srcSet={sourceSet}
+                  sizes="100vw"
+                  alt=""
+                />
+              </picture>
               <div className="sky-warmth" />
               <div className="sky-stars" />
             </div>
           )}
-          <img
-            ref={img}
-            src={photo}
-            srcSet={sourceSet}
-            sizes={exterior ? "100vw" : undefined}
-            alt={scene.alt}
-            className="scene-photo"
-            style={
-              skyMask
-                ? {
-                    maskImage: `url("${skyMask}")`,
-                    WebkitMaskImage: `url("${skyMask}")`,
-                    maskSize: "100% 100%",
-                    WebkitMaskSize: "100% 100%",
-                    maskRepeat: "no-repeat",
-                    WebkitMaskRepeat: "no-repeat",
-                  }
-                : undefined
-            }
-            loading="eager"
-            fetchPriority="high"
-            draggable={exterior ? undefined : false}
-            onLoad={() => setLoaded((value) => value + 1)}
-          />
+          <picture className="scene-picture">
+            {mobileSource}
+            <img
+              ref={img}
+              src={photo}
+              srcSet={sourceSet}
+              sizes={exterior ? "100vw" : undefined}
+              alt={scene.alt}
+              className="scene-photo"
+              style={
+                skyMask
+                  ? {
+                      maskImage: `url("${skyMask}")`,
+                      WebkitMaskImage: `url("${skyMask}")`,
+                      maskSize: "100% 100%",
+                      WebkitMaskSize: "100% 100%",
+                      maskRepeat: "no-repeat",
+                      WebkitMaskRepeat: "no-repeat",
+                    }
+                  : undefined
+              }
+              loading="eager"
+              fetchPriority="high"
+              draggable={exterior ? undefined : false}
+              onLoad={() => setLoaded((value) => value + 1)}
+            />
+          </picture>
           {!exterior &&
             hotspots.map((hotspot) => (
               <div
