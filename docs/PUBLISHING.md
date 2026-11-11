@@ -153,7 +153,7 @@ Keep the production `DEPLOY_PRIME_URL` override in `netlify.toml`. The installed
 
 `src/proxy.ts` generates a fresh script nonce for each document and sends the policy to both Next.js and the browser. The root layout must stay dynamic so public pages and `/admin` receive matching script nonces. Keep `unsafe-inline` out of `script-src`; adding it permits injected inline code, including the Netlify badge. Inline styles remain allowed for editable brand colors and scene geometry. HTTPS images and map frames support owner uploads and map overrides.
 
-A production deployment must still include the two existing Functions-only authentication secrets as documented above. The owner explicitly approved reusing these secrets for production deployment `6af4add3f4df0accd6bd45e7`. Do not deploy without them or put production secrets into an ordinary preview.
+A production deployment must still include the two existing Functions-only authentication secrets as documented above. On November 11, 2026, the owner explicitly approved reusing the existing admin password hash and session secret in Netlify for this and future updates to this same site. That continuing authorization supersedes the earlier release-specific approval. It does not authorize changing credentials, sending them elsewhere, or putting production secrets into an ordinary preview. Do not deploy production without them.
 
 `applyEditorialDefaults` replaces exact untouched launch SEO/empty-state defaults on reads. Custom owner text and uploaded social images survive; existing source photo references resolve to the enhanced files. Canonical URLs use `SITE_URL`. The business schema includes confirmed hours only. Keep supplied address, social links, hours and menu information current in Studio.
 
