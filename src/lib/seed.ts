@@ -39,7 +39,7 @@ export const seedContent: SiteContent = {
     mark: "/assets/mark.png",
     favicon: "/assets/favicon.png",
     accent: "#ce2029",
-    background: "#171614",
+    background: "#181614",
     foreground: "#f2ecdf",
     font: "sans",
     buttonStyle: "square",

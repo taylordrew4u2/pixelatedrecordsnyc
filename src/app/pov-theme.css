@@ -43,7 +43,7 @@
 }
 .public-site.is-immersive .brand-link img {
   width: 135px;
-  filter: drop-shadow(0 1px 4px #0008);
+  filter: drop-shadow(0 1px 4px var(--ink, #181614));
 }
 .public-site.is-immersive .header-location {
   display: none;
@@ -148,8 +148,8 @@
   box-shadow: none;
   backdrop-filter: none;
   text-shadow:
-    0 1px 3px #000,
-    0 0 12px #000b;
+    0 1px 3px var(--ink, #181614),
+    0 0 12px var(--ink, #181614);
   transition:
     background 160ms,
     border-color 160ms;
@@ -162,7 +162,7 @@
   flex: 0 0 auto;
   border: 1px solid var(--photo-paper);
   background: transparent;
-  box-shadow: 0 1px 3px #0008;
+  box-shadow: 0 1px 3px var(--ink, #181614);
 }
 .public-site.is-immersive :is(.pov-link, .hotspot-link):hover {
   background: transparent;
@@ -208,8 +208,8 @@
   border-radius: 0;
   padding: 8px 0;
   text-shadow:
-    0 1px 3px #000,
-    0 0 12px #000b;
+    0 1px 3px var(--ink, #181614),
+    0 0 12px var(--ink, #181614);
 }
 .public-site.is-immersive .venue-footer {
   position: absolute;
@@ -226,8 +226,8 @@
   background: transparent;
   color: var(--photo-paper);
   text-shadow:
-    0 1px 3px #000,
-    0 0 12px #000b;
+    0 1px 3px var(--ink, #181614),
+    0 0 12px var(--ink, #181614);
 }
 .public-site.is-immersive .venue-footer :is(a, .venue-footer-meta) {
   color: inherit;
@@ -245,12 +245,12 @@
   padding: 0;
   border: 1px solid #ffffff26;
   border-radius: 4px;
-  background: #171614;
+  background: var(--ink, #181614);
   color: var(--photo-paper, var(--fg));
   overflow: auto;
 }
 .public-site .bar-menu-dialog::backdrop {
-  background: #0008;
+  background: var(--ink, #181614);
 }
 .public-site .bar-menu-dialog .bar-menu {
   padding: 26px 30px 32px;
@@ -334,8 +334,8 @@
     background: transparent;
     backdrop-filter: none;
     text-shadow:
-      0 1px 3px #000,
-      0 0 12px #000b;
+      0 1px 3px var(--ink, #181614),
+      0 0 12px var(--ink, #181614);
   }
   .public-site.is-immersive .room-mobile-links a {
     flex-direction: row;
@@ -380,51 +380,58 @@
   }
 }
 
-/* A single compact speech bubble invites visitors through the door. */
+/* The entrance uses the same squared, compact type as the record-store UI. */
 .public-site.is-immersive .door-hotspot .door-link {
   position: relative;
   display: inline-flex;
   flex: 0 0 auto;
-  min-width: 96px;
+  min-width: 92px;
   max-width: 200px;
   min-height: 44px;
   padding: 10px 16px;
-  border: 1px solid var(--photo-ink);
-  border-radius: 16px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--photo-paper);
-  color: var(--photo-ink);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0;
+  color: var(--ink);
+  font-family: "Barlow Condensed", Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: normal;
-  box-shadow: 0 2px 6px #0003;
+  box-shadow: none;
   text-shadow: none;
 }
-.public-site.is-immersive .door-hotspot .door-link::before {
-  content: none;
-}
+.public-site.is-immersive .door-hotspot .door-link::before,
 .public-site.is-immersive .door-hotspot .door-link::after {
   content: "";
   display: block;
   position: absolute;
   inset: auto;
-  left: 22px;
-  bottom: -6px;
-  width: 11px;
-  height: 11px;
   border: 0;
   border-radius: 0;
-  border-right: 1px solid var(--photo-ink);
-  border-bottom: 1px solid var(--photo-ink);
   background: inherit;
-  transform: rotate(45deg);
+  box-shadow: none;
+  transform: none;
+}
+.public-site.is-immersive .door-hotspot .door-link::before {
+  left: 30px;
+  bottom: -4px;
+  width: 4px;
+  height: 4px;
+}
+.public-site.is-immersive .door-hotspot .door-link::after {
+  left: 22px;
+  bottom: -8px;
+  width: 8px;
+  height: 8px;
 }
 .public-site.is-immersive .door-hotspot .door-link:hover {
   background: var(--photo-paper);
-  color: var(--photo-ink);
-  box-shadow: 0 3px 8px #0004;
-  text-decoration: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 .public-site .exterior-scene {
   background: var(--photo-ink);
@@ -436,7 +443,7 @@
   position: fixed;
   height: 76px;
   padding: 14px 32px;
-  background: #181614;
+  background: var(--ink, #181614);
   color: #f3ecde;
   border-bottom: 1px solid #f3ecde26;
   text-shadow: none;
@@ -452,7 +459,7 @@
 .public-site .venue-footer,
 .public-site.is-immersive .venue-footer {
   min-height: 56px;
-  background: #181614;
+  background: var(--ink, #181614);
   color: #f3ecde;
   border-top: 1px solid #f3ecde26;
   text-shadow: none;
@@ -508,7 +515,7 @@
 }
 .public-site .booth-events {
   position: relative;
-  background: #181614;
+  background: var(--ink, #181614);
   color: #f3ecde;
 }
 .public-site .events-rail {
@@ -524,11 +531,11 @@
 }
 .public-site .event-card {
   background: #f3ecde;
-  color: #181614;
+  color: var(--ink, #181614);
 }
 .public-site .event-image {
   aspect-ratio: 2 / 3;
-  background: #181614;
+  background: var(--ink, #181614);
 }
 .public-site .event-image > img {
   object-fit: contain;
@@ -572,7 +579,7 @@
   height: 44px;
   min-width: 44px;
   min-height: 44px;
-  border-color: #18161466;
+  border-color: var(--ink, #181614);
 }
 .public-site .tonight-empty {
   display: block;
@@ -623,5 +630,259 @@
   }
   .public-site.page-booth .space-hero {
     min-height: 420px;
+  }
+}
+/* Phones and short landscape screens use natural image proportions and flow. */
+@media (max-width: 760px), (max-width: 1000px) and (max-height: 500px) {
+  .public-site {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
+  .public-site .site-header,
+  .public-site.is-immersive .site-header {
+    position: sticky;
+    top: 0;
+    height: auto;
+    min-height: 68px;
+    flex-shrink: 0;
+    padding: 12px max(20px, env(safe-area-inset-right)) 12px
+      max(20px, env(safe-area-inset-left));
+  }
+  .public-site .header-location {
+    display: none;
+  }
+  .public-site main,
+  .public-site.is-immersive main,
+  .public-site.is-preview main {
+    flex: 1 0 auto;
+    min-width: 0;
+    width: 100%;
+    padding-top: 0;
+  }
+  .public-site.is-preview .site-header {
+    top: 38px;
+  }
+  .public-site.page-home main,
+  .public-site.page-inside main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .public-site.is-immersive :is(.home-hero, .interior-hero) {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .public-site.is-immersive .scene-viewport {
+    position: relative;
+    inset: auto;
+    overflow: visible;
+  }
+  .public-site.is-immersive .scene-plane {
+    position: relative;
+    width: 100% !important;
+    height: auto !important;
+    left: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+  }
+  .public-site.is-immersive .scene-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  .public-site.is-immersive .room-hotspot {
+    display: none;
+  }
+  .public-site.is-immersive .room-mobile-links {
+    position: relative;
+    inset: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0;
+    padding: 12px max(12px, env(safe-area-inset-right)) 16px
+      max(12px, env(safe-area-inset-left));
+    border: 0;
+    border-radius: 0;
+    background: var(--photo-ink);
+    flex: 0 0 auto;
+  }
+  .public-site.is-immersive .room-mobile-links a {
+    width: auto;
+    min-width: 0;
+    min-height: 48px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 1.35;
+    white-space: normal;
+  }
+  .public-site.is-immersive .room-mobile-links a > svg {
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+  }
+  .public-site.is-immersive .space-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+    align-items: center;
+  }
+  .public-site.is-immersive .space-photo {
+    grid-area: 2 / 1 / 3 / -1;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .public-site.is-immersive .space-photo > img {
+    position: static;
+    inset: auto;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    transform: none !important;
+  }
+  .public-site.is-immersive .space-content {
+    display: contents;
+  }
+  .public-site.is-immersive .space-content .back-link {
+    grid-area: 1 / 1;
+    position: static;
+    justify-self: start;
+    max-width: 100%;
+    margin: 8px 0 8px 12px;
+    padding: 10px 8px;
+    white-space: normal;
+  }
+  .public-site.is-immersive .space-content h1 {
+    grid-area: 1 / 2;
+    position: static;
+    justify-self: end;
+    width: auto;
+    max-width: 140px;
+    margin: 8px 12px 8px 0;
+    padding: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+  }
+  .public-site.is-immersive .space-content .button-row {
+    grid-area: 3 / 1 / 4 / -1;
+    position: static;
+    width: 100%;
+    transform: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 12px 20px;
+    margin: 0;
+  }
+  .public-site.is-immersive .space-content .button-row .pov-link {
+    max-width: 100%;
+    min-height: 44px;
+    white-space: normal;
+    text-align: center;
+  }
+  .public-site.is-immersive .space-content .button-row .pov-link::before {
+    content: none;
+  }
+  .public-site.is-immersive .venue-footer,
+  .public-site.is-immersive.is-preview .venue-footer {
+    position: relative;
+    inset: auto;
+    transform: none;
+    min-height: 56px;
+    margin-top: auto;
+    padding: 6px 184px calc(6px + env(safe-area-inset-bottom)) 20px;
+    gap: 0 14px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .public-site.is-immersive .venue-footer-meta > div {
+    flex-wrap: wrap;
+  }
+  .public-site.is-immersive .venue-footer-meta > span {
+    display: none;
+  }
+  .public-site.is-immersive .venue-footer a {
+    font-size: 12px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .public-site.is-immersive .venue-footer svg {
+    display: none;
+  }
+  .public-site .nav-dialog {
+    width: min(100%, 650px);
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: 20px 20px calc(76px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .public-site .menu-top {
+    position: sticky;
+    top: -20px;
+    z-index: 2;
+    padding: 12px 0 18px;
+    background: var(--paper);
+  }
+  .public-site .menu-link {
+    font-size: clamp(26px, 7vw, 34px);
+    min-height: 48px;
+    padding: 10px 0;
+    gap: 12px;
+  }
+  .public-site :is(.calendar-toolbar, .rail-controls) {
+    flex-wrap: wrap;
+  }
+  .public-site .calendar-toolbar h2 {
+    font-size: 27px;
+  }
+  .public-site .calendar-toolbar .icon-button {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+  .public-site
+    :is(.page-heading, .section-heading, .section-wrap, .button-row) {
+    min-width: 0;
+  }
+  .public-site :is(h1, h2, h3, p) {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* A single brand black also covers translucent legacy control styles. */
+.public-site .back-link,
+.public-site .icon-button,
+.public-site :is(.pov-link, .hotspot-link) {
+  opacity: 1;
+  box-shadow: none;
+  text-shadow: none;
+}
+.public-site .cream-section .muted {
+  color: var(--ink);
+  opacity: 1;
+}
+@media (max-width: 760px), (max-width: 1000px) and (max-height: 500px) {
+  .public-site {
+    overflow: visible;
   }
 }

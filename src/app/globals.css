@@ -7,7 +7,7 @@ html {
 }
 body {
   margin: 0;
-  background: #151411;
+  background: var(--ink, #181614);
   color: #f5f1e8;
   font-family: "DM Sans", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -48,7 +48,7 @@ button:disabled {
 }
 .public-site {
   --accent: #ef3550;
-  --bg: #151411;
+  --bg: var(--ink, #181614);
   --fg: #f5f1e8;
   background: var(--bg);
   color: var(--fg);
@@ -95,7 +95,7 @@ button:disabled {
 }
 .cream-section {
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
 }
 .eyebrow {
   display: flex;
@@ -153,11 +153,11 @@ button:disabled {
   color: var(--bg);
 }
 .dark-button {
-  background: #211f1a;
+  background: var(--ink, #181614);
   color: #f2eee5;
 }
 .dark-button:hover {
-  background: #39352d;
+  background: var(--ink, #181614);
 }
 .button-row {
   display: flex;
@@ -236,7 +236,7 @@ button:disabled {
   left: 16px;
   top: -80px;
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
   padding: 14px;
 }
 .skip-link:focus {
@@ -298,11 +298,11 @@ button:disabled {
   height: 100dvh;
   max-height: 100dvh;
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
   overflow: auto;
 }
 .nav-dialog::backdrop {
-  background: #090908bd;
+  background: var(--ink, #181614);
   backdrop-filter: blur(6px);
 }
 .menu-top {
@@ -332,7 +332,7 @@ button:disabled {
   font-size: clamp(32px, 4.4vw, 58px);
   line-height: 1.1;
   padding: 15px 0;
-  border-bottom: 1px solid #211f1a2a;
+  border-bottom: 1px solid var(--ink, #181614);
   letter-spacing: -0.06em;
   transition: color 0.15s;
 }
@@ -367,7 +367,7 @@ button:disabled {
   margin-top: 15px;
 }
 .menu-bottom {
-  border-top: 1px solid #211f1a2a;
+  border-top: 1px solid var(--ink, #181614);
   margin-top: 50px;
   padding-top: 21px;
   display: flex;
@@ -382,7 +382,7 @@ button:disabled {
 .preview-banner {
   height: 38px;
   background: #f8d56b;
-  color: #1c1a15;
+  color: var(--ink, #181614);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -407,7 +407,7 @@ button:disabled {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #24221c;
+  background: var(--ink, #181614);
 }
 .scene-plane {
   position: absolute;
@@ -422,8 +422,18 @@ button:disabled {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, #0b0b0966 0%, transparent 48%, #0b0b0926 100%),
-    linear-gradient(0deg, #0b0b09bd 0%, transparent 42%, #0b0b0926 100%);
+    linear-gradient(
+      90deg,
+      var(--ink, #181614) 0%,
+      transparent 48%,
+      var(--ink, #181614) 100%
+    ),
+    linear-gradient(
+      0deg,
+      var(--ink, #181614) 0%,
+      transparent 42%,
+      var(--ink, #181614) 100%
+    );
   pointer-events: none;
 }
 .home-hero {
@@ -452,7 +462,7 @@ button:disabled {
   mix-blend-mode: screen;
   animation: party-light 8s ease-in-out infinite alternate;
   filter: blur(1px);
-  box-shadow: inset 0 0 20px 6px #0008;
+  box-shadow: inset 0 0 20px 6px var(--ink, #181614);
   clip-path: inset(0);
 }
 @keyframes party-light {
@@ -483,7 +493,7 @@ button:disabled {
   justify-content: center;
   gap: 11px;
   border: 1px solid #fff9;
-  background: #151411c9;
+  background: var(--ink, #181614);
   backdrop-filter: blur(12px);
   color: #fff;
   white-space: nowrap;
@@ -491,7 +501,7 @@ button:disabled {
   padding: 15px 21px;
   min-height: 48px;
   font-size: 12px;
-  box-shadow: 0 5px 20px #0003;
+  box-shadow: 0 5px 20px var(--ink, #181614);
   transition:
     background 0.2s,
     transform 0.2s;
@@ -510,7 +520,7 @@ button:disabled {
   gap: 23px;
   box-shadow:
     0 0 0 7px #ef355022,
-    0 10px 30px #0006;
+    0 10px 30px var(--ink, #181614);
 }
 .door-link:after {
   content: "";
@@ -522,7 +532,7 @@ button:disabled {
 }
 .door-link:hover {
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
 }
 .hero-address {
   position: absolute;
@@ -591,7 +601,7 @@ button:disabled {
   align-items: center;
   gap: 6px;
   border: 0;
-  background: #1514115e;
+  background: var(--ink, #181614);
   border-radius: 30px;
   font-size: 9px;
   padding: 9px 12px;
@@ -679,7 +689,7 @@ button:disabled {
   height: 31px;
   display: grid;
   place-items: center;
-  background: #15141150;
+  background: var(--ink, #181614);
   backdrop-filter: blur(8px);
 }
 .circle-arrow {
@@ -687,7 +697,7 @@ button:disabled {
   height: 46px;
   border-radius: 50%;
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
   position: absolute;
   bottom: 19px;
   right: 19px;
@@ -726,10 +736,10 @@ button:disabled {
 .interior-scene .scene-shade {
   background: linear-gradient(
     0deg,
-    #11110ee6,
+    var(--ink, #181614),
     transparent 30%,
-    #11110e2b 70%,
-    #11110e91
+    var(--ink, #181614) 70%,
+    var(--ink, #181614)
   );
 }
 .room-heading {
@@ -785,9 +795,9 @@ button:disabled {
   inset: 0;
   background: linear-gradient(
     90deg,
-    #0e0d0bec 0%,
-    #0e0d0b87 40%,
-    #0e0d0b15 100%
+    var(--ink, #181614) 0%,
+    var(--ink, #181614) 40%,
+    var(--ink, #181614) 100%
   );
 }
 .space-content {
@@ -915,7 +925,7 @@ button:disabled {
   display: block;
   aspect-ratio: 1/1.1;
   overflow: hidden;
-  background: #29261f;
+  background: var(--ink, #181614);
 }
 .event-image > img {
   height: 100%;
@@ -931,7 +941,7 @@ button:disabled {
   top: 16px;
   left: 16px;
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
   width: 56px;
   text-align: center;
   padding: 12px 6px 8px;
@@ -955,7 +965,7 @@ button:disabled {
   top: 19px;
   right: 15px;
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
   border-radius: 20px;
   padding: 7px 12px;
   font-size: 10px;
@@ -1020,7 +1030,7 @@ button:disabled {
   scroll-snap-align: start;
 }
 .upcoming-empty {
-  border: 1px solid #211f1a2a;
+  border: 1px solid var(--ink, #181614);
   padding: 40px;
   display: flex;
   gap: 24px;
@@ -1038,7 +1048,7 @@ button:disabled {
   border-bottom: 1px solid #f2eee528;
   padding-top: 65px;
   padding-bottom: 65px;
-  background: #232019;
+  background: var(--ink, #181614);
 }
 .booking-section > div:nth-child(2) {
   flex: 1;
@@ -1076,13 +1086,13 @@ button:disabled {
   gap: 10px;
 }
 .calendar-grid {
-  border: 1px solid #211f1a30;
+  border: 1px solid var(--ink, #181614);
 }
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   background: #e8e1d5;
-  border-bottom: 1px solid #211f1a30;
+  border-bottom: 1px solid var(--ink, #181614);
 }
 .calendar-weekdays > span {
   font-size: 10px;
@@ -1097,8 +1107,8 @@ button:disabled {
 }
 .calendar-day {
   min-height: 128px;
-  border-right: 1px solid #211f1a20;
-  border-bottom: 1px solid #211f1a20;
+  border-right: 1px solid var(--ink, #181614);
+  border-bottom: 1px solid var(--ink, #181614);
   padding: 9px;
   min-width: 0;
 }
@@ -1131,7 +1141,7 @@ button:disabled {
 .calendar-event {
   display: flex;
   flex-direction: column;
-  background: #211f1a;
+  background: var(--ink, #181614);
   color: #fff;
   font-size: 10px;
   line-height: 1.3;
@@ -1166,7 +1176,7 @@ button:disabled {
   gap: 30px;
   align-items: center;
   padding: 23px 0;
-  border-top: 1px solid #211f1a30;
+  border-top: 1px solid var(--ink, #181614);
 }
 .agenda-event > svg {
   margin-left: auto;
@@ -1305,7 +1315,7 @@ button:disabled {
   border: 1px solid #fff8;
   border-radius: 50%;
   gap: 8px;
-  background: #15141188;
+  background: var(--ink, #181614);
   color: white;
   backdrop-filter: blur(10px);
 }
@@ -1475,7 +1485,7 @@ button:disabled {
   bottom: 30px;
   border-radius: 50%;
   padding: 28px;
-  background: #1c1b17;
+  background: var(--ink, #181614);
   color: var(--accent);
   border: 1px solid #f2eee535;
   transform: rotate(-10deg);
@@ -1506,7 +1516,7 @@ button:disabled {
   letter-spacing: -0.04em;
 }
 .hours-block {
-  border-top: 1px solid #211f1a30;
+  border-top: 1px solid var(--ink, #181614);
   margin-top: 40px;
   padding-top: 25px;
 }
@@ -1536,7 +1546,7 @@ button:disabled {
   flex-wrap: wrap;
 }
 .hours-list dt > span {
-  background: #211f1a;
+  background: var(--ink, #181614);
   color: white;
   font-size: 8px;
   padding: 3px 7px;
@@ -1565,7 +1575,7 @@ button:disabled {
   color: #7c7468;
 }
 .contact-links {
-  border-top: 1px solid #211f1a30;
+  border-top: 1px solid var(--ink, #181614);
   padding-top: 25px;
   margin-top: 25px;
   display: flex;
@@ -1589,7 +1599,7 @@ button:disabled {
   max-height: 660px;
   background: #e1dccf;
   overflow: hidden;
-  border: 1px solid #211f1a30;
+  border: 1px solid var(--ink, #181614);
 }
 .map-link iframe {
   border: 0;
@@ -1609,11 +1619,11 @@ button:disabled {
   justify-content: space-between;
   gap: 20px;
   align-items: center;
-  background: #211f1a;
+  background: var(--ink, #181614);
   color: #f2eee5;
   padding: 20px;
   font-size: 10px;
-  box-shadow: 0 3px 12px #0002;
+  box-shadow: 0 3px 12px var(--ink, #181614);
 }
 .map-caption > span {
   display: flex;
@@ -1665,7 +1675,7 @@ button:disabled {
   object-fit: cover;
 }
 .custom-callout {
-  background: #232019;
+  background: var(--ink, #181614);
 }
 .custom-page-intro > p:not(.eyebrow) {
   max-width: 650px;
@@ -2013,10 +2023,10 @@ button:disabled {
   .scene-shade {
     background: linear-gradient(
       0deg,
-      #0b0b09e0 0%,
-      #0b0b0952 30%,
+      var(--ink, #181614) 0%,
+      var(--ink, #181614) 30%,
       transparent 60%,
-      #0b0b093d
+      var(--ink, #181614)
     );
   }
   .entry-strip {
@@ -2121,7 +2131,7 @@ button:disabled {
     justify-content: space-between;
     align-items: stretch;
     padding: 0 12px;
-    background: #24211a;
+    background: var(--ink, #181614);
     border-top: 1px solid #f2eee526;
     border-bottom: 1px solid #f2eee526;
   }
@@ -2154,7 +2164,12 @@ button:disabled {
     filter: brightness(0.68);
   }
   .space-shade {
-    background: linear-gradient(0deg, #0e0d0bf2, #0e0d0b6b 65%, #0e0d0b2b);
+    background: linear-gradient(
+      0deg,
+      var(--ink, #181614),
+      var(--ink, #181614) 65%,
+      var(--ink, #181614)
+    );
   }
   .space-content {
     padding: 30px 24px 70px;
@@ -2745,7 +2760,7 @@ button:disabled {
   bottom: 18px;
   left: 17px;
   background: #f2eee5;
-  color: #211f1a;
+  color: var(--ink, #181614);
   padding: 6px 10px;
   font-size: 9px;
   letter-spacing: 0.06em;

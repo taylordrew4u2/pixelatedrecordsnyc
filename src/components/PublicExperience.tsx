@@ -1431,7 +1431,7 @@ function contrastInk(hex: string) {
     .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
   const luminance =
     0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
-  return luminance > 0.179 ? "#111111" : "#ffffff";
+  return luminance > 0.179 ? "#181614" : "#ffffff";
 }
 
 export function PublicExperience({
@@ -1469,7 +1469,8 @@ export function PublicExperience({
   const sampled = photoColors[sceneImage as keyof typeof photoColors];
   const style = {
     "--photo-paper": sampled?.paper || content.brand.foreground,
-    "--photo-ink": sampled?.ink || content.brand.background,
+    "--ink": content.brand.background,
+    "--photo-ink": content.brand.background,
     "--photo-accent": sampled?.accent || content.brand.accent,
     "--accent-ink": contrastInk(content.brand.accent),
     "--accent": content.brand.accent,

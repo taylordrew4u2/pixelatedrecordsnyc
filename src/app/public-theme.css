@@ -2,7 +2,7 @@
    heading family and button shape through the Studio. */
 .public-site {
   --paper: #f2ecdf;
-  --ink: #171614;
+  --ink: #181614;
   --muted: #bdb5a7;
   --rule: color-mix(in srgb, var(--fg) 20%, transparent);
   --gutter: clamp(20px, 4vw, 64px);
@@ -55,7 +55,7 @@
 .public-site .cream-section {
   background: var(--paper);
   color: var(--ink);
-  --rule: color-mix(in srgb, var(--ink) 20%, transparent);
+  --rule: var(--ink);
 }
 .public-site :focus-visible {
   outline-color: var(--accent);
@@ -194,7 +194,11 @@
   filter: none;
 }
 .public-site .scene-shade {
-  background: linear-gradient(180deg, #1716140a 50%, #17161455 100%);
+  background: linear-gradient(
+    180deg,
+    var(--ink, #181614) 50%,
+    var(--ink, #181614) 100%
+  );
 }
 .public-site .phase-day .scene-photo {
   filter: brightness(0.93) saturate(0.86) contrast(1.04) sepia(0.08);
@@ -209,7 +213,7 @@
   filter: brightness(0.9) saturate(0.86) contrast(1.04) sepia(0.08);
 }
 .public-site .interior-scene .scene-shade {
-  background: linear-gradient(0deg, #17161440, transparent 45%);
+  background: linear-gradient(0deg, var(--ink, #181614), transparent 45%);
 }
 .public-site .window-light {
   animation-name: venue-light;
@@ -259,7 +263,7 @@
   min-height: 44px;
   padding: 10px 14px;
   border: 1px solid #f2ecdf60;
-  background: #171614bd;
+  background: var(--ink, #181614);
   color: var(--paper);
   border-radius: var(--button-radius);
   font-size: 11px;
@@ -294,7 +298,7 @@
   max-height: 780px;
 }
 .public-site .room-hotspot .hotspot-link {
-  box-shadow: 0 4px 24px #0004;
+  box-shadow: 0 4px 24px var(--ink, #181614);
 }
 
 /* Booth and shop use the same photo/caption structure as the bar. */
