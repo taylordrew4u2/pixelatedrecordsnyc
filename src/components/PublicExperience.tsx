@@ -1194,6 +1194,14 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
   const menuDialog = useRef<HTMLDialogElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
   useEffect(() => {
+    const openLinkedMenu = () => {
+      if (window.location.hash === "#drinks") setMenuOpen(true);
+    };
+    openLinkedMenu();
+    window.addEventListener("hashchange", openLinkedMenu);
+    return () => window.removeEventListener("hashchange", openLinkedMenu);
+  }, []);
+  useEffect(() => {
     const dialog = menuDialog.current;
     if (!dialog) return;
     if (menuOpen) {
@@ -1230,7 +1238,7 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
               aria-controls="bar-menu-dialog"
               onClick={() => setMenuOpen(true)}
             >
-              The menu <ArrowUpRight size={17} />
+              Drinks menu <ArrowUpRight size={17} />
             </button>
           </div>
         </div>
@@ -1247,7 +1255,7 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
       >
         <section id="drinks" className="bar-menu">
           <div className="bar-menu-top">
-            <h2 id="bar-menu-title">The bar menu</h2>
+            <h2 id="bar-menu-title">Drinks menu</h2>
             <button
               type="button"
               className="icon-button"
@@ -1260,21 +1268,40 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
           <p className="bar-menu-intro">{content.bar.intro}</p>
           {categories.length ? (
             <>
-              <nav className="category-nav" aria-label="Drink categories">
-                {categories.map((category) => (
-                  <a key={category.id} href={`#category-${category.id}`}>
-                    {category.title}
-                  </a>
-                ))}
-              </nav>
+              <label className="menu-category-picker">
+                <span>Jump to</span>
+                <select
+                  defaultValue=""
+                  onChange={(event) => {
+                    const section = document.getElementById(
+                      `category-${event.target.value}`,
+                    );
+                    section?.scrollIntoView({ block: "start" });
+                    section?.focus({ preventScroll: true });
+                  }}
+                >
+                  <option value="" disabled>
+                    Choose a drink category
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <div className="menu-categories">
                 {categories.map((category) => (
                   <section
                     key={category.id}
                     id={`category-${category.id}`}
                     className="drink-category"
+                    tabIndex={-1}
+                    aria-labelledby={`category-title-${category.id}`}
                   >
-                    <h3>{category.title}</h3>
+                    <h3 id={`category-title-${category.id}`}>
+                      {category.title}
+                    </h3>
                     {category.description && (
                       <p className="category-description">
                         {category.description}

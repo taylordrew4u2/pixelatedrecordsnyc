@@ -239,7 +239,7 @@
   transform: translateY(38px);
 }
 .public-site .bar-menu-dialog {
-  width: min(620px, calc(100vw - 40px));
+  width: min(960px, calc(100vw - 32px));
   max-height: calc(100svh - 48px);
   margin: auto;
   padding: 0;
@@ -283,10 +283,106 @@
   max-width: none;
 }
 .public-site .bar-menu-dialog .menu-categories {
-  grid-template-columns: 1fr;
-  gap: 32px;
+  display: block;
+  columns: 2;
+  column-gap: 48px;
+}
+.public-site .bar-menu-dialog .bar-menu-top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 58px;
+  background: var(--ink, #181614);
+}
+.public-site
+  .bar-menu-dialog
+  :is(.bar-menu-intro, .category-description, .drink-item p, .menu-note) {
+  color: var(--photo-paper);
+  font-size: 15px;
+  line-height: 1.55;
+  opacity: 1;
+  white-space: pre-line;
+}
+.public-site .bar-menu-dialog .menu-note {
+  font-size: 14px;
+}
+.public-site .menu-category-picker {
+  position: sticky;
+  top: 58px;
+  z-index: 2;
+  min-height: 60px;
+  padding: 8px 0;
+  background: var(--ink, #181614);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 32px;
+  font-size: 14px;
+}
+.public-site .menu-category-picker select {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+  flex: 1;
+  border: 1px solid var(--photo-paper);
+  border-radius: 3px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 16px;
+  background: var(--ink, #181614);
+  color: var(--photo-paper);
+}
+.public-site .bar-menu-dialog .drink-category {
+  scroll-margin-top: 130px;
+  break-inside: avoid-column;
+  margin-bottom: 36px;
+}
+.public-site .bar-menu-dialog .drink-category:focus-visible {
+  outline: 1px solid var(--photo-paper);
+  outline-offset: 6px;
+}
+.public-site .bar-menu-dialog .drink-category > h3 {
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: -0.02em;
+  padding-bottom: 14px;
+}
+.public-site .bar-menu-dialog .drink-item {
+  padding: 16px 0;
+  gap: 20px;
+}
+.public-site .bar-menu-dialog .drink-item > div {
+  min-width: 0;
+}
+.public-site .bar-menu-dialog .drink-item h4 {
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+.public-site .bar-menu-dialog .drink-item p {
+  max-width: none;
+}
+.public-site .bar-menu-dialog .drink-item > span {
+  font-size: 17px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
 }
 @media (max-width: 760px) {
+  .public-site .bar-menu-dialog .menu-categories {
+    columns: 1;
+  }
+  .public-site
+    .bar-menu-dialog
+    :is(.bar-menu-intro, .category-description, .drink-item p) {
+    font-size: 16px;
+  }
   .public-site.is-immersive .site-header {
     height: 78px;
     padding: 18px 20px;

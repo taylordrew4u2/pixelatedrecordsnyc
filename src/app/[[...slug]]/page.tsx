@@ -8,6 +8,7 @@ import type { SiteContent } from "@/lib/types";
 import { enhancedPhoto } from "@/lib/photo-assets";
 import {
   businessStructuredData,
+  eventStructuredData,
   serializeStructuredData,
 } from "@/lib/site-seo";
 export const dynamic = "force-dynamic";
@@ -41,8 +42,12 @@ export async function generateMetadata({
     ? `${event.title} | ${content.brand.name}`
     : page?.seoTitle ||
       `${page?.title.replace(/\n/g, " ") || ""} | ${content.brand.name}`;
-  const description =
-    event?.description || page?.seoDescription || page?.description;
+  const description = event
+    ? `${event.title} at ${content.brand.name} in ${content.location.neighborhood}. ${event.description}`
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 200)
+    : page?.seoDescription || page?.description;
   const source = event?.image || page?.shareImage || content.brand.mark;
   const image = enhancedPhoto(source)?.src || source;
   const canonical = `/${route.slug?.map(encodeURIComponent).join("/") || ""}`;
@@ -98,6 +103,9 @@ export default async function Route({ params, searchParams }: Props) {
       : undefined;
   if (id === "events" && route.slug?.[1] && !event) notFound();
   const nonce = (await headers()).get("x-nonce") || undefined;
+  const origin = process.env.SITE_URL || "http://localhost:3000";
+  const eventData =
+    !preview && event ? eventStructuredData(event, content, origin) : null;
   return (
     <>
       {!preview && (id === "home" || id === "location") && (
@@ -111,6 +119,15 @@ export default async function Route({ params, searchParams }: Props) {
                 process.env.SITE_URL || "http://localhost:3000",
               ),
             ),
+          }}
+        />
+      )}
+      {eventData && (
+        <script
+          type="application/ld+json"
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: serializeStructuredData(eventData),
           }}
         />
       )}

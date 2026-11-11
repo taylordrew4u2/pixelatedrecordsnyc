@@ -1,5 +1,6 @@
 import type { SiteContent, Page, Asset } from "./types";
 import { applyEditorialDefaults } from "./site-seo";
+import { confirmedBarMenu } from "./drink-menu";
 
 const photo = (id: string, label: string, alt: string): Asset => ({
   id,
@@ -379,6 +380,6 @@ export const legacySeedContent: SiteContent = {
 };
 
 export const seedContent = applyEditorialDefaults(
-  legacySeedContent,
+  { ...legacySeedContent, bar: confirmedBarMenu },
   legacySeedContent,
 );
