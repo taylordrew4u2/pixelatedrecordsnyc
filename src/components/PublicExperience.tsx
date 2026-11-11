@@ -241,12 +241,7 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
         }}
       >
         <div className="menu-top">
-          <img
-            src={safeHref(content.brand.logoDark, "/assets/logo-dark.png")}
-            width="225"
-            height="65"
-            alt={content.brand.name}
-          />
+          <h2>Look around</h2>
           <button
             className="icon-button"
             onClick={close}
@@ -348,9 +343,10 @@ function Scene({
       const width = parent.clientWidth,
         height = parent.clientHeight;
       const mobile = width < 760;
-      const scale = exterior
-        ? Math.min(width / image.naturalWidth, height / image.naturalHeight)
-        : Math.max(width / image.naturalWidth, height / image.naturalHeight);
+      const scale = Math.max(
+        width / image.naturalWidth,
+        height / image.naturalHeight,
+      );
       const w = image.naturalWidth * scale,
         h = image.naturalHeight * scale;
       setGeometry({
@@ -358,7 +354,7 @@ function Scene({
         height: h,
         left: !exterior ? 0 : (width - w) / 2,
         top: exterior
-          ? (height - h) / 2
+          ? 0
           : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
       });
     };
@@ -380,7 +376,7 @@ function Scene({
   );
   const enhanced = enhancedPhoto(scene.image);
   const photo = safeHref(enhanced?.src || scene.image, "");
-  // The exterior is contained on phones; the interior stays full resolution
+  // The photo fills the available canvas. The interior stays full resolution
   // because visitors can pan across its much wider rendered image.
   const sourceSet =
     exterior && enhanced
@@ -1709,6 +1705,37 @@ export function PublicExperience({
   preview: boolean;
   initialNow: string;
 }) {
+  const frame = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const scroll = frame.current?.querySelector<HTMLElement>(".page-scroll");
+    if (scroll) scroll.scrollTop = 0;
+  }, [pageId, eventId]);
+  useEffect(() => {
+    const element = frame.current;
+    if (!element) return;
+    const header = element.querySelector<HTMLElement>(".site-header");
+    const footer = element.querySelector<HTMLElement>(".venue-footer");
+    const banner = element.querySelector<HTMLElement>(".preview-banner");
+    const measure = () => {
+      element.style.setProperty(
+        "--site-header-height",
+        `${header?.offsetHeight || 0}px`,
+      );
+      element.style.setProperty(
+        "--site-footer-height",
+        `${footer?.offsetHeight || 0}px`,
+      );
+      element.style.setProperty(
+        "--preview-height",
+        `${banner?.offsetHeight || 0}px`,
+      );
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    for (const part of [header, footer, banner])
+      if (part) observer.observe(part);
+    return () => observer.disconnect();
+  }, [preview]);
   const now = useClock(initialNow),
     [paused, setPaused] = useState(false),
     page = content.pages.find((p) => p.id === pageId)!;
@@ -1727,7 +1754,9 @@ export function PublicExperience({
       ? content.scenes.exterior.image
       : pageId === "inside"
         ? content.scenes.interior.image
-        : page.image;
+        : page.image ||
+          content.pages.find((entry) => entry.id === "booth")?.image ||
+          content.scenes.interior.image;
   const sampled = photoColors[sceneImage as keyof typeof photoColors];
   const style = {
     "--photo-paper": sampled?.paper || content.brand.foreground,
@@ -1791,7 +1820,8 @@ export function PublicExperience({
     <PreviewContext.Provider value={preview}>
       <ContentContext.Provider value={content}>
         <div
-          className={`public-site page-${pageId} ${immersive ? "is-immersive" : ""} ${preview ? "is-preview" : ""}`}
+          ref={frame}
+          className={`public-site photo-layout page-${pageId} ${immersive ? "is-immersive" : ""} ${preview ? "is-preview" : ""}`}
           style={style}
           data-motion={paused ? "paused" : "playing"}
         >
@@ -1807,8 +1837,15 @@ export function PublicExperience({
             </div>
           )}
           <SiteHeader content={content} now={now} />
-          <main id="main-content">{body}</main>
-          <Footer content={content} immersive={immersive} />
+          <main id="main-content">
+            {pageId !== "home" && pageId !== "inside" && (
+              <div className="page-photo-backdrop" aria-hidden="true">
+                <Photo src={sceneImage} alt="" priority />
+              </div>
+            )}
+            <div className="page-scroll">{body}</div>
+          </main>
+          <Footer content={content} immersive />
         </div>
       </ContentContext.Provider>
     </PreviewContext.Provider>

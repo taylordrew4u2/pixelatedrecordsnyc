@@ -883,10 +883,6 @@
   }
   .public-site.is-immersive .exterior-scene .scene-plane {
     position: relative;
-    width: 100% !important;
-    height: auto !important;
-    left: 0 !important;
-    top: 0 !important;
     transform: none !important;
   }
   .public-site.is-immersive .exterior-scene .scene-photo {

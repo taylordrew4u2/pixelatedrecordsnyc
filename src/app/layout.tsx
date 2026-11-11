@@ -9,6 +9,7 @@ import "@fontsource/barlow-condensed/600.css";
 import "./globals.css";
 import "./public-theme.css";
 import "./pov-theme.css";
+import "./photo-layout.css";
 // A fresh request nonce is required for public pages and the admin UI alike.
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
