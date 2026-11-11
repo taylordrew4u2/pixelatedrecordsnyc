@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
+import photoColors from "@/lib/photo-colors.json";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -440,7 +441,7 @@ function Home({
           </span>
         </button>
       </section>
-      <section className="scene-caption">
+      <section className="scene-caption pov-visually-hidden">
         <div>
           <Eyebrow>{page.eyebrow}</Eyebrow>
           <h1 id="home-title">{page.title}</h1>
@@ -462,7 +463,7 @@ function Interior({
 }) {
   return (
     <>
-      <div className="room-intro">
+      <div className="room-intro pov-visually-hidden">
         <div>
           <Eyebrow>{page.eyebrow}</Eyebrow>
           <h1>{page.title}</h1>
@@ -521,27 +522,26 @@ function SpacePage({
         </div>
         <div className="space-content">
           <BackToRoom content={content} />
-          <Eyebrow>{page.eyebrow}</Eyebrow>
-          <h1>{page.title}</h1>
+          <h1>{page.eyebrow || page.title}</h1>
           <p>{page.description}</p>
           <div className="button-row">
             {kind === "booth" ? (
               <>
-                <A href="/events" className="button primary">
+                <A href="/events" className="pov-link">
                   {content.navigation.find((n) => n.href === "/events")
                     ?.label || "Events"}
                   <ArrowUpRight size={18} />
                 </A>
-                <BookingButton content={content} className="button outline" />
+                <BookingButton content={content} className="pov-link" />
               </>
             ) : (
               <>
-                <A href="/about" className="button primary">
+                <A href="/about" className="pov-link">
                   {content.navigation.find((n) => n.href === "/about")?.label ||
                     "About Us"}
                   <ArrowUpRight size={18} />
                 </A>
-                <A href="/records" className="button outline">
+                <A href="/records" className="pov-link">
                   {content.navigation.find((n) => n.href === "/records")
                     ?.label || "Records"}
                   <Disc3 size={18} />
@@ -1000,22 +1000,18 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
   );
   return (
     <>
-      <section className="split-hero cream-section">
-        <div className="split-copy">
-          <BackToRoom content={content} />
-          <Eyebrow>{page.eyebrow}</Eyebrow>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-          <a href="#drinks" className="button dark-button">
-            The menu
-            <ArrowDown size={17} />
-          </a>
-        </div>
-        <div className="split-image">
+      <section className="space-hero space-bar">
+        <div className="space-photo">
           <Photo src={page.image} alt={page.imageAlt} priority />
-          <div className="image-stamp">
-            <Wine strokeWidth={1} />
-            <span>{content.brand.name}</span>
+        </div>
+        <div className="space-content">
+          <BackToRoom content={content} />
+          <h1>{page.eyebrow || page.title}</h1>
+          <p>{page.description}</p>
+          <div className="button-row">
+            <a href="#drinks" className="pov-link">
+              The menu <ArrowDown size={17} />
+            </a>
           </div>
         </div>
       </section>
@@ -1461,7 +1457,20 @@ export function PublicExperience({
     setPaused(value);
     localStorage.setItem("pixelated-motion", value ? "paused" : "playing");
   };
+  const immersive = ["home", "inside", "booth", "bar", "record-shop"].includes(
+    pageId,
+  );
+  const sceneImage =
+    pageId === "home"
+      ? content.scenes.exterior.image
+      : pageId === "inside"
+        ? content.scenes.interior.image
+        : page.image;
+  const sampled = photoColors[sceneImage as keyof typeof photoColors];
   const style = {
+    "--photo-paper": sampled?.paper || content.brand.foreground,
+    "--photo-ink": sampled?.ink || content.brand.background,
+    "--photo-accent": sampled?.accent || content.brand.accent,
     "--accent-ink": contrastInk(content.brand.accent),
     "--accent": content.brand.accent,
     "--bg": content.brand.background,
@@ -1525,7 +1534,7 @@ export function PublicExperience({
     <PreviewContext.Provider value={preview}>
       <ContentContext.Provider value={content}>
         <div
-          className={`public-site page-${pageId} ${preview ? "is-preview" : ""}`}
+          className={`public-site page-${pageId} ${immersive ? "is-immersive" : ""} ${preview ? "is-preview" : ""}`}
           style={style}
           data-motion={paused ? "paused" : "playing"}
         >

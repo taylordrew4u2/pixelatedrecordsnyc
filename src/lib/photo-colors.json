@@ -1,0 +1,77 @@
+{
+  "/assets/bar-corner.webp": {
+    "paper": "#efefdf",
+    "ink": "#171815",
+    "accent": "#c61e47"
+  },
+  "/assets/bar-detail.webp": {
+    "paper": "#f3ecde",
+    "ink": "#181614",
+    "accent": "#cb2922"
+  },
+  "/assets/bar-shelves.webp": {
+    "paper": "#f1ece0",
+    "ink": "#181614",
+    "accent": "#d41a24"
+  },
+  "/assets/bar.webp": {
+    "paper": "#f1ece0",
+    "ink": "#161714",
+    "accent": "#cf1d2b"
+  },
+  "/assets/cocktail.webp": {
+    "paper": "#e6e3e6",
+    "ink": "#181614",
+    "accent": "#c10f00"
+  },
+  "/assets/coffee-detail.webp": {
+    "paper": "#dadedf",
+    "ink": "#181614",
+    "accent": "#c53924"
+  },
+  "/assets/coffee.webp": {
+    "paper": "#f3e9e1",
+    "ink": "#181614",
+    "accent": "#b74d0f"
+  },
+  "/assets/dj-booth.webp": {
+    "paper": "#f3ebe0",
+    "ink": "#181614",
+    "accent": "#cd2129"
+  },
+  "/assets/interior.webp": {
+    "paper": "#f1edde",
+    "ink": "#181614",
+    "accent": "#d11d2d"
+  },
+  "/assets/record-bins.webp": {
+    "paper": "#f1ece0",
+    "ink": "#181614",
+    "accent": "#c32d1e"
+  },
+  "/assets/record-shop.webp": {
+    "paper": "#f2eadf",
+    "ink": "#181614",
+    "accent": "#c2342b"
+  },
+  "/assets/room.webp": {
+    "paper": "#f3ecde",
+    "ink": "#181614",
+    "accent": "#c72229"
+  },
+  "/assets/shop-window.webp": {
+    "paper": "#eee8df",
+    "ink": "#181614",
+    "accent": "#c92e2c"
+  },
+  "/assets/sticker-door.webp": {
+    "paper": "#f3ecde",
+    "ink": "#181614",
+    "accent": "#c12933"
+  },
+  "/assets/storefront.webp": {
+    "paper": "#f1edde",
+    "ink": "#181614",
+    "accent": "#bb363a"
+  }
+}

@@ -8,6 +8,7 @@ import "@fontsource/dm-sans/600.css";
 import "@fontsource/barlow-condensed/600.css";
 import "./globals.css";
 import "./public-theme.css";
+import "./pov-theme.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || "http://localhost:3000"),
   title: "Pixelated Records | Vinyl, Bar & Events in Ridgewood",

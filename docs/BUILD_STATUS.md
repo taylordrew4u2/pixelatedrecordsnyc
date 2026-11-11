@@ -4,7 +4,7 @@
 
 The website is public at https://pixelatedrecordsnyc.netlify.app. The owner approved public access and private admin credentials. The supplied venue photos and official logo remain in use. Records are on the left, the booth is ahead, and the bar is on the right. Booking uses the shared Google Form.
 
-The November 10, 2026 (New York time) redesign uses condensed headings, warm ivory, charcoal, and logo red. Venue photos receive one restrained warm treatment. Storefront copy sits below its photo, booth/shop/bar use consistent photo-and-copy layouts, repeated destination rows were removed, and the footer now contains contact details. Mobile room navigation appears once beneath the image.
+The November 11, 2026 update presents the storefront, interior, bar, booth and record shop as full-viewport photographic POV scenes. Original photos keep their natural colors without CSS grading. Compact floating labels replace large rectangular controls and split photo/copy layouts. Each supplied photo has exact RGB samples recorded in `src/lib/photo-colors.json`; scene text and controls use those samples. Samples occur in both full and small photo assets. Uploaded replacements fall back to the owner’s configured palette. Mobile room navigation appears once in a compact overlay. Repeated destination rows remain removed, and the footer contains contact details.
 
 ## Deployment and credentials
 
