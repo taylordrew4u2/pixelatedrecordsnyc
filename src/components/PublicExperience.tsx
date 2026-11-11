@@ -159,9 +159,17 @@ function BookingButton({
 function useClock(initialNow: string) {
   const [now, setNow] = useState(new Date(initialNow));
   useEffect(() => {
-    setNow(new Date());
-    const timer = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(timer);
+    const refresh = () => setNow(new Date());
+    refresh();
+    const timer = setInterval(refresh, 30_000);
+    // Mobile browsers suspend timers in background tabs and the app switcher.
+    window.addEventListener("pageshow", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("pageshow", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
   }, []);
   return now;
 }
@@ -468,7 +476,8 @@ function Scene({
               style={
                 {
                   "--sky-daylight": sky.daylight,
-                  "--sky-warmth": sky.warmth,
+                  "--sky-top": sky.top,
+                  "--sky-horizon-color": sky.horizon,
                   "--sky-stars": sky.stars,
                 } as CSSProperties
               }
@@ -483,7 +492,6 @@ function Scene({
                   alt=""
                 />
               </picture>
-              <div className="sky-warmth" />
               <div className="sky-stars" />
             </div>
           )}

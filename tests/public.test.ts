@@ -20,6 +20,39 @@ function render(content: SiteContent, pageId = "home", preview = false) {
   );
 }
 
+test("homepage renders the time-driven sky and matching mobile photo in every phase", () => {
+  for (const [initialNow, phase] of [
+    ["2026-11-11T06:40:00-05:00", "sunrise"],
+    ["2026-11-11T12:00:00-05:00", "day"],
+    ["2026-11-11T16:45:00-05:00", "sunset"],
+    ["2026-11-11T22:00:00-05:00", "night"],
+  ]) {
+    const html = renderToStaticMarkup(
+      React.createElement(PublicExperience, {
+        content: fixture(),
+        pageId: "home",
+        preview: false,
+        initialNow,
+      }),
+    );
+    assert.ok(html.includes(`data-sky-phase="${phase}"`));
+    assert.match(
+      html,
+      /--sky-top:#[0-9a-f]{6};--sky-horizon-color:#[0-9a-f]{6}/,
+    );
+    assert.equal(
+      (html.match(/srcSet="\/assets\/storefront-street-mobile.webp"/g) || [])
+        .length,
+      2,
+    );
+    if (phase === "night")
+      assert.match(
+        html,
+        /--sky-daylight:0;--sky-top:#181614;--sky-horizon-color:#181614;--sky-stars:1/,
+      );
+  }
+});
+
 function decode(value: string) {
   return value
     .replace(/&amp;/g, "&")

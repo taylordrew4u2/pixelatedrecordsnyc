@@ -11,11 +11,26 @@ test("New York sky follows sunrise, day, sunset and night", () => {
   ]) {
     const sky = storefrontSky(new Date(instant));
     assert.equal(sky.phase, phase);
-    for (const opacity of [sky.daylight, sky.warmth, sky.stars])
+    for (const opacity of [sky.daylight, sky.stars])
       assert.ok(opacity >= 0 && opacity <= 1);
     if (phase === "night") assert.equal(sky.daylight, 0);
     if (phase === "day") assert.equal(sky.daylight, 1);
   }
+});
+
+test("daylight changes color before sunset instead of retaining a fixed blue photo", () => {
+  const noon = storefrontSky(new Date("2026-11-11T12:00:00-05:00"));
+  const afternoon = storefrontSky(new Date("2026-11-11T14:30:00-05:00"));
+  const sunset = storefrontSky(new Date("2026-11-11T16:45:00-05:00"));
+  const night = storefrontSky(new Date("2026-11-11T22:00:00-05:00"));
+  assert.equal(noon.phase, "day");
+  assert.equal(afternoon.phase, "day");
+  assert.notEqual(noon.top, afternoon.top);
+  assert.notEqual(afternoon.horizon, sunset.horizon);
+  assert.equal(night.top, "#181614");
+  assert.equal(night.horizon, "#181614");
+  assert.equal(night.daylight, 0);
+  assert.equal(night.stars, 1);
 });
 
 test("sunset follows the season instead of a fixed clock-hour cutoff", () => {

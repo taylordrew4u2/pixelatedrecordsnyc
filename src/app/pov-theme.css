@@ -646,17 +646,19 @@
   pointer-events: none;
 }
 .storefront-sky {
-  background: var(--ink);
+  isolation: isolate;
+  background: linear-gradient(
+    var(--sky-top),
+    var(--sky-horizon-color) var(--sky-horizon-height, 10.5%)
+  );
 }
 .storefront-sky .sky-day {
   width: 100%;
   height: 100%;
   object-fit: fill;
-  opacity: var(--sky-daylight);
-}
-.storefront-sky .sky-warmth {
-  background: linear-gradient(#776d94 0%, #edb78f 10.5%);
-  opacity: var(--sky-warmth);
+  /* Preserve the photographed clouds while the sky color follows the sun. */
+  mix-blend-mode: luminosity;
+  opacity: calc(var(--sky-daylight) * 0.65);
 }
 .storefront-sky .sky-stars {
   background:
@@ -1215,6 +1217,7 @@
     mask-image: none !important;
   }
   .has-street-portrait .storefront-sky {
+    --sky-horizon-height: 35%;
     z-index: 1;
     clip-path: polygon(
       0% 0%,
@@ -1248,8 +1251,5 @@
       5.469% 1.172%,
       0% 1.432%
     );
-  }
-  .has-street-portrait .sky-warmth {
-    background: linear-gradient(#776d94 0%, #edb78f 35%);
   }
 }
