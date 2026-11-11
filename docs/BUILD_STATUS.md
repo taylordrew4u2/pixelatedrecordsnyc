@@ -1,8 +1,8 @@
 # Build and verification status
 
-## Pending mobile, SEO and badge update
+## Published mobile, SEO, photo and badge update
 
-The November 11 audit follow-up is implemented in source and is verified in deployment preview `6af4ab317e0efb465276f950` at https://6af4ab317e0efb465276f950--pixelatedrecordsnyc.netlify.app/. Production still runs `6af48b8e075ed0cb2606ec14`. Automatic approval review blocked production deployment because that command would re-send the existing admin password hash and session secret to Netlify. The production site, secrets, and stored content have not been changed by this update.
+The November 11 audit follow-up and approved photo edit are live in production deployment `6af4add3f4df0accd6bd45e7` at https://pixelatedrecordsnyc.netlify.app/. The owner explicitly approved re-sending the existing admin password hash and session secret to Netlify. The full production build/deploy completed with exit code 0; the existing secrets were supplied as masked Functions-only deploy variables. The release was first verified in preview `6af4ab317e0efb465276f950`.
 
 - Edited the storefront photo with clean paving and matching closed black blinds behind the glass; originals are retained.
 - Removed forced vertical centering on the phone homepage; the full storefront follows the header and the entrance remains below it. Removed reserved badge spacing from footers.
@@ -13,7 +13,11 @@ The November 11 audit follow-up is implemented in source and is verified in depl
 - The preview check caught local-only development credentials being included by the Netlify adapter. They differ from production secrets. They have been moved to `.env.development.local`, and a deployment guard rejects runtime-readable env files containing admin credentials. The replacement preview is built without those credentials.
 - All 55 tests, TypeScript, formatting and the production build pass. The full Netlify preview build/deploy completed with exit code 0. All ten public routes and `/admin` return 200; the private content API returns 401 anonymously. Document scripts carry matching request nonces, canonical URLs target the production site, and the home/location pages emit business structured data. Preview admin authentication is unconfigured, and no local environment file is bundled.
 
-The actual browser verified the badge is absent on desktop and at 447px, with no badge iframe. On the 447px homepage the header ends and the full photo begins at y=72; the image is 333px tall and uses the 153,950-byte responsive asset. There is no horizontal page overflow. Home → Inside → Bar → menu dialog, and Back to room → Leave → Home work. Panning reached the right edge (385px), disabled the right arrow, and kept the Bar link reachable. The booth photo, Tonight notice, Instagram link and upcoming-events state remain readable. No physical touch device was tested.
+Preview browser verification confirmed the badge is absent on desktop and at 447px, with no badge iframe. On the 447px homepage the header ends and the full photo begins at y=72; the image is 333px tall and uses the 153,950-byte responsive asset. There is no horizontal page overflow. Home → Inside → Bar → menu dialog, and Back to room → Leave → Home work. Panning reached the right edge (385px), disabled the right arrow, and kept the Bar link reachable. The booth photo, Tonight notice, Instagram link and upcoming-events state remain readable. No physical touch device was tested.
+
+Production verification: all ten public pages and `/admin` return 200; the private content endpoint returns 401 anonymously. The admin session-readiness endpoint reports configured persistent Netlify storage. All document scripts have matching CSP nonces, and the deployed storefront matches the approved image byte-for-byte. Published brand settings, navigation, assets, scenes, labels, events, location, booking and footer data match the pre-deploy public snapshot. Only the intended default SEO and notices are transformed on reads.
+
+A 447px live browser check confirmed the image begins immediately below the 72px header, uses the smaller responsive photo and has no horizontal page overflow or badge iframe. Come in → Inside → Leave → Home and the menu dialog work. Panning reached its 385px right edge. Desktop rendering was also checked. This release did not perform a password login or change stored editorial content.
 
 ## Live website
 
@@ -98,7 +102,7 @@ Earlier production checks are retained below for context.
 
 ## Platform presentation limitation
 
-On the current production deployment, the Free-plan Netlify badge remains enabled. Although Netlify's published documentation says it can be switched off, the site's API returned 422: “Removing the Netlify badge is not available on this plan.” No upgrade was enabled. The pending update uses the nonce-based CSP behavior documented by Netlify at https://docs.netlify.com/manage/projects/powered-by-netlify-badge/ to prevent its script from running, rather than a visitor-only dismissal.
+The project badge setting remains enabled because the Netlify API returned 422: “Removing the Netlify badge is not available on this plan.” The production site now prevents that injected script from running with a nonce-based CSP, using the behavior documented at https://docs.netlify.com/manage/projects/powered-by-netlify-badge/. Browser verification confirmed no badge iframe or visible badge. No paid upgrade or visitor-only dismissal was used.
 
 ## Content still needed
 
