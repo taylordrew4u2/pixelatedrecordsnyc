@@ -124,7 +124,7 @@ function Photo({
     /^\/assets\/[^/]+\.webp$/.test(src) && !src.includes("-small");
   return (
     <img
-      className={className}
+      className={`venue-photo ${className}`}
       src={safeHref(src, "")}
       srcSet={
         isBuiltIn
@@ -260,10 +260,6 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
             ))}
           </nav>
           <aside className="menu-aside">
-            <Photo
-              src={content.scenes.exterior.image}
-              alt={content.scenes.exterior.alt}
-            />
             <p className="eyebrow">{content.brand.descriptor}</p>
             <p>{content.location.address}</p>
             <BookingButton content={content} />
@@ -433,21 +429,6 @@ function Home({
           exterior
           paused={paused}
         />
-        <div className="hero-address">
-          <MapPin size={14} />
-          <A href="/location">{content.location.address}</A>
-        </div>
-        <div className="hero-copy">
-          <Eyebrow>{page.eyebrow}</Eyebrow>
-          <h1 id="home-title">{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-        <div className="hero-corner">
-          <span className="pixel-star" aria-hidden="true">
-            ✳
-          </span>
-          <span>{content.brand.descriptor}</span>
-        </div>
         <button
           className="motion-control"
           onClick={() => setPaused(!paused)}
@@ -459,67 +440,12 @@ function Home({
           </span>
         </button>
       </section>
-      <div className="entry-strip">
-        <span className="entry-message">{content.brand.descriptor}</span>
+      <section className="scene-caption">
         <div>
-          {[
-            ["/record-shop", "Record shop"],
-            ["/events", "Events"],
-            ["/bar", "Bar"],
-          ]
-            .filter(([href]) => destinationVisible(href, content))
-            .map(([href, label]) => (
-              <A href={href} key={href}>
-                {content.navigation.find((item) => item.href === href)?.label ||
-                  label}
-                <ArrowUpRight size={16} />
-              </A>
-            ))}
+          <Eyebrow>{page.eyebrow}</Eyebrow>
+          <h1 id="home-title">{page.title}</h1>
         </div>
-        <A href="/location" className="strip-location">
-          <MapPin size={14} />
-          {content.location.neighborhood}
-        </A>
-      </div>
-      <section className="home-explore section-wrap cream-section">
-        <div className="section-heading">
-          <div>
-            <Eyebrow>
-              {content.pages.find((p) => p.id === "inside")?.eyebrow}
-            </Eyebrow>
-            <h2>{content.pages.find((p) => p.id === "inside")?.title}</h2>
-          </div>
-          <p>{content.pages.find((p) => p.id === "inside")?.description}</p>
-        </div>
-        <div className="destination-grid">
-          {[
-            ["record-shop", "01", "records"],
-            ["booth", "02", "events"],
-            ["bar", "03", "drinks"],
-          ].map(([id, number, kind]) => {
-            const target = content.pages.find((p) => p.id === id && p.visible);
-            if (!target) return null;
-            return (
-              <A
-                key={id}
-                href={`/${id}`}
-                className={`destination-card destination-${kind}`}
-              >
-                <div className="destination-image">
-                  <Photo src={target.image} alt={target.imageAlt} />
-                  <span className="card-number">{number}</span>
-                  <span className="circle-arrow">
-                    <ArrowUpRight size={25} />
-                  </span>
-                </div>
-                <div className="destination-text">
-                  <span>{target.eyebrow}</span>
-                  <h3>{target.title.replace(/\n/g, " ")}</h3>
-                </div>
-              </A>
-            );
-          })}
-        </div>
+        <p>{page.description}</p>
       </section>
       <Sections sections={page.sections} content={content} />
     </>
@@ -536,24 +462,19 @@ function Interior({
 }) {
   return (
     <>
-      <section className="interior-hero">
+      <div className="room-intro">
+        <div>
+          <Eyebrow>{page.eyebrow}</Eyebrow>
+          <h1>{page.title}</h1>
+        </div>
+        <p>{page.description}</p>
+      </div>
+      <section className="interior-hero" aria-label="Explore Pixelated Records">
         <Scene
           content={content}
           scene={content.scenes.interior}
           paused={paused}
         />
-        <div className="room-heading">
-          <Eyebrow>{page.eyebrow}</Eyebrow>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-        <div className="room-guide">
-          <span>
-            ← {content.pages.find((p) => p.id === "record-shop")?.eyebrow}
-          </span>
-          <span>↑ {content.pages.find((p) => p.id === "booth")?.eyebrow}</span>
-          <span>{content.pages.find((p) => p.id === "bar")?.eyebrow} →</span>
-        </div>
       </section>
       <nav className="room-mobile-links" aria-label="Explore the room">
         {content.scenes.interior.hotspots
@@ -595,8 +516,9 @@ function SpacePage({
   return (
     <>
       <section className={`space-hero space-${kind}`}>
-        <Photo src={page.image} alt={page.imageAlt} priority />
-        <div className="space-shade" />
+        <div className="space-photo">
+          <Photo src={page.image} alt={page.imageAlt} priority />
+        </div>
         <div className="space-content">
           <BackToRoom content={content} />
           <Eyebrow>{page.eyebrow}</Eyebrow>
@@ -627,10 +549,6 @@ function SpacePage({
               </>
             )}
           </div>
-        </div>
-        <div className="space-stamp">
-          <Disc3 size={50} strokeWidth={1} />
-          <span>{content.brand.name}</span>
         </div>
       </section>
       <Sections sections={page.sections} content={content} />
@@ -1111,9 +1029,6 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
             <Eyebrow>{page.eyebrow}</Eyebrow>
             <h2>{content.bar.intro}</h2>
           </div>
-          <span className="pixel-star" aria-hidden="true">
-            ✳
-          </span>
         </div>
         {categories.length ? (
           <>
@@ -1471,29 +1386,10 @@ function BookingSection({ content }: { content: SiteContent }) {
 }
 function Footer({ content }: { content: SiteContent }) {
   return (
-    <footer className="site-footer section-wrap">
-      <div className="footer-top">
-        <div>
-          <A href="/" className="footer-logo">
-            <img
-              src={safeHref(content.brand.logoLight, "/assets/logo-light.png")}
-              alt={content.brand.name}
-              width="270"
-              height="79"
-            />
-          </A>
-          <p>{content.footer.tagline}</p>
-        </div>
-        <nav aria-label="Footer">
-          {content.navigation
-            .filter((n) => n.visible && destinationVisible(n.href, content))
-            .map((n) => (
-              <A key={n.id} href={n.href}>
-                {n.label}
-              </A>
-            ))}
-        </nav>
-        <div className="footer-address">
+    <footer className="venue-footer">
+      <div className="venue-footer-main">
+        <span className="venue-footer-name">{content.brand.name}</span>
+        <div className="venue-footer-links">
           <A href="/location">
             {content.location.address}
             <ArrowUpRight size={17} />
@@ -1506,7 +1402,7 @@ function Footer({ content }: { content: SiteContent }) {
           ))}
         </div>
       </div>
-      <div className="footer-bottom">
+      <div className="venue-footer-meta">
         <span>
           © {new Date().getFullYear()} {content.brand.name}
         </span>
@@ -1583,7 +1479,7 @@ export function PublicExperience({
     "--heading-font":
       content.brand.font === "serif"
         ? "Georgia, serif"
-        : "Space Grotesk, sans-serif",
+        : "Barlow Condensed, sans-serif",
   } as CSSProperties;
   const event = eventId ? content.events.find((e) => e.id === eventId) : null;
   let body: ReactNode;

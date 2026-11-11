@@ -1,0 +1,625 @@
+/* Shared record-sleeve art direction. The owner still controls the palette,
+   heading family and button shape through the Studio. */
+.public-site {
+  --paper: #f2ecdf;
+  --ink: #171614;
+  --muted: #bdb5a7;
+  --rule: color-mix(in srgb, var(--fg) 20%, transparent);
+  --gutter: clamp(20px, 4vw, 64px);
+  font-size: 15px;
+}
+.public-site h1,
+.public-site h2,
+.public-site h3,
+.public-site h4 {
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+.public-site h1,
+.public-site h2 {
+  text-transform: uppercase;
+}
+.public-site h1,
+.public-site .space-content h1,
+.public-site .split-copy h1,
+.public-site .events-intro .page-heading h1,
+.public-site .about-copy h1,
+.public-site .records-copy h1 {
+  font-size: clamp(44px, 5.2vw, 74px);
+  line-height: 0.98;
+}
+.public-site h2 {
+  font-size: clamp(32px, 3.5vw, 48px);
+  line-height: 1.04;
+}
+.public-site h3 {
+  font-size: 27px;
+  line-height: 1.12;
+}
+.public-site p {
+  line-height: 1.6;
+}
+.public-site .eyebrow {
+  font-size: 11px !important;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+.public-site .small-square {
+  width: 5px;
+  height: 5px;
+}
+.public-site .section-wrap {
+  padding: 64px var(--gutter);
+}
+.public-site .cream-section {
+  background: var(--paper);
+  color: var(--ink);
+  --rule: color-mix(in srgb, var(--ink) 20%, transparent);
+}
+.public-site :focus-visible {
+  outline-color: var(--accent);
+}
+.public-site ::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.public-site .dark-button {
+  background: var(--ink);
+  color: var(--paper);
+}
+.public-site .button,
+.public-site .hotspot-link {
+  min-height: 48px;
+  padding: 14px 19px;
+  gap: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  box-shadow: none;
+}
+.public-site .button:hover {
+  transform: none;
+}
+.public-site .button svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+.public-site .outline {
+  border-color: var(--rule) !important;
+}
+.public-site .text-link {
+  font-size: 13px;
+  min-height: 44px;
+}
+.public-site .back-link {
+  margin: 0 0 42px;
+  opacity: 1;
+  color: var(--muted);
+}
+.public-site .pixel-star {
+  color: var(--accent);
+  font-size: 40px;
+}
+.public-site .circle-arrow {
+  border-radius: var(--button-radius);
+}
+
+/* One quiet header; the menu is the sole global destination list. */
+.public-site .site-header {
+  height: 76px;
+  padding: 12px var(--gutter);
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+}
+.public-site .brand-link img {
+  width: 155px;
+  height: auto;
+}
+.public-site .header-location {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.public-site .menu-trigger {
+  font-size: 14px;
+  gap: 12px;
+  min-height: 44px;
+}
+.public-site main {
+  padding-top: 76px;
+}
+.public-site.is-preview main {
+  padding-top: 114px;
+}
+.public-site .nav-dialog {
+  width: min(100%, 650px);
+  padding: 28px 32px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.public-site .menu-top {
+  padding-bottom: 24px;
+}
+.public-site .menu-top img {
+  width: 155px;
+}
+.public-site .menu-content {
+  display: block;
+}
+.public-site .menu-link {
+  font-size: clamp(32px, 4vw, 46px);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-weight: 600;
+  padding: 13px 0;
+  gap: 20px;
+}
+.public-site .menu-number {
+  font-size: 11px;
+}
+.public-site .menu-aside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 28px;
+}
+.public-site .menu-aside .eyebrow {
+  display: none;
+}
+.public-site .menu-aside > p:not(.eyebrow) {
+  margin: 0;
+  max-width: 220px;
+  font-size: 13px;
+}
+.public-site .menu-aside .button {
+  margin: 0;
+}
+.public-site .menu-bottom {
+  margin-top: 26px;
+  font-size: 12px;
+  gap: 24px;
+}
+
+/* Keep the supplied photos recognizable and use one warm, restrained grade.
+   Brand artwork and event flyers are deliberately excluded from the photo grade. */
+.public-site .venue-photo,
+.public-site .scene-photo {
+  filter: saturate(0.86) contrast(1.04) sepia(0.08);
+}
+.public-site .event-card .venue-photo,
+.public-site .event-detail .venue-photo {
+  filter: none;
+}
+.public-site .scene-shade {
+  background: linear-gradient(180deg, #1716140a 50%, #17161455 100%);
+}
+.public-site .phase-day .scene-photo {
+  filter: brightness(0.93) saturate(0.86) contrast(1.04) sepia(0.08);
+}
+.public-site .phase-dusk .scene-photo {
+  filter: brightness(0.82) saturate(0.86) contrast(1.04) sepia(0.08);
+}
+.public-site .phase-night .scene-photo {
+  filter: brightness(0.71) saturate(0.86) contrast(1.04) sepia(0.08);
+}
+.public-site .interior-scene .scene-photo {
+  filter: brightness(0.9) saturate(0.86) contrast(1.04) sepia(0.08);
+}
+.public-site .interior-scene .scene-shade {
+  background: linear-gradient(0deg, #17161440, transparent 45%);
+}
+.public-site .window-light {
+  animation-name: venue-light;
+}
+@keyframes venue-light {
+  0% {
+    filter: brightness(0.7);
+  }
+  50% {
+    filter: brightness(1.15);
+  }
+  100% {
+    filter: brightness(0.85);
+  }
+}
+
+/* The storefront has one action. Copy sits below the photo, clear of the door. */
+.public-site .home-hero {
+  height: 72svh;
+  min-height: 470px;
+  max-height: 840px;
+}
+.public-site .hotspot-link {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--paper);
+  backdrop-filter: none;
+}
+.public-site .hotspot-link:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  transform: none;
+}
+.public-site .door-link {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  padding: 16px 24px;
+}
+.public-site .door-link:after {
+  display: none;
+}
+.public-site .motion-control {
+  right: var(--gutter);
+  bottom: 20px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #f2ecdf60;
+  background: #171614bd;
+  color: var(--paper);
+  border-radius: var(--button-radius);
+  font-size: 11px;
+}
+.scene-caption,
+.room-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  padding: 30px var(--gutter) 34px;
+  border-bottom: 1px solid var(--rule);
+}
+.public-site .scene-caption h1,
+.public-site .room-intro h1 {
+  font-size: clamp(34px, 3.5vw, 48px);
+  white-space: normal;
+}
+.scene-caption > p,
+.room-intro > p {
+  max-width: 330px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.room-intro .eyebrow {
+  margin-bottom: 10px;
+}
+.public-site .interior-hero {
+  height: 68svh;
+  min-height: 440px;
+  max-height: 780px;
+}
+.public-site .room-hotspot .hotspot-link {
+  box-shadow: 0 4px 24px #0004;
+}
+
+/* Booth and shop use the same photo/caption structure as the bar. */
+.public-site .space-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  min-height: 580px;
+  align-items: stretch;
+  border-bottom: 1px solid var(--rule);
+}
+.space-photo {
+  position: relative;
+  min-width: 0;
+  min-height: 580px;
+  overflow: hidden;
+}
+.space-photo > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.public-site .space-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 44px clamp(28px, 4vw, 64px) 54px;
+}
+.public-site .space-content > p:not(.eyebrow) {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 22px 0 0;
+  max-width: 330px;
+}
+.public-site .space-content .button-row {
+  gap: 12px;
+  margin-top: 28px;
+}
+.public-site .split-hero {
+  min-height: 580px;
+  grid-template-columns: 1.15fr 0.85fr;
+}
+.public-site .split-image {
+  order: -1;
+  min-height: 580px;
+}
+.public-site .split-copy {
+  padding: 44px clamp(28px, 4vw, 64px) 54px;
+}
+.public-site .split-copy .back-link {
+  color: #665e53;
+  margin-bottom: 42px;
+  font-size: 13px;
+}
+.public-site .split-copy > p:not(.eyebrow) {
+  color: #665e53;
+  font-size: 15px;
+  max-width: 330px;
+}
+.public-site .image-stamp,
+.public-site .record-orbit,
+.public-site .booking-disc {
+  display: none;
+}
+.public-site .section-heading,
+.public-site .page-heading {
+  margin-bottom: 34px;
+  align-items: flex-end;
+}
+.public-site .page-heading > p {
+  font-size: 14px;
+  max-width: 300px;
+}
+.public-site .booking-section {
+  border-top: 1px solid var(--rule);
+  gap: 30px;
+  padding-top: 38px;
+  padding-bottom: 38px;
+}
+.public-site .booking-section h2 {
+  font-size: clamp(28px, 3vw, 42px);
+  max-width: 620px;
+}
+.public-site .booking-section .eyebrow {
+  display: none;
+}
+.public-site .tonight-empty-copy h2 {
+  font-size: clamp(30px, 3vw, 44px);
+}
+.public-site .tonight-empty-copy {
+  padding: 36px;
+}
+.public-site .upcoming-section {
+  padding-top: 48px;
+}
+.public-site .events-intro {
+  padding-top: 46px;
+}
+.public-site .category-nav a {
+  border-radius: var(--button-radius);
+  font-size: 14px;
+}
+.public-site .records-image {
+  transform: none;
+}
+.public-site .coming-soon {
+  color: var(--fg);
+  border-color: var(--rule);
+  border-radius: var(--button-radius);
+  background: transparent;
+}
+.public-site .prose {
+  font-size: 16px;
+}
+
+/* Contact details only. All six destinations remain in the Menu. */
+.venue-footer {
+  padding: 26px var(--gutter) 20px;
+  border-top: 1px solid var(--rule);
+}
+.venue-footer-main,
+.venue-footer-links,
+.venue-footer-meta,
+.venue-footer-meta > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.venue-footer-main {
+  justify-content: space-between;
+  gap: 24px;
+}
+.venue-footer-name {
+  font-family: var(--heading-font);
+  text-transform: uppercase;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.venue-footer-links {
+  gap: 28px;
+}
+.venue-footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.venue-footer-meta {
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 11px;
+}
+.venue-footer-meta > div {
+  gap: 20px;
+}
+.venue-footer-meta a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .public-site .site-header {
+    height: 68px;
+  }
+  .public-site .brand-link img {
+    width: 135px;
+  }
+  .public-site .header-location {
+    display: none;
+  }
+  .public-site main {
+    padding-top: 68px;
+  }
+  .public-site.is-preview main {
+    padding-top: 111px;
+  }
+  .public-site .section-wrap {
+    padding: 42px var(--gutter);
+  }
+  .public-site h1,
+  .public-site .space-content h1,
+  .public-site .split-copy h1,
+  .public-site .events-intro .page-heading h1,
+  .public-site .about-copy h1,
+  .public-site .records-copy h1 {
+    font-size: clamp(42px, 12vw, 58px);
+  }
+  .public-site h2 {
+    font-size: 32px;
+  }
+  .public-site .home-hero {
+    height: 66svh;
+    min-height: 420px;
+    max-height: 650px;
+  }
+  .public-site .motion-control {
+    right: 16px;
+    bottom: 14px;
+  }
+  .scene-caption,
+  .room-intro {
+    padding: 24px var(--gutter);
+    gap: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .public-site .scene-caption h1,
+  .public-site .room-intro h1 {
+    font-size: 36px;
+  }
+  .scene-caption > p,
+  .room-intro > p {
+    font-size: 14px;
+    max-width: 360px;
+  }
+  .public-site .interior-hero {
+    height: 52svh;
+    min-height: 340px;
+    max-height: 580px;
+  }
+  .public-site .room-mobile-links {
+    background: var(--bg);
+    padding: 0 10px;
+    border-color: var(--rule);
+  }
+  .public-site .room-mobile-links a {
+    font-size: 13px;
+    min-height: 76px;
+    gap: 8px;
+  }
+  .public-site .room-mobile-links a > svg {
+    color: var(--fg);
+    width: 17px;
+    height: 17px;
+  }
+  .public-site .space-hero,
+  .public-site .split-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .space-photo,
+  .public-site .split-image {
+    min-height: 280px;
+    height: 42svh;
+    max-height: 460px;
+  }
+  .public-site .space-content,
+  .public-site .split-copy {
+    padding: 28px var(--gutter) 36px;
+  }
+  .public-site .space-content .back-link,
+  .public-site .split-copy .back-link {
+    position: static;
+    margin-bottom: 22px;
+  }
+  .public-site .space-content > p:not(.eyebrow),
+  .public-site .split-copy > p:not(.eyebrow) {
+    font-size: 15px;
+    max-width: 360px;
+  }
+  .public-site .space-content .button-row {
+    margin-top: 24px;
+  }
+  .public-site .button {
+    font-size: 14px;
+    padding: 13px 17px;
+    gap: 14px;
+  }
+  .public-site .page-heading {
+    gap: 20px;
+  }
+  .public-site .nav-dialog {
+    padding: 20px 24px;
+  }
+  .public-site .menu-link {
+    font-size: 34px;
+    padding: 12px 0;
+  }
+  .public-site .menu-aside {
+    display: flex;
+    padding-top: 22px;
+  }
+  .public-site .menu-aside > p:not(.eyebrow) {
+    font-size: 12px;
+  }
+  .public-site .menu-bottom {
+    font-size: 11px;
+    margin-top: 24px;
+  }
+  .public-site .tonight-empty-copy {
+    padding: 28px 0;
+  }
+  .public-site .booking-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .public-site .booking-section > .button {
+    margin: 0;
+  }
+  .venue-footer {
+    padding-top: 24px;
+    padding-bottom: 82px;
+  }
+  .venue-footer-main {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .venue-footer-links {
+    gap: 8px 24px;
+  }
+  .venue-footer-links a {
+    font-size: 12px;
+  }
+  .venue-footer-meta > span:nth-child(2) {
+    display: none;
+  }
+}

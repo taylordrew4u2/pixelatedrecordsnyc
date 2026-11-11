@@ -38,11 +38,11 @@ export const seedContent: SiteContent = {
     logoDark: "/assets/logo-dark.png",
     mark: "/assets/mark.png",
     favicon: "/assets/favicon.png",
-    accent: "#ef3550",
-    background: "#151411",
-    foreground: "#f5f1e8",
+    accent: "#ce2029",
+    background: "#171614",
+    foreground: "#f2ecdf",
     font: "sans",
-    buttonStyle: "pill",
+    buttonStyle: "square",
   },
   navigation: [
     { id: "nav-bar", label: "Bar", href: "/bar", visible: true },
@@ -164,7 +164,7 @@ export const seedContent: SiteContent = {
     ),
     page(
       "inside",
-      "Make yourself\nat home.",
+      "Step inside.",
       "WELCOME TO PIXELATED",
       "Dig left. Dance ahead. Drinks to the right.",
       "/assets/interior.webp",
@@ -303,7 +303,7 @@ export const seedContent: SiteContent = {
     lights: {
       enabled: true,
       intensity: 0.48,
-      colors: ["#ef3550", "#e09638", "#9064d9"],
+      colors: ["#ce2029", "#d99253", "#f2ecdf"],
       dayStart: 7,
       duskStart: 17,
       nightStart: 20,

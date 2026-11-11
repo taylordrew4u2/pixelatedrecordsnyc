@@ -21,7 +21,7 @@ These settings are recorded in `netlify.toml` and `.nvmrc`. Keep the server-capa
 
 ### Free-plan operation
 
-As checked on November 11, 2026, Netlify's credit-based Free plan includes 300 monthly credits with a hard limit and no auto recharge. Exhausting the allowance pauses all projects on that team until the next billing cycle. Keep the approved Free plan; do not enable paid add-ons, trials, credit purchases, or upgrades. Review usage before repeated production deployments. [Plan limits](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/) · [Pause behavior](https://docs.netlify.com/manage/accounts-and-billing/billing/resume-paused-projects/)
+As checked on November 10, 2026 (New York time), Netlify's credit-based Free plan includes 300 monthly credits with a hard limit and no auto recharge. Exhausting the allowance pauses all projects on that team until the next billing cycle. Keep the approved Free plan; do not enable paid add-ons, trials, credit purchases, or upgrades. Review usage before repeated production deployments. [Plan limits](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/) · [Pause behavior](https://docs.netlify.com/manage/accounts-and-billing/billing/resume-paused-projects/)
 
 ## Private environment configuration
 
@@ -38,6 +38,18 @@ For local work, copy `.env.example` to the ignored `.env.local`. For Netlify, en
 Use origins without a path or query. Set both origin values to the actual HTTPS site address, and update them together when adopting a custom domain. Do not leave `localhost` values in a deployment. Netlify supplies the Blobs runtime credentials; no storage token or Supabase variable is required for this path. Never prefix credentials with `NEXT_PUBLIC_`, commit them, or enter them in the public content editor.
 
 Run `npm run hash-password` and type the chosen password at the hidden prompt. Store only the generated hash in `ADMIN_PASSWORD_HASH`. Generate `SESSION_SECRET` using a cryptographic random generator. Changing either secret invalidates existing sessions; apply the new values with a deployment or local server restart. No plaintext password is included in this guide or the example environment file.
+
+### Required production deployment flags
+
+This site's Free-plan configuration uses deploy-scoped secrets. Supply both values on every production deploy with Netlify CLI `--secret-env`. That flag sets `is_secret: true` and `scopes: ["functions"]`; values are masked in the Netlify UI/API and apply only to that deployment's functions. A production deploy without these values will disable admin sign-in.
+
+```sh
+netlify deploy --prod --context production \
+  --secret-env 'ADMIN_PASSWORD_HASH=<existing server password hash>' \
+  --secret-env 'SESSION_SECRET=<existing session secret>'
+```
+
+The placeholders above are not usable credentials. Load the actual values privately; do not commit them or print them in deployment logs. The credential values need not be exported into the build environment. Keep them out of ordinary deploy-preview and branch-deploy contexts. Use the full build/deploy lifecycle so the Next.js adapter packages its server function correctly.
 
 ### Deployment previews
 
