@@ -37,6 +37,9 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 - Bar menu opens as readable HTML in a dialog. No pinch-to-zoom requirement.
 - Keep controls comfortably tappable, keyboard accessible, and readable; use clear focus, Escape-to-close, and focus return for dialogs. Avoid whole-page horizontal overflow.
 
+- November 12, 2026 (owner): the header was cluttered. It is now one calm row: logo, a single-line link "● TONIGHT · <event or See tonight's events> ›" with the live New York time in muted text, and Menu. No boxed panel or divider. On phones the tonight line sits on a second row under the logo and Menu.
+- November 12, 2026 (owner): every background photo that is cropped on a phone can be slid side to side with a horizontal drag (Bar, DJ booth, Record shop, Events, Calendar, About, Location; Inside already pans). Vertical scrolling, taps and horizontal carousels are unaffected. On the Bar page the "Bar Menu" frame button slides with the photo. A short "Drag to look around" hint shows on first view and fades after 4 seconds or the first drag.
+
 ## Events, booking, and location
 
 - Booth shows Events and Book the venue, plus the requested horizontal poster-style upcoming-events carousel. Do not omit the booth carousel merely because the separate Events page has one.

@@ -229,26 +229,23 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
               : "See tonight’s events at Pixelated Records"
           }
         >
-          <span className="header-now-meta">
-            <span className="live-dot" aria-hidden="true" />
-            <span>{tonight?.live ? "Live now" : "Tonight at Pixelated"}</span>
-            <time dateTime={now.toISOString()} suppressHydrationWarning>
-              Now{" "}
-              {formatInTimeZone(now, content.eventSettings.timeZone, "h:mm a")}
-            </time>
+          <span className="live-dot" aria-hidden="true" />
+          <span className="header-now-label">
+            {tonight?.live ? "Live now" : "Tonight"}
           </span>
-          <span className="header-now-detail">
-            <span className="header-now-title">
-              {headerEvent?.title || "See tonight’s events"}
+          <span className="header-now-title">
+            {headerEvent?.title || "See tonight’s events"}
+          </span>
+          {headerEvent && (
+            <span className="header-now-start">
+              {headerEvent.status === "sold-out" ? "Sold out · " : ""}
+              {eventStart}
             </span>
-            {headerEvent && (
-              <span className="header-now-start">
-                {headerEvent.status === "sold-out" ? "Sold out · " : ""}
-                {eventStart}
-              </span>
-            )}
-            <ChevronRight size={18} aria-hidden="true" />
-          </span>
+          )}
+          <ChevronRight size={16} aria-hidden="true" />
+          <time dateTime={now.toISOString()} suppressHydrationWarning>
+            {formatInTimeZone(now, content.eventSettings.timeZone, "h:mm a")}
+          </time>
         </A>
         <button
           ref={trigger}
@@ -1809,6 +1806,122 @@ export function PublicExperience({
       if (part) observer.observe(part);
     return () => observer.disconnect();
   }, [preview]);
+  // Phones: when the background photo is cropped, a horizontal drag slides
+  // it sideways. Vertical scrolling, buttons and carousels keep working.
+  const [panHint, setPanHint] = useState<"off" | "show" | "hide">("off");
+  useEffect(() => {
+    const root = frame.current;
+    const main = root?.querySelector<HTMLElement>("main");
+    const backdrop = root?.querySelector<HTMLElement>(".page-photo-backdrop");
+    const img = backdrop?.querySelector<HTMLImageElement>("img");
+    if (!root || !main || !backdrop || !img) return;
+    const framed = root.classList.contains("bar-framed");
+    let pan = 0.5;
+    let overflow = 0;
+    const apply = () => {
+      if (framed)
+        root.style.setProperty("--photo-pan-x", `${-pan * overflow}px`);
+      else img.style.objectPosition = `${pan * 100}% 50%`;
+    };
+    const measure = () => {
+      const box = backdrop.getBoundingClientRect();
+      const ratio = img.naturalWidth / img.naturalHeight || 4 / 3;
+      const drawn = Math.max(box.width, box.height * ratio);
+      const was = overflow;
+      overflow = Math.max(0, drawn - box.width);
+      backdrop.classList.toggle("is-pannable", overflow > 8);
+      if (framed && was === 0 && overflow > 0) {
+        // start from wherever the frame-centred layout put the photo
+        const left = img.getBoundingClientRect().left - box.left;
+        pan = Math.min(1, Math.max(0, -left / overflow));
+      }
+      if (root.style.getPropertyValue("--photo-pan-x") || !framed) apply();
+      setPanHint((hint) =>
+        overflow > 8 &&
+        hint === "off" &&
+        window.matchMedia(
+          "(max-width: 760px), (hover: none) and (pointer: coarse)",
+        ).matches
+          ? "show"
+          : overflow <= 8
+            ? "off"
+            : hint,
+      );
+    };
+    const skip = (target: EventTarget | null) => {
+      let el = target instanceof Element ? target : null;
+      while (el && el !== main) {
+        if (el.matches("input, select, textarea, dialog, [data-no-pan]"))
+          return true;
+        const style = getComputedStyle(el);
+        if (
+          /(auto|scroll)/.test(style.overflowX) &&
+          el.scrollWidth > el.clientWidth + 1
+        )
+          return true;
+        el = el.parentElement;
+      }
+      return false;
+    };
+    let start: { x: number; y: number; pan: number; id: number } | null = null;
+    let dragging = false;
+    const down = (event: PointerEvent) => {
+      if (overflow <= 8 || !event.isPrimary || skip(event.target)) return;
+      start = { x: event.clientX, y: event.clientY, pan, id: event.pointerId };
+      dragging = false;
+    };
+    const move = (event: PointerEvent) => {
+      if (!start || event.pointerId !== start.id) return;
+      const dx = event.clientX - start.x;
+      const dy = event.clientY - start.y;
+      if (!dragging) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx))
+          return void (start = null);
+        if (Math.abs(dx) < 8) return;
+        dragging = true;
+        setPanHint((hint) => (hint === "show" ? "hide" : hint));
+      }
+      pan = Math.min(1, Math.max(0, start.pan - dx / overflow));
+      apply();
+    };
+    const up = () => {
+      start = null;
+    };
+    const swallowClick = (event: MouseEvent) => {
+      if (dragging) {
+        event.preventDefault();
+        event.stopPropagation();
+        dragging = false;
+      }
+    };
+    measure();
+    img.addEventListener("load", measure);
+    const observer = new ResizeObserver(measure);
+    observer.observe(backdrop);
+    main.addEventListener("pointerdown", down);
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+    main.addEventListener("click", swallowClick, true);
+    const timer = window.setTimeout(
+      () => setPanHint((hint) => (hint === "show" ? "hide" : hint)),
+      4000,
+    );
+    return () => {
+      img.removeEventListener("load", measure);
+      observer.disconnect();
+      main.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      main.removeEventListener("click", swallowClick, true);
+      window.clearTimeout(timer);
+      root.style.removeProperty("--photo-pan-x");
+      img.style.objectPosition = "";
+      backdrop.classList.remove("is-pannable");
+      setPanHint("off");
+    };
+  }, [pageId, eventId]);
   const now = useClock(initialNow),
     [paused, setPaused] = useState(false),
     page = content.pages.find((p) => p.id === pageId)!;
@@ -1917,6 +2030,15 @@ export function PublicExperience({
               </div>
             )}
             <div className="page-scroll">{body}</div>
+            {panHint !== "off" && (
+              <p
+                className={`pan-hint${panHint === "hide" ? " is-hidden" : ""}`}
+                aria-hidden="true"
+              >
+                <ChevronLeft size={16} /> Drag to look around{" "}
+                <ChevronRight size={16} />
+              </p>
+            )}
           </main>
           <Footer content={content} immersive />
         </div>

@@ -414,6 +414,6 @@ test("header falls back to the events page without inventing a live show", () =>
   );
   assert.equal(header?.href, "/events");
   assert.match(header?.inner || "", /See tonight/);
-  assert.match(header?.inner || "", /Now 7:00 PM/);
+  assert.match(header?.inner || "", /7:00 PM/);
   assert.doesNotMatch(header?.inner || "", /Live now/);
 });
