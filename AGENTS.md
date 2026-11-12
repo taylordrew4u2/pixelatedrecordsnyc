@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Project continuity
+
+Read `docs/PROJECT_CONTEXT.md` before changing this project. It reconciles the owner's original brief with later corrections and records continuing publishing authorization. Later decisions there supersede historical implementation notes in `docs/BUILD_STATUS.md` and `docs/STOREFRONT_UPDATE.md`. Confirm live state separately from source and preview status.
