@@ -24,6 +24,9 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 - Keep the Netlify badge absent without enabling a paid plan. Existing nonce-based CSP must remain intact.
 - The sky changes with Ridgewood/New York's actual daylight, sunrise/sunset, and night. Keep the expanded mobile sky mask aligned with the mobile photograph. Gentle window lighting is decorative; respect reduced motion and never autoplay audio.
 
+- November 12, 2026 (owner): the desktop storefront is the real photograph (`storefront-real.webp`, 1920px) with photographic edits only: roller shades lowered behind the glass, wet sidewalk splotches cleaned, colour graded. It replaces the AI-edited 1452px image, which looked stretched and artificial on large screens. A matching `storefront-real-sky-mask.webp` keeps the live New York sky. Phones keep the expanded street image.
+- November 12, 2026 (owner): every black must read as one solid colour in every photo. All site photos are served as `*-solid.webp` versions whose near-neutral dark tones (and blue-tinted reflections on black surfaces) are unified to the brand black `#181614`, keeping only fine texture. Saturated colours are untouched. Originals remain in `public/assets/`.
+
 ## Navigation and interactions
 
 - Immediately accessible logo-to-home and hamburger menu labeled Menu on every page.
