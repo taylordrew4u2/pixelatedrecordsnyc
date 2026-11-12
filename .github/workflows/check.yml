@@ -25,3 +25,12 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npm test
+      - name: Build public visual preview
+        if: github.event_name == 'push'
+        run: node scripts/build-visual-preview.mjs
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push'
+        with:
+          name: pixelated-visual-preview
+          path: visual-preview/
+          retention-days: 14
