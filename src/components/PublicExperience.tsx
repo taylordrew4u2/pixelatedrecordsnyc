@@ -423,9 +423,9 @@ function Scene({
   const mobileSource = portrait && (
     <source
       media="(max-width: 760px), (hover: none) and (pointer: coarse)"
-      srcSet="/assets/storefront-street-mobile.webp"
-      width={960}
-      height={1440}
+      srcSet="/assets/storefront-street-mobile-original.png"
+      width={1024}
+      height={1536}
     />
   );
   return (

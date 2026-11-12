@@ -60,7 +60,7 @@ The original `WEBSITE PICS.zip` supplied 15 venue photos. Original primary assig
 | Approved smooth-shade storefront | Desktop storefront | `images/storefront.png` |
 | Approved expanded street storefront | Mobile storefront | `images/storefront-mobile.png` |
 
-Five full-size files in `public/assets/` were committed truncated at ~768 KB (`bar-supplied.jpg`, `records-supplied.jpg`, `lounge-supplied.png`, `storefront-shades-original.png`, `storefront-street-mobile-original.png`); their lower portions rendered grey and the phone storefront was mostly blank. The site now serves the intact 960px versions (`*-small.jpg`, `storefront-street-mobile.webp`). Re-upload the owner's originals to restore full resolution.
+Five full-size files in `public/assets/` (`bar-supplied.jpg`, `records-supplied.jpg`, `lounge-supplied.png`, `storefront-shades-original.png`, `storefront-street-mobile-original.png`) were once committed truncated at ~768 KB. The owner re-supplied intact originals on November 12, 2026, and the site serves them at full resolution again. Before committing image assets, confirm each file decodes completely.
 
 Versioned web assets are in `public/assets/`; mappings are in `src/lib/photo-assets.ts`. Keep custom owner-uploaded replacements owner-controlled.
 

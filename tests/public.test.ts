@@ -41,7 +41,7 @@ test("homepage renders the time-driven sky and matching mobile photo in every ph
       /--sky-top:#[0-9a-f]{6};--sky-horizon-color:#[0-9a-f]{6}/,
     );
     assert.equal(
-      (html.match(/srcSet="\/assets\/storefront-street-mobile.webp"/g) || [])
+      (html.match(/srcSet="\/assets\/storefront-street-mobile-original.png"/g) || [])
         .length,
       2,
     );
