@@ -83,6 +83,12 @@ The owner supplied **Pixelated Records Menu - as of 10.26.2026.pdf** later in th
 - The source already contains the full-screen photo layout, expanded mobile source selection, large drinks action, and event-header logic. Preserve them while finishing the photo work. Check the live site separately before claiming those features are all live.
 - Next steps are safe deployment with the existing credentials, then rendered desktop/mobile checks of the complete requested experience. Do not reduce the remaining scope to photos alone.
 
+## Deployment update (November 12, 2026)
+
+- Standing owner instruction: always merge finished work to `main` and deploy it to production.
+- With owner approval, a new admin password and session secret replaced the old deploy-scoped values. `ADMIN_PASSWORD_HASH` and `SESSION_SECRET` are now stored as secret, Functions-only, production-context Netlify environment variables, so production deploys no longer need `--secret-env` flags. The password itself was given to the owner directly and is not recorded here.
+- Netlify uploaded/API builds did not apply the Next.js adapter automatically (deploy `6af61bddb43ea669e0549fe8` had no functions and returned 404 everywhere for a few minutes). `netlify.toml` now declares `@netlify/plugin-nextjs` (pinned in devDependencies). Production deploy `6af6339cb231d596057894f3` restored the site; all public routes return 200, anonymous admin content returns 401, and admin login/read/logout return 200.
+
 ## SEO and completion
 
 Improve public copy and metadata throughout: distinct useful page titles/descriptions, canonicals, social images, sitemap, and appropriate business/event structured data using confirmed facts. Target the venue's record store, bar, vinyl, events, and venue-booking relevance in Ridgewood, Queens without keyword stuffing or fabricated search-volume claims. Paid VibeSEO research was unavailable; it is not a prerequisite for ordinary copy/metadata improvements.

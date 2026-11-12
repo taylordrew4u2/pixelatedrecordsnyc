@@ -39,6 +39,10 @@ Use origins without a path or query. Set both origin values to the actual HTTPS 
 
 Run `npm run hash-password` and type the chosen password at the hidden prompt. Store only the generated hash in `ADMIN_PASSWORD_HASH`. Generate `SESSION_SECRET` using a cryptographic random generator. Changing either secret invalidates existing sessions; apply the new values with a deployment or local server restart. No plaintext password is included in this guide or the example environment file.
 
+### Production secrets (updated November 12, 2026)
+
+`ADMIN_PASSWORD_HASH` and `SESSION_SECRET` are now stored in Netlify as secret, Functions-only, production-context environment variables. A plain production deploy picks them up; the `--secret-env` flags below are no longer required. The section below is kept as historical reference.
+
 ### Required production deployment flags
 
 This site's Free-plan configuration uses deploy-scoped secrets. Supply both values on every production deploy with Netlify CLI `--secret-env`. That flag sets `is_secret: true` and `scopes: ["functions"]`; values are masked in the Netlify UI/API and apply only to that deployment's functions. A production deploy without these values will disable admin sign-in.
