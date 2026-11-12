@@ -131,7 +131,9 @@ function Photo({
       src={safeHref(enhanced?.src || src, "")}
       srcSet={
         enhanced
-          ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
+          ? enhanced.src === enhanced.small
+            ? undefined
+            : `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
           : isBuiltIn
             ? `${src.replace(".webp", "-small.webp")} 960w, ${src} 1920w`
             : undefined
@@ -384,9 +386,8 @@ function Scene({
         height: h,
         left: !exterior ? 0 : (width - w) / 2,
         top: exterior
-          ? image.currentSrc.includes(
-              "/assets/storefront-street-mobile-original.png",
-            ) && width > height
+          ? image.currentSrc.includes("/assets/storefront-street-mobile") &&
+            width > height
             ? (height - h) / 2
             : 0
           : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
@@ -413,7 +414,7 @@ function Scene({
   // The photo fills the available canvas. The interior stays full resolution
   // because visitors can pan across its much wider rendered image.
   const sourceSet =
-    exterior && enhanced
+    exterior && enhanced && enhanced.src !== enhanced.small
       ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
       : undefined;
   const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
@@ -422,9 +423,9 @@ function Scene({
   const mobileSource = portrait && (
     <source
       media="(max-width: 760px), (hover: none) and (pointer: coarse)"
-      srcSet="/assets/storefront-street-mobile-original.png"
-      width={1024}
-      height={1536}
+      srcSet="/assets/storefront-street-mobile.webp"
+      width={960}
+      height={1440}
     />
   );
   return (
@@ -1220,7 +1221,11 @@ function EventDetail({
     </>
   );
 }
+// The supplied bar photo has a gilded frame on the back wall. When that photo
+// is in use, the frame itself becomes the drinks-menu button.
+const FRAMED_BAR_IMAGE = "/assets/bar.webp";
 function BarPage({ content, page }: { content: SiteContent; page: Page }) {
+  const framed = page.image === FRAMED_BAR_IMAGE;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuDialog = useRef<HTMLDialogElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
@@ -1250,9 +1255,37 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
     (category) =>
       category.visible && category.items.some((item) => item.available),
   );
+  const openMenu = () => {
+    setMenuOpen(true);
+    // One short, optional pulse; unsupported browsers still open the menu.
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      try {
+        navigator.vibrate?.(12);
+      } catch {
+        /* Haptics never block navigation. */
+      }
+    }
+  };
   return (
     <>
-      <section className="space-hero space-bar">
+      <section className={`space-hero space-bar ${framed ? "is-framed" : ""}`}>
+        {framed && (
+          <button
+            ref={menuTrigger}
+            type="button"
+            className="bar-frame-button"
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+            aria-controls="bar-menu-dialog"
+            onClick={openMenu}
+          >
+            <span className="bar-frame-label">Bar Menu</span>
+            <span className="bar-frame-hint">
+              <BookOpen size={18} aria-hidden="true" />
+              View drinks
+            </span>
+          </button>
+        )}
         <div className="space-photo">
           <Photo src={page.image} alt={page.imageAlt} priority />
         </div>
@@ -1260,33 +1293,23 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
           <BackToRoom content={content} />
           <h1>{page.eyebrow || page.title}</h1>
           <p>{page.description}</p>
-          <div className="button-row">
-            <button
-              ref={menuTrigger}
-              type="button"
-              className="pov-link drinks-trigger"
-              aria-haspopup="dialog"
-              aria-expanded={menuOpen}
-              aria-controls="bar-menu-dialog"
-              onClick={() => {
-                setMenuOpen(true);
-                // One short, optional pulse; unsupported browsers still open the menu.
-                if (
-                  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                ) {
-                  try {
-                    navigator.vibrate?.(12);
-                  } catch {
-                    /* Haptics never block navigation. */
-                  }
-                }
-              }}
-            >
-              <BookOpen size={24} aria-hidden="true" />
-              <span>View drinks menu</span>
-              <ChevronRight size={24} aria-hidden="true" />
-            </button>
-          </div>
+          {!framed && (
+            <div className="button-row">
+              <button
+                ref={menuTrigger}
+                type="button"
+                className="pov-link drinks-trigger"
+                aria-haspopup="dialog"
+                aria-expanded={menuOpen}
+                aria-controls="bar-menu-dialog"
+                onClick={openMenu}
+              >
+                <BookOpen size={24} aria-hidden="true" />
+                <span>View drinks menu</span>
+                <ChevronRight size={24} aria-hidden="true" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
       <dialog
@@ -1871,7 +1894,7 @@ export function PublicExperience({
       <ContentContext.Provider value={content}>
         <div
           ref={frame}
-          className={`public-site photo-layout page-${pageId} ${immersive ? "is-immersive" : ""} ${preview ? "is-preview" : ""}`}
+          className={`public-site photo-layout page-${pageId} ${immersive ? "is-immersive" : ""} ${preview ? "is-preview" : ""} ${pageId === "bar" && !event && page.image === FRAMED_BAR_IMAGE ? "bar-framed" : ""}`}
           style={style}
           data-motion={paused ? "paused" : "playing"}
         >

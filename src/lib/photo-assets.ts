@@ -1,10 +1,15 @@
 // Enhanced room images are versioned separately; the original uploads remain
 // available to the editor and existing content records keep their references.
+// The full-size bar-supplied.jpg, records-supplied.jpg, lounge-supplied.png,
+// storefront-shades-original.png and storefront-street-mobile-original.png in
+// public/assets were committed truncated (each cut at ~768 KB, so the lower
+// part renders grey). Serve the intact 960px versions until the owner's
+// originals are re-uploaded, then restore the full-size src and width.
 const roomPhotos = {
   "/assets/bar.webp": {
-    src: "/assets/bar-supplied.jpg",
+    src: "/assets/bar-supplied-small.jpg",
     small: "/assets/bar-supplied-small.jpg",
-    width: 1800,
+    width: 960,
   },
   "/assets/interior.webp": {
     src: "/assets/interior-rich.webp",
@@ -17,34 +22,34 @@ const roomPhotos = {
     width: 1448,
   },
   "/assets/record-shop.webp": {
-    src: "/assets/records-supplied.jpg",
+    src: "/assets/records-supplied-small.jpg",
     small: "/assets/records-supplied-small.jpg",
-    width: 2400,
+    width: 960,
   },
   "/assets/shop-window.webp": {
-    src: "/assets/lounge-supplied.png",
+    src: "/assets/lounge-supplied-small.jpg",
     small: "/assets/lounge-supplied-small.jpg",
-    width: 1448,
+    width: 960,
   },
   "/assets/storefront.webp": {
-    src: "/assets/storefront-shades-original.png",
+    src: "/assets/storefront-shades-original-small.jpg",
     small: "/assets/storefront-shades-original-small.jpg",
-    width: 1452,
+    width: 960,
   },
   "/assets/storefront-clear.webp": {
-    src: "/assets/storefront-shades-original.png",
+    src: "/assets/storefront-shades-original-small.jpg",
     small: "/assets/storefront-shades-original-small.jpg",
-    width: 1452,
+    width: 960,
   },
   "/assets/storefront-blinds.webp": {
-    src: "/assets/storefront-shades-original.png",
+    src: "/assets/storefront-shades-original-small.jpg",
     small: "/assets/storefront-shades-original-small.jpg",
-    width: 1452,
+    width: 960,
   },
   "/assets/storefront-shades.webp": {
-    src: "/assets/storefront-shades-original.png",
+    src: "/assets/storefront-shades-original-small.jpg",
     small: "/assets/storefront-shades-original-small.jpg",
-    width: 1452,
+    width: 960,
   },
 };
 
