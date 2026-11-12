@@ -1,5 +1,11 @@
 # Build and verification status
 
+## Current continuation status — November 12, 2026
+
+Read [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the reconciled owner requirements and current continuation state. Entries below are historical release records, not an ordered description of the current website. In particular, the later chat supplied and published the October 26 drinks menu, approved the expanded mobile street image, requested photo backgrounds between header and footer on every page, and authorized reuse of the existing Netlify admin secrets for future updates. Earlier missing-menu and release-specific permission blockers are superseded.
+
+Recovered photo updates are saved in [draft PR #1](https://github.com/taylordrew4u2/pixelatedrecordsnyc/pull/1). Build, typecheck, and tests passed on commit `7e5dc6c4e3e31d6e16912386947ebf384e83d08b`. The source retains the large mobile drinks button and live-event header. Production publication of this branch remains unverified and requires availability of the existing deploy-scoped secrets; no new credential-reuse permission is needed. No live credentials or published editorial content were changed during recovery.
+
 ## Pending window treatment and mobile readability revision
 
 The owner rejected the striped blinds after publication. The new `storefront-shades.webp` photo uses smooth matte-black shades behind the glass, with restrained reflections and the clean paving retained. The owner also requested larger mobile text and less empty space. Phone controls and body copy now use 16px text (18px entrance, 17px homepage description), with 14px footer/pan labels. The existing editable homepage introduction is visible beneath the full photograph on phones, above the entrance; desktop keeps its photo-led layout. Content pages use 28px section padding and no viewport-filling main spacer. Room navigation remains outside the pannable image. All 55 existing tests, TypeScript and formatting pass. Production deployment was blocked by automatic approval review, which treated the prior approval to reuse admin secrets as release-specific. The verified preview is https://mobile-window-review--pixelatedrecordsnyc.netlify.app/ (deploy `6af4b4f8fdaeb08e2615c335`). The full Netlify lifecycle and production build completed with exit code 0, without production authentication secrets.
@@ -114,7 +120,7 @@ The project badge setting remains enabled because the Netlify API returned 422: 
 
 ## Content still needed
 
-Confirmed weekly hours, actual bar menu items/prices, and dated upcoming events have not been supplied. The site uses honest empty states rather than invented details. These can be entered in the Studio at `/admin`.
+At the time of the historical checks below, confirmed weekly hours, bar menu items/prices, and dated upcoming events had not been supplied. The later conversation supplied the October 26 menu and reported it published; its transcription is in `src/lib/drink-menu.ts`. Do not treat the menu as missing. Check current published content for hours and events before requesting them; do not invent details. These remain editable in Studio at `/admin`.
 
 ## Verification limits
 
