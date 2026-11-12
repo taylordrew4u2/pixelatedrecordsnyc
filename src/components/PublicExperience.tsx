@@ -423,7 +423,7 @@ function Scene({
   const mobileSource = portrait && (
     <source
       media="(max-width: 760px), (hover: none) and (pointer: coarse)"
-      srcSet="/assets/storefront-street-mobile-original.png"
+      srcSet="/assets/storefront-street-mobile-solid.webp"
       width={1024}
       height={1536}
     />
