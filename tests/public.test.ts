@@ -413,7 +413,7 @@ test("header falls back to the events page without inventing a live show", () =>
     anchor.attributes.includes("header-now"),
   );
   assert.equal(header?.href, "/events");
-  assert.match(header?.inner || "", /See tonight/);
+  assert.match(header?.inner || "", /Good vibes happening now/i);
   assert.match(header?.inner || "", /7:00 PM/);
   assert.doesNotMatch(header?.inner || "", /Live now/);
 });

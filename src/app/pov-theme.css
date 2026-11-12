@@ -487,7 +487,7 @@
   height: 76px;
   padding: 14px 32px;
   background: var(--ink, #181614);
-  color: #f3ecde;
+  color: #f2ecdf;
   border-bottom: 1px solid #f3ecde26;
   text-shadow: none;
 }
@@ -496,19 +496,19 @@
 }
 .public-site.is-immersive .menu-trigger {
   font-size: 14px;
-  color: #f3ecde;
+  color: #f2ecdf;
   text-shadow: none;
 }
 .public-site .venue-footer,
 .public-site.is-immersive .venue-footer {
   min-height: 56px;
   background: var(--ink, #181614);
-  color: #f3ecde;
+  color: #f2ecdf;
   border-top: 1px solid #f3ecde26;
   text-shadow: none;
 }
 .public-site .venue-footer :is(a, .venue-footer-meta) {
-  color: #f3ecde;
+  color: #f2ecdf;
   font-size: 12px;
 }
 .public-site.is-immersive :is(.pov-link, .hotspot-link) {
@@ -559,7 +559,7 @@
 .public-site .booth-events {
   position: relative;
   background: var(--ink, #181614);
-  color: #f3ecde;
+  color: #f2ecdf;
 }
 .public-site .events-rail {
   gap: 24px;
@@ -573,7 +573,7 @@
   min-width: 0;
 }
 .public-site .event-card {
-  background: #f3ecde;
+  background: #f2ecdf;
   color: var(--ink, #181614);
 }
 .public-site .event-image {
