@@ -2,9 +2,9 @@
 // available to the editor and existing content records keep their references.
 const roomPhotos = {
   "/assets/bar.webp": {
-    src: "/assets/bar-rich.webp",
-    small: "/assets/bar-rich-small.webp",
-    width: 1448,
+    src: "/assets/bar-supplied.jpg",
+    small: "/assets/bar-supplied-small.jpg",
+    width: 1800,
   },
   "/assets/interior.webp": {
     src: "/assets/interior-rich.webp",
@@ -17,23 +17,33 @@ const roomPhotos = {
     width: 1448,
   },
   "/assets/record-shop.webp": {
-    src: "/assets/record-shop-rich.webp",
-    small: "/assets/record-shop-rich-small.webp",
-    width: 1672,
+    src: "/assets/records-supplied.jpg",
+    small: "/assets/records-supplied-small.jpg",
+    width: 2400,
+  },
+  "/assets/shop-window.webp": {
+    src: "/assets/lounge-supplied.png",
+    small: "/assets/lounge-supplied-small.jpg",
+    width: 1448,
   },
   "/assets/storefront.webp": {
-    src: "/assets/storefront-shades.webp",
-    small: "/assets/storefront-shades-small.webp",
+    src: "/assets/storefront-shades-original.png",
+    small: "/assets/storefront-shades-original-small.jpg",
     width: 1452,
   },
   "/assets/storefront-clear.webp": {
-    src: "/assets/storefront-shades.webp",
-    small: "/assets/storefront-shades-small.webp",
+    src: "/assets/storefront-shades-original.png",
+    small: "/assets/storefront-shades-original-small.jpg",
     width: 1452,
   },
   "/assets/storefront-blinds.webp": {
-    src: "/assets/storefront-shades.webp",
-    small: "/assets/storefront-shades-small.webp",
+    src: "/assets/storefront-shades-original.png",
+    small: "/assets/storefront-shades-original-small.jpg",
+    width: 1452,
+  },
+  "/assets/storefront-shades.webp": {
+    src: "/assets/storefront-shades-original.png",
+    small: "/assets/storefront-shades-original-small.jpg",
     width: 1452,
   },
 };
