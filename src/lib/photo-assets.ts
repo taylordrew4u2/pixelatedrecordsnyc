@@ -1,4 +1,6 @@
-// The storefront is the real photograph with photographic edits only:
+// The storefront is the real photograph, widened on desktop with AI-extended
+// neighbouring buildings (softened toward the edges) so the whole storefront
+// fits wide screens. Photographic edits on the real part only:
 // shades lowered behind the glass, wet sidewalk patches cleaned, colour graded.
 // Every photo below also has its near-black tones unified to the brand black
 // (#181614) so blacks read as one solid colour across the site.
@@ -66,29 +68,29 @@ const roomPhotos = {
     width: 1448,
   },
   "/assets/storefront.webp": {
-    src: "/assets/storefront-real.webp",
-    small: "/assets/storefront-real-small.webp",
-    width: 1920,
+    src: "/assets/storefront-wide.webp",
+    small: "/assets/storefront-wide-small.webp",
+    width: 2672,
   },
   "/assets/storefront-clear.webp": {
-    src: "/assets/storefront-real.webp",
-    small: "/assets/storefront-real-small.webp",
-    width: 1920,
+    src: "/assets/storefront-wide.webp",
+    small: "/assets/storefront-wide-small.webp",
+    width: 2672,
   },
   "/assets/storefront-blinds.webp": {
-    src: "/assets/storefront-real.webp",
-    small: "/assets/storefront-real-small.webp",
-    width: 1920,
+    src: "/assets/storefront-wide.webp",
+    small: "/assets/storefront-wide-small.webp",
+    width: 2672,
   },
   "/assets/storefront-shades.webp": {
-    src: "/assets/storefront-real.webp",
-    small: "/assets/storefront-real-small.webp",
-    width: 1920,
+    src: "/assets/storefront-wide.webp",
+    small: "/assets/storefront-wide-small.webp",
+    width: 2672,
   },
   "/assets/storefront-shades-original.png": {
-    src: "/assets/storefront-real.webp",
-    small: "/assets/storefront-real-small.webp",
-    width: 1920,
+    src: "/assets/storefront-wide.webp",
+    small: "/assets/storefront-wide-small.webp",
+    width: 2672,
   },
 };
 

@@ -40,7 +40,7 @@ export const legacySeedContent: SiteContent = {
     logoDark: "/assets/logo-dark.png",
     mark: "/assets/mark.png",
     favicon: "/assets/favicon.png",
-    accent: "#ce2029",
+    accent: "#ff0a05",
     background: "#181614",
     foreground: "#f2ecdf",
     font: "sans",
@@ -305,7 +305,7 @@ export const legacySeedContent: SiteContent = {
     lights: {
       enabled: false,
       intensity: 0.48,
-      colors: ["#ce2029", "#d99253", "#f2ecdf"],
+      colors: ["#ff0a05", "#d99253", "#f2ecdf"],
       dayStart: 7,
       duskStart: 17,
       nightStart: 20,

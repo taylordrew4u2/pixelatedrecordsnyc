@@ -1,77 +1,77 @@
 {
   "/assets/bar-corner.webp": {
-    "paper": "#efefdf",
+    "paper": "#f2ecdf",
     "ink": "#171815",
-    "accent": "#c61e47"
+    "accent": "#ff0a05"
   },
   "/assets/bar-detail.webp": {
-    "paper": "#f3ecde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#cb2922"
+    "accent": "#ff0a05"
   },
   "/assets/bar-shelves.webp": {
-    "paper": "#f1ece0",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#d41a24"
+    "accent": "#ff0a05"
   },
   "/assets/bar.webp": {
-    "paper": "#f2eedf",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#d21d25"
+    "accent": "#ff0a05"
   },
   "/assets/cocktail.webp": {
-    "paper": "#e6e3e6",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#c10f00"
+    "accent": "#ff0a05"
   },
   "/assets/coffee-detail.webp": {
-    "paper": "#dadedf",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#c53924"
+    "accent": "#ff0a05"
   },
   "/assets/coffee.webp": {
-    "paper": "#f3e9e1",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#b74d0f"
+    "accent": "#ff0a05"
   },
   "/assets/dj-booth.webp": {
-    "paper": "#f3ecde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#cd2129"
+    "accent": "#ff0a05"
   },
   "/assets/interior.webp": {
-    "paper": "#f3ecde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#ce222a"
+    "accent": "#ff0a05"
   },
   "/assets/record-bins.webp": {
-    "paper": "#f1ece0",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#c32d1e"
+    "accent": "#ff0a05"
   },
   "/assets/record-shop.webp": {
-    "paper": "#f3ecde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#cc1f27"
+    "accent": "#ff0a05"
   },
   "/assets/room.webp": {
-    "paper": "#f3ecde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#c72229"
+    "accent": "#ff0a05"
   },
   "/assets/shop-window.webp": {
-    "paper": "#eee8df",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#c92e2c"
+    "accent": "#ff0a05"
   },
   "/assets/sticker-door.webp": {
-    "paper": "#f3ecde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#c12933"
+    "accent": "#ff0a05"
   },
   "/assets/storefront.webp": {
-    "paper": "#f4ebde",
+    "paper": "#f2ecdf",
     "ink": "#181614",
-    "accent": "#d61b2d"
+    "accent": "#ff0a05"
   }
 }

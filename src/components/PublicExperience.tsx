@@ -226,16 +226,22 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
           ariaLabel={
             headerEvent
               ? `${tonight?.live ? "Live now" : "Tonight"}: ${headerEvent.title}, ${eventStart}. View event flyer.`
-              : "See tonight’s events at Pixelated Records"
+              : "Good vibes happening now at Pixelated Records. See upcoming events."
           }
         >
           <span className="live-dot" aria-hidden="true" />
-          <span className="header-now-label">
-            {tonight?.live ? "Live now" : "Tonight"}
-          </span>
-          <span className="header-now-title">
-            {headerEvent?.title || "See tonight’s events"}
-          </span>
+          {headerEvent ? (
+            <>
+              <span className="header-now-label">
+                {tonight?.live ? "Live now" : "Tonight"}
+              </span>
+              <span className="header-now-title">{headerEvent.title}</span>
+            </>
+          ) : (
+            <span className="header-now-title header-now-vibes">
+              Good vibes happening now
+            </span>
+          )}
           {headerEvent && (
             <span className="header-now-start">
               {headerEvent.status === "sold-out" ? "Sold out · " : ""}
@@ -372,10 +378,22 @@ function Scene({
       const width = parent.clientWidth,
         height = parent.clientHeight;
       const mobile = width < 760;
-      const scale = Math.max(
+      const street = image.currentSrc.includes(
+        "/assets/storefront-street-mobile",
+      );
+      // Desktop storefront: always show the whole building, top to sidewalk.
+      const whole = exterior && !street;
+      const cover = Math.max(
         width / image.naturalWidth,
         height / image.naturalHeight,
       );
+      // Fill the screen, but never crop more than ~6% of the storefront's
+      // height; only ultra-wide screens show plain bands at the sides.
+      const contain = Math.min(
+        width / image.naturalWidth,
+        height / image.naturalHeight,
+      );
+      const scale = whole ? Math.min(cover, contain * 1.06) : cover;
       const w = image.naturalWidth * scale,
         h = image.naturalHeight * scale;
       setGeometry({
@@ -383,8 +401,7 @@ function Scene({
         height: h,
         left: !exterior ? 0 : (width - w) / 2,
         top: exterior
-          ? image.currentSrc.includes("/assets/storefront-street-mobile") &&
-            width > height
+          ? whole || width > height
             ? (height - h) / 2
             : 0
           : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
@@ -493,6 +510,18 @@ function Scene({
           event.stopPropagation();
         }}
       >
+        {exterior && skyMask && sky && (
+          <div
+            className="storefront-fill"
+            aria-hidden="true"
+            style={
+              {
+                "--sky-top": sky.top,
+                "--sky-horizon-color": sky.horizon,
+              } as CSSProperties
+            }
+          ></div>
+        )}
         <div
           className={`scene-plane${portrait ? " has-street-portrait" : ""}`}
           style={geometry}

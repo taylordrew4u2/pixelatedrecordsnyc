@@ -570,6 +570,12 @@
   text-overflow: ellipsis;
   font-weight: 600;
 }
+.public-site.photo-layout .header-now-vibes {
+  font-family: "Barlow Condensed", "DM Sans", Arial, sans-serif;
+  font-size: 1.15em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .public-site.photo-layout .header-now-start {
   opacity: 0.8;
 }
@@ -678,7 +684,7 @@
   margin: 0;
   pointer-events: auto;
   cursor: pointer;
-  color: #f4e3b5;
+  color: #ffc400;
   background: radial-gradient(
     ellipse at 50% 45%,
     rgba(24, 22, 20, 0.55),
@@ -687,8 +693,8 @@
   border: 0;
   border-radius: 2px;
   box-shadow:
-    inset 0 0 0 2px rgba(214, 177, 92, 0.75),
-    inset 0 0 28px rgba(214, 177, 92, 0.28);
+    inset 0 0 0 2px rgba(255, 196, 0, 0.75),
+    inset 0 0 28px rgba(255, 196, 0, 0.28);
   font-family: "Barlow Condensed", "DM Sans", Arial, sans-serif;
   text-align: center;
   touch-action: manipulation;
@@ -706,7 +712,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-shadow:
-    0 0 14px rgba(244, 196, 92, 0.55),
+    0 0 14px rgba(255, 196, 0, 0.55),
     0 2px 2px rgba(0, 0, 0, 0.6);
 }
 .public-site.photo-layout .bar-frame-hint {
@@ -719,18 +725,18 @@
   font-weight: 600;
   line-height: 1.3;
   color: var(--ink);
-  background: #f4e3b5;
+  background: #ffc400;
   border-radius: 999px;
 }
 .public-site.photo-layout .bar-frame-button:hover,
 .public-site.photo-layout .bar-frame-button:focus-visible {
   box-shadow:
-    inset 0 0 0 3px rgba(244, 214, 140, 0.95),
-    inset 0 0 44px rgba(244, 196, 92, 0.45),
-    0 0 32px rgba(244, 196, 92, 0.45);
+    inset 0 0 0 3px rgba(255, 214, 90, 0.95),
+    inset 0 0 44px rgba(255, 196, 0, 0.45),
+    0 0 32px rgba(255, 196, 0, 0.45);
 }
 .public-site.photo-layout .bar-frame-button:focus-visible {
-  outline: 3px solid #f4e3b5;
+  outline: 3px solid #ffc400;
   outline-offset: 6px;
 }
 .public-site.photo-layout .bar-frame-button:active {
@@ -749,13 +755,13 @@
   0%,
   100% {
     box-shadow:
-      inset 0 0 0 2px rgba(214, 177, 92, 0.75),
-      inset 0 0 28px rgba(214, 177, 92, 0.28);
+      inset 0 0 0 2px rgba(255, 196, 0, 0.75),
+      inset 0 0 28px rgba(255, 196, 0, 0.28);
   }
   50% {
     box-shadow:
-      inset 0 0 0 2px rgba(244, 214, 140, 0.95),
-      inset 0 0 40px rgba(244, 196, 92, 0.5);
+      inset 0 0 0 2px rgba(255, 214, 90, 0.95),
+      inset 0 0 40px rgba(255, 196, 0, 0.5);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -823,4 +829,23 @@
   .public-site.photo-layout .pan-hint {
     transition: none;
   }
+}
+
+/* Desktop storefront shows the whole building; ultra-wide screens get plain
+   bands in the live sky colour above the street tone. */
+.public-site.photo-layout .storefront-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(
+    var(--sky-top),
+    var(--sky-horizon-color) 12%,
+    var(--ink) 100%
+  );
+}
+
+.public-site.photo-layout .exterior-scene .scene-plane {
+  z-index: 1;
 }

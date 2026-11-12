@@ -67,6 +67,6 @@ export function storefrontSkyMask(image: string) {
     image === "/assets/storefront-clear.webp" ||
     image === "/assets/storefront-blinds.webp" ||
     image === "/assets/storefront-shades.webp"
-    ? "/assets/storefront-real-sky-mask.webp"
+    ? "/assets/storefront-wide-sky-mask.webp"
     : undefined;
 }
