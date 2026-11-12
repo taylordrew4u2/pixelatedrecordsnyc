@@ -30,6 +30,7 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 - Menu destinations: Bar, Events, Calendar, About Us, Records, Location. Direct URLs, refresh, Browser Back, and back-to-room links must work.
 - Interior supports horizontal panning/swiping, mouse dragging, arrow buttons, and keyboard navigation when needed. Keep the Bar link reachable even when the bar is outside the photo crop. Include an explicit Leave action returning home.
 - Mobile drinks action must be large and obvious: the implemented target is a full-width, 72px-tall button with a menu icon, label, and pressed feedback. Optional brief vibration only where supported; do not promise physical haptics on all browsers.
+- Superseded November 12, 2026 (owner request): on the default bar photograph, the gilded picture frame in the middle of the back wall is itself the drinks button, labeled "Bar Menu". The photo and button share one cover-sized stage that keeps the frame centered in view on portrait phones, landscape phones, and desktop; the Back link and page title move below the frame on portrait screens. If the owner replaces the bar photo in admin, the full-width bottom button returns automatically because the frame position only matches the supplied photo.
 - Bar menu opens as readable HTML in a dialog. No pinch-to-zoom requirement.
 - Keep controls comfortably tappable, keyboard accessible, and readable; use clear focus, Escape-to-close, and focus return for dialogs. Avoid whole-page horizontal overflow.
 
@@ -58,6 +59,8 @@ The original `WEBSITE PICS.zip` supplied 15 venue photos. Original primary assig
 | `04_Record_Display_2x.jpg` | Record-display/shop photograph | `images/records.jpg` |
 | Approved smooth-shade storefront | Desktop storefront | `images/storefront.png` |
 | Approved expanded street storefront | Mobile storefront | `images/storefront-mobile.png` |
+
+Five full-size files in `public/assets/` were committed truncated at ~768 KB (`bar-supplied.jpg`, `records-supplied.jpg`, `lounge-supplied.png`, `storefront-shades-original.png`, `storefront-street-mobile-original.png`); their lower portions rendered grey and the phone storefront was mostly blank. The site now serves the intact 960px versions (`*-small.jpg`, `storefront-street-mobile.webp`). Re-upload the owner's originals to restore full resolution.
 
 Versioned web assets are in `public/assets/`; mappings are in `src/lib/photo-assets.ts`. Keep custom owner-uploaded replacements owner-controlled.
 
