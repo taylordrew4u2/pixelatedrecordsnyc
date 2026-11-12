@@ -44,6 +44,9 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 - November 12, 2026 (owner): the header was cluttered. It is now one calm row: logo, a single-line link "● TONIGHT · <event or See tonight's events> ›" with the live New York time in muted text, and Menu. No boxed panel or divider. On phones the tonight line sits on a second row under the logo and Menu.
 - November 12, 2026 (owner): every background photo that is cropped on a phone can be slid side to side with a horizontal drag (Bar, DJ booth, Record shop, Events, Calendar, About, Location; Inside already pans). Vertical scrolling, taps and horizontal carousels are unaffected. On the Bar page the "Bar Menu" frame button slides with the photo. A short "Drag to look around" hint shows on first view and fades after 4 seconds or the first drag.
 
+- November 12, 2026 (owner): Inside on phones was hard to read. It now has a solid bottom dock with three identical room buttons (Record shop, DJ booth, Bar), a small "Swipe to look around" pill with arrows just above it, and a rounded Leave button at the top left. Landscape phones use the one-row header and a compact dock.
+- November 12, 2026 (owner): 40 events from the owner's 50 flyers were added through the admin content API as published, editable events with their flyer images (past events from July 25 to November 11, plus the flyered upcoming dates November 12, 13, 14 and 28). Weekly flyers without a date (Open Decks, Soultek Sundays, undated Bad Decisions), the hiring post and duplicate flyers were skipped. Where a flyer printed no end time, the end was set to two hours after the start; these are editable in admin.
+
 ## Events, booking, and location
 
 - Booth shows Events and Book the venue, plus the requested horizontal poster-style upcoming-events carousel. Do not omit the booth carousel merely because the separate Events page has one.
