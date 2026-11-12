@@ -8,3 +8,8 @@
 # the Next.js adapter's post-deploy warmup instead of a branch-derived host.
 [context.production.environment]
   DEPLOY_PRIME_URL = "https://pixelatedrecordsnyc.netlify.app"
+
+# Uploaded (API) builds do not apply Netlify's Next.js adapter automatically;
+# without it the deploy has no server function and every route returns 404.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
