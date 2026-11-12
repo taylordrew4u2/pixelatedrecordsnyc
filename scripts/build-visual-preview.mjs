@@ -7,8 +7,14 @@ import path from "node:path";
 const revision = process.env.GITHUB_SHA;
 if (!/^[0-9a-f]{40}$/.test(revision || "")) throw new Error("A source commit is required");
 const assetBase = `https://raw.githubusercontent.com/taylordrew4u2/pixelatedrecordsnyc/${revision}/public/assets/`;
-const response = await fetch("https://pixelatedrecordsnyc.netlify.app/api/site");
-if (!response.ok) throw new Error(`Public content: ${response.status}`);
+// The live site can be briefly unavailable (for example mid-deploy), so retry.
+let response;
+for (let attempt = 1; attempt <= 4; attempt++) {
+  response = await fetch("https://pixelatedrecordsnyc.netlify.app/api/site").catch(() => null);
+  if (response?.ok) break;
+  if (attempt < 4) await new Promise((resolve) => setTimeout(resolve, attempt * 15000));
+}
+if (!response?.ok) throw new Error(`Public content: ${response?.status ?? "network error"}`);
 const content = await response.json();
 if (!Array.isArray(content.pages) || !content.brand) throw new Error("Invalid public content");
 

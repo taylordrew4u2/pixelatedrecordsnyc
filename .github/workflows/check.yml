@@ -16,8 +16,8 @@ jobs:
       APP_ORIGIN: http://localhost:3000
       SITE_URL: http://localhost:3000
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -28,7 +28,7 @@ jobs:
       - name: Build public visual preview
         if: github.event_name == 'push'
         run: node scripts/build-visual-preview.mjs
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: github.event_name == 'push'
         with:
           name: pixelated-visual-preview
