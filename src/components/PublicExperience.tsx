@@ -769,6 +769,11 @@ function Home({
         </div>
         <p>{page.description}</p>
       </section>
+      <nav className="home-entry" aria-label="Enter the store">
+        <A href={entrance?.href || "/inside"} className="home-entry-link">
+          {entrance?.label || content.labels.enter}
+        </A>
+      </nav>
       <nav className="sky-nav" aria-label="Main">
         {content.navigation
           .filter((link) => link.visible && destinationVisible(link.href, content))
@@ -777,11 +782,6 @@ function Home({
               {link.label}
             </A>
           ))}
-      </nav>
-      <nav className="home-entry" aria-label="Enter the store">
-        <A href={entrance?.href || "/inside"} className="home-entry-link">
-          {entrance?.label || content.labels.enter}
-        </A>
       </nav>
       <Sections sections={page.sections} content={content} />
     </>
