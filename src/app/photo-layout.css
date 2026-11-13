@@ -1106,7 +1106,7 @@
     .space-photo img,
     .about-image img
   ) {
-  filter: sepia(0.14) saturate(1.14) brightness(1.06) contrast(1.02);
+  filter: sepia(0.08) saturate(1.1) brightness(1.06) contrast(1.02);
 }
 .public-site.photo-layout :is(.page-photo-backdrop, .space-photo, .about-image),
 .public-site.photo-layout .interior-scene .scene-plane {
