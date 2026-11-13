@@ -849,3 +849,156 @@
 .public-site.photo-layout .exterior-scene .scene-plane {
   z-index: 1;
 }
+
+/* Inside, on phones: one solid dock of three identical room buttons at the
+   bottom, a small slide hint just above it, and Leave at the top left. */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .public-site.photo-layout.page-inside {
+    --room-dock-height: 64px;
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links {
+    position: absolute;
+    inset: auto 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    height: auto;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    margin: 0;
+    background: var(--ink);
+    border: 0;
+    border-top: 1px solid
+      color-mix(in srgb, var(--photo-paper) 18%, transparent);
+    z-index: 6;
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links a,
+  .public-site.photo-layout.page-inside
+    .room-mobile-links
+    a:is(:first-child, :hover, :focus, :active) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 48px;
+    margin: 0;
+    padding: 6px 4px;
+    color: var(--ink);
+    background: var(--photo-paper);
+    border: 0;
+    border-radius: 6px;
+    box-shadow: none;
+    font-family: "DM Sans", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: none;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links a:active {
+    background: var(--accent);
+    color: var(--photo-paper);
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links a:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links a > svg {
+    display: none;
+  }
+  .public-site.photo-layout.page-inside .scene-viewport {
+    bottom: var(--room-dock-height);
+    height: auto;
+  }
+  .public-site.photo-layout.page-inside .scene-pan-controls {
+    bottom: calc(var(--room-dock-height) + 12px);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px;
+    color: var(--photo-paper);
+    background: color-mix(in srgb, var(--ink) 85%, transparent);
+    border: 0;
+    border-radius: 999px;
+    font-size: 14px;
+    z-index: 6;
+  }
+  .public-site.photo-layout.page-inside .scene-pan-controls button {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+  }
+  .public-site.photo-layout.page-inside .scene-pan-controls > span {
+    padding: 0 4px;
+  }
+  .public-site.photo-layout.page-inside .room-exit {
+    top: 12px;
+    left: 12px;
+  }
+  .public-site.photo-layout.page-inside .room-exit-link {
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border-color: color-mix(in srgb, var(--photo-paper) 40%, transparent);
+    font-size: 15px;
+  }
+}
+/* Short landscape phones: keep everything compact so the room shows. */
+@media (max-height: 500px) and (hover: none) and (pointer: coarse) {
+  .public-site.photo-layout.page-inside {
+    --room-dock-height: 52px;
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links {
+    padding: 4px 12px calc(4px + env(safe-area-inset-bottom));
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links a {
+    min-height: 44px;
+  }
+  .public-site.photo-layout.page-inside .scene-pan-controls > span {
+    display: none;
+  }
+}
+/* Landscape phones are wide enough for the one-row header. */
+@media (min-width: 601px) and (max-width: 760px) {
+  .public-site.photo-layout .site-header {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    height: 56px;
+    min-height: 56px;
+    flex-basis: 56px;
+    padding: 0 16px;
+    gap: 16px;
+  }
+  .public-site.photo-layout .site-header .brand-link {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .public-site.photo-layout .header-now {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    min-height: 44px;
+  }
+  .public-site.photo-layout .header-now time {
+    margin-left: 6px;
+  }
+  .public-site.photo-layout .site-header .menu-trigger {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+@media (max-width: 360px) {
+  .public-site.photo-layout.page-inside .room-mobile-links {
+    gap: 6px;
+    padding-inline: 8px;
+  }
+  .public-site.photo-layout.page-inside .room-mobile-links a {
+    font-size: 14px;
+  }
+}
