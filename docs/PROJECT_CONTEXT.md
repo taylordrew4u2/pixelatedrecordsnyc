@@ -11,15 +11,18 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 - Correct orientation: records LEFT, DJ booth AHEAD, bar RIGHT. The initial spoken directions were corrected.
 - Netlify Free replaced the original Vercel target with owner approval. No paid services, trials, add-ons, or automatic overages. Online records/merchandise commerce remains deferred.
 
-## Current direction (November 13, 2026) — supersedes everything below
+## Current direction (November 13, 2026, owner blueprint) — supersedes everything below
 
-The owner changed plans. These rules override earlier visual and navigation notes:
+The owner supplied a three-part blueprint (Website Specification, Visual Website Blueprint, Mobile Website Blueprint). Build to it:
 
-- **One anchored, scrolling page.** Home holds every section in order: storefront photo and intro, About, Bar (drinks menu dialog), DJ booth & events, Calendar, Records, Location, booking. Header links jump to `/#about`, `/#bar`, `/#events`, `/#calendar`, `/#records`, `/#location` (`src/lib/sections.ts`). Old page URLs (`/bar`, `/about`, …) permanently redirect to their section; `/inside` redirects home. Event detail pages (`/events/<slug>`) stay separate.
-- **No inside view.** No room scene, hotspots, room links or "Come in".
-- **Photos are never modified.** Use the supplied originals only (`storefront.webp` and the first-build room photos; `-small` files are plain downscales). No retouching, colour grading, stitching, AI extension, sky replacement, night layers, blinds, CSS filters, vignettes or glow. Old edited variants were deleted; saved references to them resolve back to originals in `src/lib/photo-assets.ts`.
-- **Classic stacked layout.** Header, then each photo shown whole (never cropped, slid or zoomed), then its text and buttons below. Nothing is placed over any image. Styles live in `src/app/stacked-layout.css`.
-- Admin "Top photo" edits only the storefront photo and its description; each section's photo is edited with its page.
+- **One page, eight anchors in this order:** `#home` (exterior), `#records`, `#bar`, `#events`, `#calendar`, `#book`, `#about`, `#contact`. Fixed navigation: Records · Bar · Events · Calendar · Book an Event · About · Contact (active section highlighted). Phones: compact header with MENU opening a full-screen list that closes on selection. Old page URLs redirect to their section (`src/lib/sections.ts`); event pages stay.
+- **Full-screen photo sections** with a dark text panel and lime actions, as in the wireframes. Photo files are never edited; CSS `object-fit: cover` only chooses the visible area. No filters, effects or decorations.
+- **Bar:** "Full bar. Happy hour from 3 to 9." with specials $5 margaritas, $7 well drinks, $7 shot and beer (admin: Bar menu → Happy hour). View full menu opens a full-screen overlay.
+- **Events** ends in a full-width lime "Explore upcoming events" bar linking to `#calendar`.
+- **Calendar:** horizontal flyer lineup of upcoming published events, soonest first, uncropped 4:5 frames, swipe plus prev/next arrows; flyers open their event page (owner's choice). Empty state links to Instagram.
+- **Book an Event:** main-floor photo; the button opens the existing Google Form (owner's choice, Settings → booking URL). Copy lives on the `book` page.
+- **Accent:** lime `#dcf55d` (owner chose the blueprint colour).
+- Scroll snap is proximity-only; disabled with smooth scrolling under reduced motion.
 
 ## Latest visual decisions
 

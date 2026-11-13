@@ -177,7 +177,13 @@ export type SiteContent = {
     tonightEmpty: string;
     upcomingEmpty: string;
   };
-  bar: { intro: string; menuNotice: string; categories: MenuCategory[] };
+  bar: {
+    intro: string;
+    menuNotice: string;
+    categories: MenuCategory[];
+    /** Shown in the Bar section and at the top of the full menu. */
+    happyHour?: { text: string; specials: string[] };
+  };
   location: {
     address: string;
     neighborhood: string;

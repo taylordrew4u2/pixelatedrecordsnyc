@@ -277,6 +277,7 @@ const schema = object({
   bar: object({
     intro: text,
     menuNotice: text,
+    happyHour: optional(object({ text: title, specials: array(title, 6) })),
     categories: array(
       object({
         id,

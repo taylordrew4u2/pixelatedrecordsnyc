@@ -1162,6 +1162,44 @@ export function BarEditor({ content, update }: EditorProps) {
         />
       </Panel>
       <Panel
+        title="Happy hour"
+        description="Shown in the Bar section of the page and at the top of the full menu."
+      >
+        <Field
+          label="Happy hour times"
+          value={content.bar.happyHour?.text ?? ""}
+          placeholder="3 to 9"
+          onChange={(v) =>
+            update((d) => {
+              d.bar.happyHour = {
+                text: v,
+                specials: d.bar.happyHour?.specials ?? [],
+              };
+            })
+          }
+        />
+        {[0, 1, 2].map((i) => (
+          <Field
+            key={i}
+            label={`Special ${i + 1}`}
+            value={content.bar.happyHour?.specials[i] ?? ""}
+            placeholder={
+              ["$5 margaritas", "$7 well drinks", "$7 shot and beer"][i]
+            }
+            onChange={(v) =>
+              update((d) => {
+                const specials = [...(d.bar.happyHour?.specials ?? [])];
+                specials[i] = v;
+                d.bar.happyHour = {
+                  text: d.bar.happyHour?.text ?? "",
+                  specials: specials.map((x) => x ?? ""),
+                };
+              })
+            }
+          />
+        ))}
+      </Panel>
+      <Panel
         title="Menu categories"
         actions={
           <button

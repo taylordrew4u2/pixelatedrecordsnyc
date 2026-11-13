@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ArrowDown,
   X,
   Menu as MenuIcon,
   Disc3,
@@ -52,17 +54,29 @@ function A({
   children,
   className = "",
   ariaLabel,
+  ariaCurrent,
   onClick,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
   ariaLabel?: string;
+  ariaCurrent?: "location";
   onClick?: () => void;
 }) {
   const preview = useContext(PreviewContext);
   const content = useContext(ContentContext);
-  let target = sectionHref(safeHref(href));
+  const original = safeHref(href);
+  // Hidden pages stay hidden after their links are mapped to sections.
+  if (
+    content &&
+    !preview &&
+    original.startsWith("/") &&
+    !original.startsWith("//") &&
+    !destinationVisible(original, content)
+  )
+    return null;
+  let target = sectionHref(original);
   if (target.startsWith("/") && !target.startsWith("//")) {
     if (!preview && target.split(/[?#]/)[0] === "/admin") return null;
     if (content && !preview && !destinationVisible(target, content))
@@ -77,6 +91,7 @@ function A({
         href={target}
         className={className}
         aria-label={ariaLabel}
+        aria-current={ariaCurrent}
         onClick={onClick}
       >
         {children}
@@ -172,15 +187,14 @@ function useClock(initialNow: string) {
   }, []);
   return now;
 }
-function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
-  const tonight = headerTonightEvent(content, now);
-  const headerEvent = tonight?.event;
-  const eventStart = headerEvent
-    ? eventTime(headerEvent.start, content.eventSettings.timeZone)
-    : "";
+function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("");
   const modal = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
+  const links = ONE_PAGE_SECTIONS.filter((section) =>
+    sectionVisible(content, section.page),
+  );
   useEffect(() => {
     if (open) {
       modal.current?.showModal();
@@ -193,20 +207,44 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
       document.body.style.overflow = "";
     };
   }, [open]);
+  // Mark the section currently in view as the active navigation item.
+  useEffect(() => {
+    const targets = ["home", ...ONE_PAGE_SECTIONS.map((section) => section.id)]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+    if (!targets.length || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries)
+          if (entry.isIntersecting) setActive(entry.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
   const close = () => {
     setOpen(false);
     trigger.current?.focus();
   };
-  const links = content.navigation.filter(
-    (item) => item.visible && destinationVisible(item.href, content),
+  const item = (section: (typeof links)[number], onClick?: () => void) => (
+    <A
+      key={section.id}
+      href={`/#${section.id}`}
+      className={`op-nav-link${active === section.id ? " is-active" : ""}`}
+      ariaCurrent={active === section.id ? "location" : undefined}
+      onClick={onClick}
+    >
+      {section.label}
+    </A>
   );
   return (
     <>
-      <header className="site-header">
+      <header className="site-header op-header">
         <A
-          href="/"
+          href="/#home"
           className="brand-link"
-          ariaLabel={`${content.brand.name} home`}
+          ariaLabel={`${content.brand.name}, back to the top`}
         >
           <img
             src={safeHref(content.brand.logoLight, "/assets/logo-light.png")}
@@ -215,104 +253,285 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
             alt={content.brand.name}
           />
         </A>
-        <nav className="header-links" aria-label="Primary">
-          {links.map((item) => (
-            <A key={item.id} href={item.href} className="header-link">
-              {item.label}
-            </A>
-          ))}
+        <nav className="op-nav" aria-label="Sections">
+          {links.map((section) => item(section))}
         </nav>
-        <A
-          href={headerEvent ? `/events/${headerEvent.slug}` : "/events"}
-          className={`header-now${tonight?.live ? " is-live" : ""}`}
-          ariaLabel={
-            headerEvent
-              ? `${tonight?.live ? "Live now" : "Tonight"}: ${headerEvent.title}, ${eventStart}. View event flyer.`
-              : "Good vibes happening now at Pixelated Records. See upcoming events."
-          }
-        >
-          <span className="live-dot" aria-hidden="true" />
-          {headerEvent ? (
-            <>
-              <span className="header-now-label">
-                {tonight?.live ? "Live now" : "Tonight"}
-              </span>
-              <span className="header-now-title">{headerEvent.title}</span>
-            </>
-          ) : (
-            <span className="header-now-title header-now-vibes">
-              Good vibes happening now
-            </span>
-          )}
-          {headerEvent && (
-            <span className="header-now-start">
-              {headerEvent.status === "sold-out" ? "Sold out · " : ""}
-              {eventStart}
-            </span>
-          )}
-          <ChevronRight size={16} aria-hidden="true" />
-          <time dateTime={now.toISOString()} suppressHydrationWarning>
-            {formatInTimeZone(now, content.eventSettings.timeZone, "h:mm a")}
-          </time>
-        </A>
         <button
           ref={trigger}
-          className="menu-trigger"
+          className="menu-trigger op-menu-trigger"
           onClick={() => setOpen(true)}
           aria-haspopup="dialog"
           aria-expanded={open}
           aria-controls="main-menu"
         >
-          <span>{content.labels.menu}</span>
-          <MenuIcon size={23} strokeWidth={1.6} />
+          {content.labels.menu}
         </button>
       </header>
       <dialog
         id="main-menu"
-        className="nav-dialog"
+        className="nav-dialog op-menu"
         ref={modal}
-        onCancel={close}
-        aria-label="Main navigation"
-        onClick={(e) => {
-          if (e.target === modal.current) close();
+        onCancel={(event) => {
+          event.preventDefault();
+          close();
         }}
+        aria-label="Sections"
       >
-        <div className="menu-top">
-          <h2>Look around</h2>
-          <button
-            className="icon-button"
-            onClick={close}
-            aria-label="Close menu"
-          >
-            <X size={28} />
+        <div className="op-menu-top">
+          <span className="op-menu-brand">{content.brand.name}</span>
+          <button className="op-close" onClick={close}>
+            Close <X size={18} aria-hidden="true" />
           </button>
         </div>
-        <div className="menu-content">
-          <nav aria-label="Main">
-            {links.map((item, i) => (
-              <A
-                key={item.id}
-                href={item.href}
-                className="menu-link"
-                onClick={close}
-              >
-                <span className="menu-number">0{i + 1}</span>
-                <span>{item.label}</span>
-                <ArrowUpRight />
-              </A>
-            ))}
-          </nav>
-          <aside className="menu-aside">
-            <p className="eyebrow">{content.brand.descriptor}</p>
-            <p>{content.location.address}</p>
-            <BookingButton content={content} />
-          </aside>
-        </div>
-        <div className="menu-bottom">
-          <span>{content.footer.tagline}</span>
-        </div>
+        <nav aria-label="Sections menu">
+          {links.map((section) => item(section, () => setOpen(false)))}
+        </nav>
       </dialog>
     </>
+  );
+}
+// The blueprint's fixed section order and navigation labels.
+export const ONE_PAGE_SECTIONS = [
+  { id: "records", label: "Records", page: "records" },
+  { id: "bar", label: "Bar", page: "bar" },
+  { id: "events", label: "Events", page: "events" },
+  { id: "calendar", label: "Calendar", page: "calendar" },
+  { id: "book", label: "Book an Event", page: "book" },
+  { id: "about", label: "About", page: "about" },
+  { id: "contact", label: "Contact", page: "location" },
+] as const;
+function sectionVisible(content: SiteContent, page: string) {
+  return content.pages.some((entry) => entry.id === page && entry.visible);
+}
+// Full-bleed photograph behind a section. The file itself is never altered.
+function SectionPhoto({
+  page,
+  priority = false,
+}: {
+  page: Page;
+  priority?: boolean;
+}) {
+  if (!page.image) return null;
+  return (
+    <Photo
+      src={page.image}
+      alt={page.imageAlt}
+      className="op-bg"
+      priority={priority}
+    />
+  );
+}
+function PhotoSection({
+  id,
+  page,
+  children,
+  after,
+}: {
+  id: string;
+  page: Page;
+  children?: ReactNode;
+  after?: ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      className="op-section op-photo"
+      aria-labelledby={`${id}-title`}
+    >
+      <SectionPhoto page={page} />
+      <div className="op-panel">
+        <h2 id={`${id}-title`}>{page.title}</h2>
+        {page.description && <p>{page.description}</p>}
+        {children}
+      </div>
+      {after}
+    </section>
+  );
+}
+function FlyerLineup({ content, now }: { content: SiteContent; now: Date }) {
+  const track = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: true });
+  const zone = content.eventSettings.timeZone;
+  const events = publicEvents(content).filter(
+    (event) => event.status !== "cancelled" && eventEnd(event) > now.getTime(),
+  );
+  const measure = () => {
+    const el = track.current;
+    if (!el) return;
+    setEdges({
+      start: el.scrollLeft <= 4,
+      end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
+    });
+  };
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [events.length]);
+  const step = (direction: number) => {
+    const el = track.current;
+    const card = el?.querySelector<HTMLElement>(".op-flyer");
+    if (!el || !card) return;
+    el.scrollBy({
+      left: direction * (card.offsetWidth + 24),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
+  if (!events.length)
+    return (
+      <div className="op-empty">
+        <p>{content.eventSettings.upcomingEmpty}</p>
+        {content.location.instagram && (
+          <A href={content.location.instagram} className="op-cta">
+            Latest on Instagram
+          </A>
+        )}
+      </div>
+    );
+  return (
+    <div className="op-lineup">
+      <button
+        type="button"
+        className="op-arrow op-prev"
+        aria-label="Previous flyers"
+        aria-controls="flyer-track"
+        disabled={edges.start}
+        onClick={() => step(-1)}
+      >
+        <ChevronLeft size={24} aria-hidden="true" />
+      </button>
+      <div
+        id="flyer-track"
+        ref={track}
+        className="op-track"
+        role="list"
+        aria-label="Upcoming events, soonest first"
+        onScroll={measure}
+      >
+        {events.map((event) => (
+          <article key={event.id} className="op-flyer" role="listitem">
+            <A href={`/events/${event.slug}`} className="op-flyer-link">
+              <span className="op-flyer-art">
+                {event.image ? (
+                  <Photo
+                    src={event.image}
+                    alt={event.imageAlt || event.title}
+                  />
+                ) : (
+                  <span className="op-flyer-blank">{event.title}</span>
+                )}
+              </span>
+              <span className="op-flyer-date">
+                {eventDate(event.start, zone, "EEE / MMM d")}
+                {eventTime(event.start, zone) &&
+                  ` · ${eventTime(event.start, zone)}`}
+              </span>
+              <span className="op-flyer-title">{event.title}</span>
+              <span className="op-flyer-more">Event details</span>
+            </A>
+          </article>
+        ))}
+      </div>
+      <button
+        type="button"
+        className="op-arrow op-next"
+        aria-label="Next flyers"
+        aria-controls="flyer-track"
+        disabled={edges.end}
+        onClick={() => step(1)}
+      >
+        <ChevronRight size={24} aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
+function ContactSection({
+  content,
+  page,
+}: {
+  content: SiteContent;
+  page: Page;
+}) {
+  const location = content.location;
+  const destination =
+    location.latitude !== 0 || location.longitude !== 0
+      ? `${location.latitude},${location.longitude}`
+      : location.mapQuery || `${content.brand.name}, ${location.address}`;
+  const directions =
+    location.directionsUrl ||
+    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+  const embed =
+    location.mapEmbedUrl ||
+    `https://maps.google.com/maps?q=${encodeURIComponent(destination)}&z=16&output=embed`;
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return (
+    <section
+      id="contact"
+      className="op-section op-contact"
+      aria-labelledby="contact-title"
+    >
+      <div className="op-contact-details">
+        <h2 id="contact-title">{page.title}</h2>
+        {page.description && <p>{page.description}</p>}
+        <dl>
+          <div>
+            <dt>Address</dt>
+            <dd>{location.address}</dd>
+          </div>
+          <div>
+            <dt>Hours</dt>
+            <dd>
+              {location.hoursConfirmed ? (
+                <ul className="op-hours">
+                  {[1, 2, 3, 4, 5, 6, 0].map((index) => {
+                    const hours = location.hours.find((h) => h.day === index);
+                    return hours ? (
+                      <li key={index}>
+                        <span>{days[index]}</span>
+                        <span>
+                          {hours.closed
+                            ? "Closed"
+                            : `${displayHour(hours.open)} – ${displayHour(hours.close)}`}
+                        </span>
+                      </li>
+                    ) : null;
+                  })}
+                </ul>
+              ) : (
+                location.hoursNote
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>Get in touch</dt>
+            <dd className="op-touch">
+              {location.email && (
+                <A href={`mailto:${location.email}`}>{location.email}</A>
+              )}
+              {location.phone && (
+                <A href={`tel:${location.phone.replace(/[^+\d]/g, "")}`}>
+                  {location.phone}
+                </A>
+              )}
+              {location.instagram && <A href={location.instagram}>Instagram</A>}
+            </dd>
+          </div>
+        </dl>
+        <A href={directions} className="op-cta">
+          Get directions
+        </A>
+      </div>
+      <div className="op-map">
+        <iframe
+          src={safeHref(embed, "")}
+          title={`Map showing ${content.brand.name} at ${location.address}`}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+      </div>
+    </section>
   );
 }
 function Home({
@@ -326,73 +545,82 @@ function Home({
 }) {
   const find = (id: string) =>
     content.pages.find((entry) => entry.id === id && entry.visible);
-  const about = find("about"),
-    bar = find("bar"),
-    booth = find("booth"),
+  const records = find("records"),
+    events = find("events"),
     calendar = find("calendar"),
-    recordShop = find("record-shop"),
-    records = find("records"),
-    location = find("location");
+    book = find("book"),
+    about = find("about"),
+    contact = find("location"),
+    bar = find("bar");
+  const exterior = {
+    ...page,
+    image: content.scenes.exterior.image,
+    imageAlt: content.scenes.exterior.alt,
+  };
+  const first = ONE_PAGE_SECTIONS.find((section) =>
+    sectionVisible(content, section.page),
+  );
   return (
     <OnePageContext.Provider value={true}>
-      <section className="home-hero" aria-labelledby="home-title">
-        <figure className="stack-photo">
-          <Photo
-            src={content.scenes.exterior.image}
-            alt={content.scenes.exterior.alt}
-            priority
-          />
-        </figure>
-      </section>
-      <section className="scene-caption stack-intro">
-        <div>
-          <Eyebrow>{page.eyebrow}</Eyebrow>
+      <section
+        id="home"
+        className="op-section op-photo op-landing"
+        aria-labelledby="home-title"
+      >
+        <SectionPhoto page={exterior} priority />
+        <div className="op-wordmark">
           <h1 id="home-title">{page.title}</h1>
         </div>
-        <p>{page.description}</p>
+        {first && (
+          <A href={`/#${first.id}`} className="op-cta op-scroll-cue">
+            Scroll to {first.label}
+            <ChevronDown size={20} aria-hidden="true" />
+          </A>
+        )}
       </section>
-      <Sections sections={page.sections} content={content} />
-      {about && (
-        <div id="about" className="page-section">
-          <AboutPage content={content} page={about} />
-        </div>
-      )}
-      {bar && (
-        <div id="bar" className="page-section">
-          <BarPage content={content} page={bar} />
-        </div>
-      )}
-      {booth && (
-        <div id="events" className="page-section">
-          <SpacePage content={content} page={booth} kind="booth" now={now} />
-        </div>
+      {records && <PhotoSection id="records" page={records} />}
+      {bar && <BarPage content={content} page={bar} />}
+      {events && (
+        <PhotoSection
+          id="events"
+          page={events}
+          after={
+            calendar && (
+              <A href="/#calendar" className="op-calendar-bar">
+                Explore upcoming events
+                <ArrowDown size={26} aria-hidden="true" />
+              </A>
+            )
+          }
+        />
       )}
       {calendar && (
-        <div id="calendar" className="page-section">
-          <CalendarPage content={content} page={calendar} now={now} />
-        </div>
+        <section
+          id="calendar"
+          className="op-section op-calendar"
+          aria-labelledby="calendar-title"
+        >
+          <div className="op-calendar-head">
+            <p className="op-kicker">{calendar.eyebrow}</p>
+            <h2 id="calendar-title">{calendar.title}</h2>
+            {calendar.description && <p>{calendar.description}</p>}
+          </div>
+          <FlyerLineup content={content} now={now} />
+        </section>
       )}
-      {(recordShop || records) && (
-        <div id="records" className="page-section">
-          {recordShop && (
-            <SpacePage
-              content={content}
-              page={recordShop}
-              kind="record-shop"
-              now={now}
-            />
-          )}
-          {records && <RecordsPage content={content} page={records} />}
-        </div>
+      {book && (
+        <PhotoSection
+          id="book"
+          page={book}
+          after={
+            <span className="op-actions">
+              <BookingButton content={content} className="op-cta" />
+            </span>
+          }
+        />
       )}
-      {location && (
-        <div id="location" className="page-section">
-          <LocationPage content={content} page={location} now={now} />
-        </div>
-      )}
-      <OnePageContext.Provider value={false}>
-        <BookingSection content={content} />
-      </OnePageContext.Provider>
+      {about && <PhotoSection id="about" page={about} />}
+      {contact && <ContactSection content={content} page={contact} />}
     </OnePageContext.Provider>
   );
 }
@@ -950,6 +1178,8 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
     (category) =>
       category.visible && category.items.some((item) => item.available),
   );
+  const happyHour = content.bar.happyHour;
+  const specials = (happyHour?.specials || []).filter(Boolean);
   const openMenu = () => {
     setMenuOpen(true);
     // One short, optional pulse; unsupported browsers still open the menu.
@@ -963,30 +1193,36 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
   };
   return (
     <>
-      <section className="space-hero space-bar">
-        <div className="space-photo">
-          <Photo src={page.image} alt={page.imageAlt} priority />
+      <section
+        id="bar"
+        className="op-section op-photo"
+        aria-labelledby="bar-title"
+      >
+        <SectionPhoto page={page} />
+        <div className="op-panel">
+          <h2 id="bar-title">{page.title}</h2>
+          {page.description && <p>{page.description}</p>}
+          {specials.length > 0 && (
+            <ul className="op-specials" aria-label="Happy hour specials">
+              {specials.map((special, i) => (
+                <li key={i}>{special}</li>
+              ))}
+            </ul>
+          )}
         </div>
-        <div className="space-content">
-          <BackToRoom content={content} />
-          <h1>{page.eyebrow || page.title}</h1>
-          <p>{page.description}</p>
-          <div className="button-row">
-            <button
-              ref={menuTrigger}
-              type="button"
-              className="pov-link drinks-trigger"
-              aria-haspopup="dialog"
-              aria-expanded={menuOpen}
-              aria-controls="bar-menu-dialog"
-              onClick={openMenu}
-            >
-              <BookOpen size={24} aria-hidden="true" />
-              <span>View drinks menu</span>
-              <ChevronRight size={24} aria-hidden="true" />
-            </button>
-          </div>
-        </div>
+        <span className="op-actions">
+          <button
+            ref={menuTrigger}
+            type="button"
+            className="op-cta drinks-trigger"
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+            aria-controls="bar-menu-dialog"
+            onClick={openMenu}
+          >
+            View full menu
+          </button>
+        </span>
       </section>
       <dialog
         id="bar-menu-dialog"
@@ -1000,16 +1236,26 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
       >
         <section id="drinks" className="bar-menu">
           <div className="bar-menu-top">
-            <h2 id="bar-menu-title">Drinks menu</h2>
+            <span className="op-menu-brand">{content.brand.name}</span>
             <button
               type="button"
-              className="icon-button"
-              aria-label="Close bar menu"
+              className="op-close"
               onClick={() => setMenuOpen(false)}
             >
-              <X size={22} />
+              Close <X size={18} aria-hidden="true" />
             </button>
           </div>
+          <h2 id="bar-menu-title">Full menu</h2>
+          {happyHour?.text && (
+            <p className="op-kicker">Happy hour / {happyHour.text}</p>
+          )}
+          {specials.length > 0 && (
+            <ul className="op-specials" aria-label="Happy hour specials">
+              {specials.map((special, i) => (
+                <li key={i}>{special}</li>
+              ))}
+            </ul>
+          )}
           <p className="bar-menu-intro">{content.bar.intro}</p>
           {categories.length ? (
             <>
