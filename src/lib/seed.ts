@@ -30,6 +30,18 @@ const page = (
   sections: [],
 });
 
+export const BAR_ROOM_SECTION = {
+  id: "bar-room",
+  type: "image" as const,
+  title: "Pull up a stool",
+  body: "The whole bar, from the back shelf to the front door.",
+  image: "/assets/bar-room-wide.webp",
+  images: [],
+  linkLabel: "",
+  href: "",
+  visible: true,
+};
+
 export const legacySeedContent: SiteContent = {
   schemaVersion: 1,
   brand: {
@@ -400,3 +412,7 @@ export const seedContent = applyEditorialDefaults(
   { ...legacySeedContent, bar: confirmedBarMenu },
   legacySeedContent,
 );
+// The wide bar view sits under the framed Bar Menu.
+seedContent.pages
+  .find((entry) => entry.id === "bar")
+  ?.sections.push(BAR_ROOM_SECTION);

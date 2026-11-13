@@ -318,12 +318,12 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
 }
 // Little notes or laughs that drift up out of the two front windows.
 const FLOATERS = [
-  { x: 19, delay: 0, drift: -6, note: "♪", laugh: "ha" },
-  { x: 27, delay: 1.6, drift: 5, note: "♫", laugh: "ha-ha" },
-  { x: 33, delay: 3.1, drift: -4, note: "♪", laugh: "ha" },
-  { x: 66, delay: 0.8, drift: 6, note: "♫", laugh: "haha" },
-  { x: 73, delay: 2.4, drift: -5, note: "♪", laugh: "ha" },
-  { x: 80, delay: 3.8, drift: 4, note: "♬", laugh: "ha-ha" },
+  { side: "left", at: 0.15, delay: 0, drift: -6, note: "♪", laugh: "ha" },
+  { side: "left", at: 0.5, delay: 1.6, drift: 5, note: "♫", laugh: "ha-ha" },
+  { side: "left", at: 0.85, delay: 3.1, drift: -4, note: "♪", laugh: "ha" },
+  { side: "right", at: 0.15, delay: 0.8, drift: 6, note: "♫", laugh: "haha" },
+  { side: "right", at: 0.5, delay: 2.4, drift: -5, note: "♪", laugh: "ha" },
+  { side: "right", at: 0.85, delay: 3.8, drift: 4, note: "♬", laugh: "ha-ha" },
 ];
 // How far the inside photo zooms in past the bare foreground floor.
 const ROOM_ZOOM = 1.22;
@@ -635,14 +635,21 @@ function Scene({
           </picture>
           {portrait && (
             <div className="street-extras">
-              <img
-                className="street-night"
-                src="/assets/storefront-street-mobile-night-small.webp"
-                srcSet="/assets/storefront-street-mobile-night-small.webp 640w, /assets/storefront-street-mobile-night.webp 1024w"
-                sizes="100vw"
-                alt=""
-                aria-hidden="true"
-              />
+              <picture>
+                <source
+                  media={PHONE}
+                  srcSet="/assets/storefront-street-mobile-night-small.webp 640w, /assets/storefront-street-mobile-night.webp 1024w"
+                  sizes="100vw"
+                />
+                <img
+                  className="street-night"
+                  src="/assets/storefront-wide-night.webp"
+                  srcSet="/assets/storefront-wide-night-small.webp 960w, /assets/storefront-wide-night.webp 2672w"
+                  sizes="100vw"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </picture>
               <span className="street-window-glow is-left" aria-hidden="true" />
               <span className="street-window-glow is-right" aria-hidden="true" />
               {effect !== "none" && (
@@ -655,7 +662,7 @@ function Scene({
                       key={i}
                       style={
                         {
-                          left: `${f.x}%`,
+                          left: `calc(var(--win-${f.side}-x) + var(--win-${f.side}-w) * ${f.at})`,
                           animationDelay: `${f.delay}s`,
                           "--drift": `${f.drift}px`,
                         } as CSSProperties
