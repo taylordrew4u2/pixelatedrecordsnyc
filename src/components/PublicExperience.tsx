@@ -769,6 +769,15 @@ function Home({
         </div>
         <p>{page.description}</p>
       </section>
+      <nav className="sky-nav" aria-label="Main">
+        {content.navigation
+          .filter((link) => link.visible && destinationVisible(link.href, content))
+          .map((link) => (
+            <A key={link.id} href={link.href} className="sky-nav-link">
+              {link.label}
+            </A>
+          ))}
+      </nav>
       <nav className="home-entry" aria-label="Enter the store">
         <A href={entrance?.href || "/inside"} className="home-entry-link">
           {entrance?.label || content.labels.enter}
