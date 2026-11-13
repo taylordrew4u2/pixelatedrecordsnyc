@@ -47,7 +47,7 @@ test("homepage renders the time-driven sky and matching mobile photo in every ph
     );
     assert.match(html, /storefront-street-mobile-cut\.webp 1024w/);
     assert.match(html, /storefront-street-mobile-night\.webp 1024w/);
-    assert.match(html, /class="door-bubble"[^>]*>Come in</);
+    assert.match(html, /class="door-bubble is-small"[^>]*>Come in</);
     if (phase === "night")
       assert.match(
         html,
