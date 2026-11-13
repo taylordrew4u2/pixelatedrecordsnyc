@@ -20,40 +20,27 @@ function render(content: SiteContent, pageId = "home", preview = false) {
   );
 }
 
-test("homepage renders the time-driven sky and matching mobile photo in every phase", () => {
-  for (const [initialNow, phase] of [
-    ["2026-11-11T06:40:00-05:00", "sunrise"],
-    ["2026-11-11T12:00:00-05:00", "day"],
-    ["2026-11-11T16:45:00-05:00", "sunset"],
-    ["2026-11-11T22:00:00-05:00", "night"],
-  ]) {
-    const html = renderToStaticMarkup(
-      React.createElement(PublicExperience, {
-        content: fixture(),
-        pageId: "home",
-        preview: false,
-        initialNow,
-      }),
-    );
-    assert.ok(html.includes(`data-sky-phase="${phase}"`));
-    assert.match(
-      html,
-      /--sky-top:#[0-9a-f]{6};--sky-horizon-color:#[0-9a-f]{6}/,
-    );
-    assert.equal(
-      (html.match(/srcSet="\/assets\/storefront-street-mobile-solid.webp"/g) || [])
-        .length,
-      1,
-    );
-    assert.match(html, /storefront-street-mobile-cut\.webp 1024w/);
-    assert.match(html, /storefront-street-mobile-night\.webp 1024w/);
-    assert.match(html, /class="door-bubble is-small"[^>]*>Come in</);
-    if (phase === "night")
-      assert.match(
-        html,
-        /--sky-daylight:0;--sky-top:#181614;--sky-horizon-color:#181614;--sky-stars:1/,
-      );
-  }
+test("home is one scrolling page of untouched photos with every section anchored", () => {
+  const html = render(fixture());
+  for (const id of [
+    "about",
+    "bar",
+    "events",
+    "calendar",
+    "records",
+    "location",
+  ])
+    assert.match(html, new RegExp(`id="${id}"`));
+  // The storefront is the original photograph, with no sky, night or overlays.
+  assert.match(html, /src="\/assets\/storefront.webp"/);
+  assert.doesNotMatch(
+    html,
+    /storefront-sky|street-night|door-bubble|scene-hotspot|-solid|storefront-wide|filter:/,
+  );
+  const links = anchors(html).map((anchor) => anchor.href);
+  assert.ok(links.includes("/#bar"));
+  assert.ok(links.includes("/#location"));
+  assert.ok(!links.some((href) => href.startsWith("/inside")));
 });
 
 function decode(value: string) {
@@ -180,10 +167,10 @@ test("draft-preview links preserve existing queries and put preview before the f
   const links = anchors(render(content, "home", true)).map(
     (anchor) => anchor.href,
   );
-  assert.ok(links.includes("/bar?preview=1#drinks"));
-  assert.ok(links.includes("/bar?category=special&preview=1#drinks"));
-  assert.ok(links.includes("/bar?preview=1&category=special#drinks"));
-  for (const href of links.filter((href) => href.startsWith("/bar"))) {
+  assert.ok(links.includes("/?preview=1#drinks"));
+  assert.ok(links.includes("/?category=special&preview=1#drinks"));
+  assert.ok(links.includes("/?preview=1&category=special#drinks"));
+  for (const href of links.filter((href) => href.endsWith("#drinks"))) {
     const url = new URL(href, "https://test.invalid");
     assert.equal(url.searchParams.get("preview"), "1");
     assert.equal(url.searchParams.getAll("preview").length, 1);
@@ -195,49 +182,23 @@ test("draft-preview links preserve existing queries and put preview before the f
   assert.ok(!links.some((href) => href.includes("#drinks?preview")));
 });
 
-test("the editable entrance sits outside the photo with no window or door buttons", () => {
+test("there is no inside view: nothing links to it and nothing sits on a photo", () => {
   const content = fixture();
-  content.scenes.exterior.hotspots = [
-    {
-      id: "custom-entry",
-      label: "Step into the listening room",
-      href: "/inside",
-      x: 40,
-      y: 50,
-      width: 20,
-      height: 10,
-      direction: "forward",
-    },
-    {
-      id: "custom-records",
-      label: "Browse the shelves",
-      href: "/record-shop",
-      x: 15,
-      y: 45,
-      width: 20,
-      height: 10,
-    },
-  ];
-  const html = render(content);
-  const entrances = anchors(html).filter((anchor) =>
-    /class="home-entry-link/.test(anchor.attributes),
-  );
-  assert.equal(entrances.length, 1);
-  assert.equal(entrances[0].href, "/inside");
-  assert.match(entrances[0].inner, /Step into the listening room/);
-  assert.doesNotMatch(entrances[0].inner, /<svg\b|Click here to/);
-  assert.doesNotMatch(html, /door-hotspot|Browse the shelves/);
-  assert.match(html, /<\/section><nav class="home-entry"/);
-});
-
-test("inside has an explicit leave link to home, including draft preview", () => {
+  content.scenes.exterior.hotspots.push({
+    id: "custom-records",
+    label: "Browse the shelves",
+    href: "/record-shop",
+    x: 15,
+    y: 45,
+    width: 20,
+    height: 10,
+  });
   for (const preview of [false, true]) {
-    const leave = anchors(render(fixture(), "inside", preview)).find((anchor) =>
-      /class="room-exit-link/.test(anchor.attributes),
+    const html = render(content, "home", preview);
+    assert.doesNotMatch(html, /door-hotspot|Browse the shelves|home-entry/);
+    assert.ok(
+      !anchors(html).some((anchor) => anchor.href.startsWith("/inside")),
     );
-    assert.ok(leave);
-    assert.equal(leave.href, preview ? "/?preview=1" : "/");
-    assert.match(leave.inner, /Leave/);
   }
 });
 
@@ -415,7 +376,7 @@ test("header falls back to the events page without inventing a live show", () =>
   const header = anchors(render(content)).find((anchor) =>
     anchor.attributes.includes("header-now"),
   );
-  assert.equal(header?.href, "/events");
+  assert.equal(header?.href, "/#events");
   assert.match(header?.inner || "", /Good vibes happening now/i);
   assert.match(header?.inner || "", /7:00 PM/);
   assert.doesNotMatch(header?.inner || "", /Live now/);

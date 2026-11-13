@@ -30,18 +30,6 @@ const page = (
   sections: [],
 });
 
-export const BAR_ROOM_SECTION = {
-  id: "bar-room",
-  type: "image" as const,
-  title: "Pull up a stool",
-  body: "The whole bar, from the back shelf to the front door.",
-  image: "/assets/bar-room-wide.webp",
-  images: [],
-  linkLabel: "",
-  href: "",
-  visible: true,
-};
-
 export const legacySeedContent: SiteContent = {
   schemaVersion: 1,
   brand: {
@@ -96,11 +84,6 @@ export const legacySeedContent: SiteContent = {
       "shop-window",
       "By the shop window",
       "Records and seating by the front window.",
-    ),
-    photo(
-      "bar-room-wide",
-      "The bar and the room",
-      "The bar under plum damask wallpaper, stools along the counter and the room toward the front door.",
     ),
     photo(
       "record-bins",
@@ -234,8 +217,8 @@ export const legacySeedContent: SiteContent = {
       "Records. Drinks.\nGood company.",
       "ABOUT PIXELATED",
       "Pixelated Records is a record shop, bar, and event space in Ridgewood, New York. A place for crate digging, a drink with a friend, and whatever the night brings.",
-      "/assets/bar-room-wide.webp",
-      "The bar under plum damask wallpaper and the room toward the front door at Pixelated Records.",
+      "/assets/shop-window.webp",
+      "Records and seating by the front window at Pixelated Records.",
     ),
     page(
       "records",
@@ -412,7 +395,3 @@ export const seedContent = applyEditorialDefaults(
   { ...legacySeedContent, bar: confirmedBarMenu },
   legacySeedContent,
 );
-// The wide bar view sits under the framed Bar Menu.
-seedContent.pages
-  .find((entry) => entry.id === "bar")
-  ?.sections.push(BAR_ROOM_SECTION);

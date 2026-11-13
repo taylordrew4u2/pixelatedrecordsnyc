@@ -6,11 +6,11 @@ import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/600.css";
 import "@fontsource/barlow-condensed/600.css";
-import "@fontsource/yellowtail/400.css";
 import "./globals.css";
 import "./public-theme.css";
 import "./pov-theme.css";
 import "./photo-layout.css";
+import "./stacked-layout.css";
 // A fresh request nonce is required for public pages and the admin UI alike.
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {

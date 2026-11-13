@@ -83,7 +83,7 @@ type Tab =
 const tabs: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "pages", label: "Pages & navigation", icon: LayoutTemplate },
-  { id: "photos", label: "Photos & scene", icon: ImageIcon },
+  { id: "photos", label: "Top photo", icon: ImageIcon },
   { id: "events", label: "Events", icon: CalendarDays },
   { id: "bar", label: "Bar menu", icon: Wine },
   { id: "about", label: "About us", icon: FileText },
