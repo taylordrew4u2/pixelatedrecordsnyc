@@ -10,6 +10,7 @@ import {
   businessStructuredData,
   eventStructuredData,
   serializeStructuredData,
+  websiteStructuredData,
 } from "@/lib/site-seo";
 export const dynamic = "force-dynamic";
 type Props = {
@@ -108,16 +109,18 @@ export default async function Route({ params, searchParams }: Props) {
     !preview && event ? eventStructuredData(event, content, origin) : null;
   return (
     <>
-      {!preview && (id === "home" || id === "location") && (
+      {!preview && (
         <script
           type="application/ld+json"
           nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: serializeStructuredData(
-              businessStructuredData(
-                content,
-                process.env.SITE_URL || "http://localhost:3000",
-              ),
+              id === "home"
+                ? [
+                    businessStructuredData(content, origin),
+                    websiteStructuredData(content, origin),
+                  ]
+                : businessStructuredData(content, origin),
             ),
           }}
         />

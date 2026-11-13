@@ -775,15 +775,15 @@
 .public-site.photo-layout .pan-hint {
   position: absolute;
   z-index: 6;
-  left: 50%;
-  bottom: 96px;
-  transform: translateX(-50%);
+  /* Top right, clear of page text and buttons. */
+  top: 12px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
   color: var(--photo-paper);
-  background: color-mix(in srgb, var(--ink) 82%, transparent);
+  background: var(--ink);
   border-radius: 999px;
   font-size: 14px;
   line-height: 1.3;
@@ -1009,7 +1009,7 @@
       inset 0 0 10px 2px rgb(255 190 110 / 55%);
     mix-blend-mode: screen;
     opacity: calc(0.2 + 0.8 * (1 - var(--sky-daylight, 1)));
-    animation: street-window-pulse 2.8s ease-in-out infinite;
+    animation: street-window-pulse 7s ease-in-out infinite;
   }
   .street-window-glow.is-left {
     left: 15.5%;
@@ -1018,7 +1018,7 @@
   .street-window-glow.is-right {
     left: 62.5%;
     width: 20.1%;
-    animation-delay: -1.4s;
+    animation-delay: -3.5s;
   }
   .public-site.photo-layout .door-bubble {
     position: absolute;
@@ -1041,7 +1041,6 @@
     text-decoration: none;
     pointer-events: auto;
     transform: translate(-30%, -100%);
-    animation: door-bubble-float 3.2s ease-in-out infinite;
   }
   .public-site.photo-layout .door-bubble::after {
     content: "";
@@ -1075,10 +1074,10 @@
 @keyframes street-window-pulse {
   0%,
   100% {
-    filter: brightness(0.75);
+    filter: brightness(0.92);
   }
   50% {
-    filter: brightness(1.25);
+    filter: brightness(1.08);
   }
 }
 @keyframes door-bubble-float {
@@ -1094,5 +1093,123 @@
   .street-window-glow,
   .public-site.photo-layout .door-bubble {
     animation: none;
+  }
+}
+
+/* Every room reads warm and inviting: a gentle amber grade on the photos,
+   a soft lamp-light glow and a cozy, warm-dark vignette at the edges.
+   Pure black stays black (the grade never lifts it). */
+.public-site.photo-layout
+  :is(
+    .interior-scene .scene-photo,
+    .page-photo-backdrop > img,
+    .space-photo img,
+    .about-image img
+  ) {
+  filter: sepia(0.14) saturate(1.14) brightness(1.06) contrast(1.02);
+}
+.public-site.photo-layout :is(.page-photo-backdrop, .space-photo, .about-image),
+.public-site.photo-layout .interior-scene .scene-plane {
+  isolation: isolate;
+}
+.public-site.photo-layout :is(.space-photo, .about-image) {
+  position: relative;
+}
+.public-site.photo-layout
+  :is(.page-photo-backdrop, .space-photo, .about-image)::after,
+.public-site.photo-layout .interior-scene .scene-plane::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 75% 65% at 50% 38%,
+      rgb(255 168 88 / 16%),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 130% 110% at 50% 45%,
+      transparent 58%,
+      rgb(30 16 6 / 42%) 100%
+    );
+}
+
+.public-site.photo-layout .pan-hint-touch {
+  display: none;
+}
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .public-site.photo-layout .pan-hint {
+    gap: 4px;
+    padding: 6px 10px;
+  }
+  .public-site.photo-layout .pan-hint-mouse {
+    display: none;
+  }
+  .public-site.photo-layout .pan-hint-touch {
+    display: inline;
+  }
+}
+
+/* Optional window effect (admin): notes or laughs float up from the windows. */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .street-floaters {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .street-floaters > span {
+    position: absolute;
+    top: 52%;
+    color: #ffd27a;
+    font-family: "DM Sans", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgb(255 170 80 / 80%);
+    opacity: 0;
+    animation: street-float 5s ease-out infinite;
+  }
+  .street-floaters.is-laughter > span {
+    font-size: 12px;
+    font-style: italic;
+  }
+}
+@keyframes street-float {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.8);
+  }
+  15% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--drift, 0), -70px) scale(1.1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .street-floaters {
+    display: none;
+  }
+}
+
+/* Admin-chosen speech bubble sizes. */
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  .public-site.photo-layout .door-bubble.is-medium {
+    padding: 6px 11px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  .public-site.photo-layout .door-bubble.is-large {
+    padding: 8px 14px;
+    border-radius: 14px;
+    font-size: 17px;
+  }
+  .public-site.photo-layout .door-bubble:is(.is-medium, .is-large)::after {
+    bottom: -4px;
+    width: 9px;
+    height: 9px;
   }
 }

@@ -228,6 +228,13 @@ const schema = object({
       duskStart: number(0, 23, true),
       nightStart: number(0, 23, true),
     }),
+    windowEffect: optional(oneOf("none", "music", "laughter")),
+    doorBubble: optional(
+      object({
+        text: string(40),
+        size: oneOf("small", "medium", "large"),
+      }),
+    ),
   }),
   labels: object({
     menu: title,

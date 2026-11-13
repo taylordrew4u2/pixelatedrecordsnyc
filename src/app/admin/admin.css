@@ -2587,3 +2587,41 @@
     justify-content: flex-end;
   }
 }
+
+/* Big, obvious picture-style choices (window effect). */
+.ad-choice-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+.ad-choice {
+  display: grid;
+  gap: 4px;
+  min-height: 72px;
+  padding: 12px 14px;
+  text-align: left;
+  color: var(--ad-ink);
+  background: var(--ad-paper);
+  border: 2px solid var(--ad-line);
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+}
+.ad-choice strong {
+  font-size: 16px;
+}
+.ad-choice span {
+  color: var(--ad-muted);
+  font-size: 13px;
+}
+.ad-choice:hover {
+  border-color: var(--ad-ink);
+}
+.ad-choice.is-active {
+  border-color: var(--ad-red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ad-red) 25%, transparent);
+}
+.ad-choice:focus-visible {
+  outline: 3px solid var(--ad-red);
+  outline-offset: 2px;
+}

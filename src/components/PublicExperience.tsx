@@ -316,6 +316,15 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
     </>
   );
 }
+// Little notes or laughs that drift up out of the two front windows.
+const FLOATERS = [
+  { x: 19, delay: 0, drift: -6, note: "♪", laugh: "ha" },
+  { x: 27, delay: 1.6, drift: 5, note: "♫", laugh: "ha-ha" },
+  { x: 33, delay: 3.1, drift: -4, note: "♪", laugh: "ha" },
+  { x: 66, delay: 0.8, drift: 6, note: "♫", laugh: "haha" },
+  { x: 73, delay: 2.4, drift: -5, note: "♪", laugh: "ha" },
+  { x: 80, delay: 3.8, drift: 4, note: "♬", laugh: "ha-ha" },
+];
 // How far the inside photo zooms in past the bare foreground floor.
 const ROOM_ZOOM = 1.22;
 const ROOM_ZOOM_PHONE = 1.1;
@@ -441,8 +450,13 @@ function Scene({
   const door = scene.hotspots.find(
     (hotspot) => hotspot.href.split(/[?#]/)[0] === "/inside",
   );
+  const effect = content.scenes.windowEffect || "none";
   const doorHref = door?.href || "/inside";
-  const doorLabel = door?.label || content.labels.enter;
+  const doorLabel =
+    content.scenes.doorBubble?.text.trim() ||
+    door?.label ||
+    content.labels.enter;
+  const doorSize = content.scenes.doorBubble?.size || "small";
   const enhanced = enhancedPhoto(scene.image);
   const photo = safeHref(enhanced?.src || scene.image, "");
   // The photo fills the available canvas. The interior stays full resolution
@@ -631,7 +645,28 @@ function Scene({
               />
               <span className="street-window-glow is-left" aria-hidden="true" />
               <span className="street-window-glow is-right" aria-hidden="true" />
-              <A href={doorHref} className="door-bubble">
+              {effect !== "none" && (
+                <span
+                  className={`street-floaters is-${effect}`}
+                  aria-hidden="true"
+                >
+                  {FLOATERS.map((f, i) => (
+                    <span
+                      key={i}
+                      style={
+                        {
+                          left: `${f.x}%`,
+                          animationDelay: `${f.delay}s`,
+                          "--drift": `${f.drift}px`,
+                        } as CSSProperties
+                      }
+                    >
+                      {effect === "music" ? f.note : f.laugh}
+                    </span>
+                  ))}
+                </span>
+              )}
+              <A href={doorHref} className={`door-bubble is-${doorSize}`}>
                 {doorLabel}
               </A>
             </div>
@@ -2104,7 +2139,9 @@ export function PublicExperience({
                 className={`pan-hint${panHint === "hide" ? " is-hidden" : ""}`}
                 aria-hidden="true"
               >
-                <ChevronLeft size={16} /> Drag to look around{" "}
+                <ChevronLeft size={16} />
+                <span className="pan-hint-mouse">Drag to look around</span>
+                <span className="pan-hint-touch">Swipe</span>
                 <ChevronRight size={16} />
               </p>
             )}

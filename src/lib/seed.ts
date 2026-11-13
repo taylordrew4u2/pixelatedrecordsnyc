@@ -308,6 +308,8 @@ export const legacySeedContent: SiteContent = {
         },
       ],
     },
+    windowEffect: "none",
+    doorBubble: { text: "Come in", size: "small" },
     windows: [
       { id: "left-window", x: 15.1, y: 44.1, width: 19.1, height: 23.5 },
       { id: "right-window", x: 63.7, y: 44.1, width: 17.8, height: 23.5 },

@@ -58,7 +58,13 @@ test("business schema uses the published address and enhanced photo, without unc
     addressCountry: "US",
   });
   assert.ok(!("openingHoursSpecification" in data));
-  assert.ok(!("geo" in data));
+  // Coordinates and map come from the venue's verified Google Maps place.
+  assert.deepEqual(data.geo, {
+    "@type": "GeoCoordinates",
+    latitude: 40.7023993,
+    longitude: -73.9048206,
+  });
+  assert.match(data.hasMap, /place_id:ChIJp90R_w9dwokRE0mMtzH1X0M/);
   assert.ok(!("telephone" in data));
   assert.equal(data.sameAs.length, 1);
 });
