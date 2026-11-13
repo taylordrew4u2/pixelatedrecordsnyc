@@ -6,6 +6,7 @@ import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/600.css";
 import "@fontsource/barlow-condensed/600.css";
+import "@fontsource/yellowtail/400.css";
 import "./globals.css";
 import "./public-theme.css";
 import "./pov-theme.css";

@@ -774,6 +774,15 @@ function Home({
           {entrance?.label || content.labels.enter}
         </A>
       </nav>
+      <nav className="sky-nav" aria-label="Main">
+        {content.navigation
+          .filter((link) => link.visible && destinationVisible(link.href, content))
+          .map((link) => (
+            <A key={link.id} href={link.href} className="sky-nav-link">
+              {link.label}
+            </A>
+          ))}
+      </nav>
       <Sections sections={page.sections} content={content} />
     </>
   );
