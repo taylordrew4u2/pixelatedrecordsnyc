@@ -74,28 +74,28 @@ const roomPhotos = {
     width: 1448,
   },
   "/assets/storefront.webp": {
-    src: "/assets/storefront-wide.webp",
-    small: "/assets/storefront-wide-small.webp",
+    src: "/assets/storefront-wide-day.webp",
+    small: "/assets/storefront-wide-day-small.webp",
     width: 2672,
   },
   "/assets/storefront-clear.webp": {
-    src: "/assets/storefront-wide.webp",
-    small: "/assets/storefront-wide-small.webp",
+    src: "/assets/storefront-wide-day.webp",
+    small: "/assets/storefront-wide-day-small.webp",
     width: 2672,
   },
   "/assets/storefront-blinds.webp": {
-    src: "/assets/storefront-wide.webp",
-    small: "/assets/storefront-wide-small.webp",
+    src: "/assets/storefront-wide-day.webp",
+    small: "/assets/storefront-wide-day-small.webp",
     width: 2672,
   },
   "/assets/storefront-shades.webp": {
-    src: "/assets/storefront-wide.webp",
-    small: "/assets/storefront-wide-small.webp",
+    src: "/assets/storefront-wide-day.webp",
+    small: "/assets/storefront-wide-day-small.webp",
     width: 2672,
   },
   "/assets/storefront-shades-original.png": {
-    src: "/assets/storefront-wide.webp",
-    small: "/assets/storefront-wide-small.webp",
+    src: "/assets/storefront-wide-day.webp",
+    small: "/assets/storefront-wide-day-small.webp",
     width: 2672,
   },
 };
