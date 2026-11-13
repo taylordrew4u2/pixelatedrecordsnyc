@@ -73,5 +73,10 @@
     "paper": "#f2ecdf",
     "ink": "#181614",
     "accent": "#ff0a05"
+  },
+  "/assets/bar-room-wide.webp": {
+    "paper": "#f2ecdf",
+    "ink": "#181614",
+    "accent": "#ff0a05"
   }
 }

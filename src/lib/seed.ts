@@ -86,6 +86,11 @@ export const legacySeedContent: SiteContent = {
       "Records and seating by the front window.",
     ),
     photo(
+      "bar-room-wide",
+      "The bar and the room",
+      "The bar under plum damask wallpaper, stools along the counter and the room toward the front door.",
+    ),
+    photo(
       "record-bins",
       "Dig through the bins",
       "A close view of the vinyl record bins.",
@@ -217,8 +222,8 @@ export const legacySeedContent: SiteContent = {
       "Records. Drinks.\nGood company.",
       "ABOUT PIXELATED",
       "Pixelated Records is a record shop, bar, and event space in Ridgewood, New York. A place for crate digging, a drink with a friend, and whatever the night brings.",
-      "/assets/shop-window.webp",
-      "The record shop and front window at Pixelated Records.",
+      "/assets/bar-room-wide.webp",
+      "The bar under plum damask wallpaper and the room toward the front door at Pixelated Records.",
     ),
     page(
       "records",

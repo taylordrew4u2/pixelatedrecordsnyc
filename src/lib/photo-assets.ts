@@ -17,6 +17,12 @@ const roomPhotos = {
     small: "/assets/bar-rich-solid-small.webp",
     width: 1448,
   },
+  // Two photos of the bar stitched into one wider view (wallpaper is plum).
+  "/assets/bar-room-wide.webp": {
+    src: "/assets/bar-room-wide.webp",
+    small: "/assets/bar-room-wide-small.webp",
+    width: 1968,
+  },
   "/assets/interior.webp": {
     src: "/assets/interior-solid.webp",
     small: "/assets/interior-solid-small.webp",
