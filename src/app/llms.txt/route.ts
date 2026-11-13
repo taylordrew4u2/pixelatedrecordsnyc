@@ -1,6 +1,7 @@
 import { formatInTimeZone } from "date-fns-tz";
 import { getPublishedContent } from "@/lib/server/content";
 import { VENUE_MAP } from "@/lib/site-seo";
+import { sectionHref } from "@/lib/sections";
 
 export const dynamic = "force-dynamic";
 
@@ -12,11 +13,19 @@ export async function GET(request: Request) {
   const { brand, location, eventSettings } = content;
   const tz = eventSettings.timeZone;
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const pages = content.pages.filter((page) => page.visible);
+  const pages = content.pages.filter(
+    (page) =>
+      page.visible &&
+      page.id !== "inside" &&
+      page.id !== "events" &&
+      page.id !== "booth",
+  );
   const about = pages.find((page) => page.id === "about");
   const now = Date.now();
   const upcoming = content.events
-    .filter((event) => event.published && Date.parse(event.end || event.start) >= now)
+    .filter(
+      (event) => event.published && Date.parse(event.end || event.start) >= now,
+    )
     .sort((a, b) => Date.parse(a.start) - Date.parse(b.start))
     .slice(0, 12);
   const lines = [
@@ -42,7 +51,7 @@ export async function GET(request: Request) {
     "## Pages",
     ...pages.map(
       (page) =>
-        `- [${page.title.replace(/\n/g, " ")}](${link(page.id === "home" ? "/" : `/${page.id}`)}): ${page.seoDescription || page.description}`,
+        `- [${page.title.replace(/\n/g, " ")}](${link(page.id === "home" ? "/" : sectionHref(`/${page.id}`))}): ${page.seoDescription || page.description}`,
     ),
     "",
     "## Upcoming events",

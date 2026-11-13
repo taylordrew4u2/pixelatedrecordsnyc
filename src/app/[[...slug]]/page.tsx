@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { headers } from "next/headers";
 import { getContentState, getPublishedContent } from "@/lib/server/content";
 import { isAuthenticated } from "@/lib/server/auth";
 import { PublicExperience } from "@/components/PublicExperience";
+import { sectionHref } from "@/lib/sections";
 import type { SiteContent } from "@/lib/types";
 import { enhancedPhoto } from "@/lib/photo-assets";
 import {
@@ -85,6 +86,14 @@ export default async function Route({ params, searchParams }: Props) {
   const preview = query.preview === "1" && (await isAuthenticated());
   const content = await resolveContent(preview);
   const id = route.slug?.[0] || "home";
+  // One scrolling page: old standalone page URLs land on their section.
+  if (route.slug?.length === 1) {
+    const anchor = sectionHref(`/${id}`);
+    if (anchor !== `/${id}`)
+      permanentRedirect(
+        preview ? anchor.replace("/#", "/?preview=1#") : anchor,
+      );
+  }
   const page = content.pages.find(
     (page) => page.id === id && (preview || page.visible),
   );

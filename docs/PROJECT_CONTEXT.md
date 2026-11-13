@@ -11,6 +11,16 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 - Correct orientation: records LEFT, DJ booth AHEAD, bar RIGHT. The initial spoken directions were corrected.
 - Netlify Free replaced the original Vercel target with owner approval. No paid services, trials, add-ons, or automatic overages. Online records/merchandise commerce remains deferred.
 
+## Current direction (November 13, 2026) — supersedes everything below
+
+The owner changed plans. These rules override earlier visual and navigation notes:
+
+- **One anchored, scrolling page.** Home holds every section in order: storefront photo and intro, About, Bar (drinks menu dialog), DJ booth & events, Calendar, Records, Location, booking. Header links jump to `/#about`, `/#bar`, `/#events`, `/#calendar`, `/#records`, `/#location` (`src/lib/sections.ts`). Old page URLs (`/bar`, `/about`, …) permanently redirect to their section; `/inside` redirects home. Event detail pages (`/events/<slug>`) stay separate.
+- **No inside view.** No room scene, hotspots, room links or "Come in".
+- **Photos are never modified.** Use the supplied originals only (`storefront.webp` and the first-build room photos; `-small` files are plain downscales). No retouching, colour grading, stitching, AI extension, sky replacement, night layers, blinds, CSS filters, vignettes or glow. Old edited variants were deleted; saved references to them resolve back to originals in `src/lib/photo-assets.ts`.
+- **Classic stacked layout.** Header, then each photo shown whole (never cropped, slid or zoomed), then its text and buttons below. Nothing is placed over any image. Styles live in `src/app/stacked-layout.css`.
+- Admin "Top photo" edits only the storefront photo and its description; each section's photo is edited with its page.
+
 ## Latest visual decisions
 
 - Every page should use the photograph as the background in the space between the header and footer. Preserve the full-screen photo layout introduced late in the conversation; do not revert to the earlier split-panel design.

@@ -1,0 +1,428 @@
+/* Classic stacked layout: header, then each photo shown whole and untouched,
+   then content beneath it. Nothing floats over a photo, nothing is cropped,
+   slid or zoomed, and no filters or overlays are applied to images. */
+.public-site.stacked-layout {
+  --stack-max: 1180px;
+  --stack-gutter: clamp(16px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: auto;
+  overflow: visible;
+  color: var(--photo-paper);
+  background: var(--ink);
+}
+.public-site.stacked-layout main,
+.public-site.stacked-layout .page-scroll {
+  position: static;
+  display: block;
+  flex: 1 0 auto;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  transform: none;
+}
+
+/* Header ---------------------------------------------------------------- */
+.public-site.stacked-layout .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  height: auto;
+  min-height: 0;
+  padding: 12px var(--stack-gutter);
+  background: var(--ink);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--photo-paper) 14%, transparent);
+}
+.public-site.stacked-layout .brand-link img {
+  display: block;
+  width: 132px;
+  height: auto;
+}
+.public-site.stacked-layout .header-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+}
+.public-site.stacked-layout .header-link {
+  padding: 8px 0;
+  color: var(--photo-paper);
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.public-site.stacked-layout .header-link:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+.public-site.stacked-layout .header-now {
+  grid-column: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  color: var(--photo-paper);
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.public-site.stacked-layout
+  .header-now
+  :is(.header-now-label, .header-now-title) {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.public-site.stacked-layout .header-now .header-now-title {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.public-site.stacked-layout .header-now time {
+  padding-left: 10px;
+  border-left: 1px solid color-mix(in srgb, var(--photo-paper) 30%, transparent);
+  opacity: 0.8;
+}
+.public-site.stacked-layout .menu-trigger {
+  display: none;
+}
+
+/* Photos ----------------------------------------------------------------- */
+.public-site.stacked-layout .stack-photo,
+.public-site.stacked-layout :is(.space-photo, .about-image, .records-image) {
+  position: static;
+  inset: auto;
+  width: 100%;
+  max-width: var(--stack-max);
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+  transform: none;
+}
+.public-site.stacked-layout
+  :is(.stack-photo, .space-photo, .about-image, .records-image)
+  img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+  filter: none;
+  transform: none;
+  opacity: 1;
+}
+.public-site.stacked-layout :is(.home-hero, .interior-hero) {
+  position: static;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  padding: var(--stack-gutter) var(--stack-gutter) 0;
+  overflow: visible;
+}
+.public-site.stacked-layout .stack-photo {
+  margin: 0 auto;
+}
+/* Decorations that used to sit on top of photos. */
+.public-site.stacked-layout :is(.about-caption, .record-orbit, .scene-shade) {
+  display: none;
+}
+
+/* Intro text under the photo --------------------------------------------- */
+.public-site.stacked-layout .stack-intro {
+  position: static;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px 48px;
+  max-width: var(--stack-max);
+  margin: 0 auto;
+  padding: 32px var(--stack-gutter) 8px;
+  clip: auto;
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  white-space: normal;
+}
+.public-site.stacked-layout .stack-intro h1 {
+  margin: 8px 0 0;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 0.95;
+}
+.public-site.stacked-layout .stack-intro p {
+  margin: 0;
+  color: color-mix(in srgb, var(--photo-paper) 82%, transparent);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* Calls to action -------------------------------------------------------- */
+.public-site.stacked-layout .home-entry {
+  position: static;
+  display: block;
+  max-width: var(--stack-max);
+  margin: 0 auto;
+  padding: 16px var(--stack-gutter) 48px;
+  border: 0;
+  transform: none;
+}
+.public-site.stacked-layout .home-entry-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 12px 28px;
+  color: var(--photo-paper);
+  background: var(--accent);
+  border: 0;
+  border-radius: var(--button-radius, 0);
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.public-site.stacked-layout .home-entry-link:hover {
+  color: var(--ink);
+  background: var(--photo-paper);
+}
+
+/* Inside ------------------------------------------------------------------ */
+.public-site.stacked-layout .room-exit {
+  position: static;
+  max-width: var(--stack-max);
+  margin: 0 auto;
+  padding: 16px var(--stack-gutter) 0;
+}
+.public-site.stacked-layout .room-exit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 0;
+  color: var(--photo-paper);
+  background: none;
+  border: 0;
+  font-size: 16px;
+  text-decoration: none;
+}
+.public-site.stacked-layout .interior-hero {
+  padding-top: 8px;
+}
+.public-site.stacked-layout .room-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  max-width: var(--stack-max);
+  margin: 0 auto;
+  padding: 16px var(--stack-gutter) 56px;
+}
+.public-site.stacked-layout .room-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  padding: 14px 20px;
+  color: var(--ink);
+  background: var(--photo-paper);
+  border-radius: var(--button-radius, 0);
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.public-site.stacked-layout .room-link:hover {
+  color: var(--photo-paper);
+  background: var(--accent);
+}
+
+/* Room pages (DJ booth, record shop, bar) --------------------------------- */
+.public-site.stacked-layout .space-hero {
+  position: static;
+  display: block;
+  height: auto;
+  min-height: 0;
+  max-width: none;
+  padding: var(--stack-gutter) var(--stack-gutter) 0;
+  overflow: visible;
+}
+.public-site.stacked-layout .space-content {
+  position: static;
+  inset: auto;
+  max-width: var(--stack-max);
+  margin: 0 auto;
+  padding: 28px 0 40px;
+  color: var(--photo-paper);
+  background: none;
+  border: 0;
+  transform: none;
+}
+.public-site.stacked-layout .space-content h1 {
+  margin: 12px 0;
+  font-size: clamp(34px, 5vw, 56px);
+}
+.public-site.stacked-layout .space-content p {
+  max-width: 62ch;
+  font-size: 18px;
+  line-height: 1.6;
+}
+.public-site.stacked-layout .space-content :is(.back-link, .pov-link) {
+  position: static;
+  transform: none;
+}
+
+/* Text pages: copy and photo side by side on wide screens, stacked on phones. */
+.public-site.stacked-layout :is(.about-page, .records-page) {
+  position: static;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 40px;
+  max-width: var(--stack-max);
+  height: auto;
+  min-height: 0;
+  margin: 0 auto;
+  padding: var(--stack-gutter);
+}
+
+/* Every section after the hero reads as normal page content. */
+.public-site.stacked-layout :is(.section-wrap, .booth-events, .cream-section) {
+  position: static;
+  max-width: var(--stack-max);
+  margin-left: auto;
+  margin-right: auto;
+  transform: none;
+}
+
+/* Footer ------------------------------------------------------------------ */
+.public-site.stacked-layout .venue-footer {
+  position: static;
+  margin-top: auto;
+  transform: none;
+}
+
+/* Phones ------------------------------------------------------------------ */
+@media (max-width: 860px) {
+  .public-site.stacked-layout .site-header {
+    grid-template-columns: auto 1fr auto;
+    gap: 8px 12px;
+  }
+  .public-site.stacked-layout .header-links {
+    display: none;
+  }
+  .public-site.stacked-layout .menu-trigger {
+    grid-column: 3;
+    grid-row: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+  .public-site.stacked-layout .header-now {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .public-site.stacked-layout .stack-intro {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-top: 24px;
+  }
+  .public-site.stacked-layout .stack-intro p {
+    font-size: 17px;
+  }
+  .public-site.stacked-layout .home-entry-link {
+    width: 100%;
+    justify-content: center;
+  }
+  .public-site.stacked-layout .room-links {
+    grid-template-columns: 1fr 1fr;
+  }
+  .public-site.stacked-layout .room-link {
+    min-height: 56px;
+    padding: 12px 14px;
+    font-size: 20px;
+  }
+  .public-site.stacked-layout :is(.about-page, .records-page) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .public-site.stacked-layout .about-image {
+    order: -1;
+  }
+  .public-site.stacked-layout .records-image {
+    order: -1;
+  }
+}
+
+/* One scrolling page: each former page is a section; the sticky header
+   never covers a section's top when jumping to it. */
+html:has(.public-site.stacked-layout) {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.public-site.stacked-layout) {
+    scroll-behavior: auto;
+  }
+}
+.public-site.stacked-layout .page-section {
+  scroll-margin-top: 80px;
+  border-top: 1px solid color-mix(in srgb, var(--photo-paper) 12%, transparent);
+}
+@media (max-width: 860px) {
+  .public-site.stacked-layout .page-section {
+    scroll-margin-top: 120px;
+  }
+}
+.public-site.stacked-layout .booth-events {
+  position: static;
+  inset: auto;
+  width: auto;
+  margin: 0 auto;
+  padding: 0 var(--stack-gutter) 40px;
+  transform: none;
+}
+.public-site.stacked-layout .drinks-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px 24px;
+  color: var(--photo-paper);
+  background: var(--accent);
+  border: 0;
+  border-radius: var(--button-radius, 0);
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.public-site.stacked-layout .drinks-trigger::before {
+  display: none;
+}
+.public-site.stacked-layout .drinks-trigger:hover {
+  color: var(--ink);
+  background: var(--photo-paper);
+}

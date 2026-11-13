@@ -12,7 +12,6 @@ import {
 import Link from "next/link";
 import photoColors from "@/lib/photo-colors.json";
 import { enhancedPhoto } from "@/lib/photo-assets";
-import { storefrontSky, storefrontSkyMask } from "@/lib/storefront-sky";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -30,13 +29,7 @@ import {
   Instagram,
 } from "lucide-react";
 import { formatInTimeZone } from "date-fns-tz";
-import type {
-  SiteContent,
-  Page,
-  Scene as SceneType,
-  Event,
-  Section,
-} from "@/lib/types";
+import type { SiteContent, Page, Event, Section } from "@/lib/types";
 import {
   calendarCells,
   dateKey,
@@ -49,9 +42,11 @@ import {
   upcomingEvents,
 } from "@/lib/events";
 import { destinationVisible, safeHref } from "@/lib/links";
+import { sectionHref } from "@/lib/sections";
 
 const PreviewContext = createContext(false);
 const ContentContext = createContext<SiteContent | null>(null);
+const OnePageContext = createContext(false);
 function A({
   href,
   children,
@@ -67,7 +62,7 @@ function A({
 }) {
   const preview = useContext(PreviewContext);
   const content = useContext(ContentContext);
-  let target = safeHref(href);
+  let target = sectionHref(safeHref(href));
   if (target.startsWith("/") && !target.startsWith("//")) {
     if (!preview && target.split(/[?#]/)[0] === "/admin") return null;
     if (content && !preview && !destinationVisible(target, content))
@@ -220,6 +215,13 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
             alt={content.brand.name}
           />
         </A>
+        <nav className="header-links" aria-label="Primary">
+          {links.map((item) => (
+            <A key={item.id} href={item.href} className="header-link">
+              {item.label}
+            </A>
+          ))}
+        </nav>
         <A
           href={headerEvent ? `/events/${headerEvent.slug}` : "/events"}
           className={`header-now${tonight?.live ? " is-live" : ""}`}
@@ -308,435 +310,8 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
         </div>
         <div className="menu-bottom">
           <span>{content.footer.tagline}</span>
-          <A href="/inside" onClick={close}>
-            {content.labels.enter} <ArrowRight size={16} />
-          </A>
         </div>
       </dialog>
-    </>
-  );
-}
-// Little notes or laughs that drift up out of the two front windows.
-const FLOATERS = [
-  { side: "left", at: 0.15, delay: 0, drift: -6, note: "♪", laugh: "ha" },
-  { side: "left", at: 0.5, delay: 1.6, drift: 5, note: "♫", laugh: "ha-ha" },
-  { side: "left", at: 0.85, delay: 3.1, drift: -4, note: "♪", laugh: "ha" },
-  { side: "right", at: 0.15, delay: 0.8, drift: 6, note: "♫", laugh: "haha" },
-  { side: "right", at: 0.5, delay: 2.4, drift: -5, note: "♪", laugh: "ha" },
-  { side: "right", at: 0.85, delay: 3.8, drift: 4, note: "♬", laugh: "ha-ha" },
-];
-// How far the inside photo zooms in past the bare foreground floor.
-const ROOM_ZOOM = 1.22;
-const ROOM_ZOOM_PHONE = 1.1;
-function Scene({
-  content,
-  scene,
-  exterior = false,
-  sky,
-}: {
-  content: SiteContent;
-  scene: SceneType;
-  exterior?: boolean;
-  sky?: ReturnType<typeof storefrontSky>;
-}) {
-  const view = useRef<HTMLDivElement>(null);
-  const img = useRef<HTMLImageElement>(null);
-  const panPosition = useRef<number | null>(null);
-  const drag = useRef<{ x: number; scroll: number; moved: boolean } | null>(
-    null,
-  );
-  const suppressClick = useRef(false);
-  const [pan, setPan] = useState({ enabled: false, left: false, right: false });
-  const syncPan = () => {
-    const element = view.current;
-    if (!element || exterior) return;
-    const maximum = element.scrollWidth - element.clientWidth;
-    if (maximum > 1) panPosition.current = element.scrollLeft / maximum;
-    const next = {
-      enabled: maximum > 1,
-      left: element.scrollLeft > 1,
-      right: element.scrollLeft < maximum - 1,
-    };
-    setPan((previous) =>
-      previous.enabled === next.enabled &&
-      previous.left === next.left &&
-      previous.right === next.right
-        ? previous
-        : next,
-    );
-  };
-  const look = (direction: number) => {
-    const element = view.current;
-    if (!element) return;
-    element.scrollBy({
-      left: direction * element.clientWidth * 0.7,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
-  };
-  const [geometry, setGeometry] = useState<CSSProperties>({
-    width: "100%",
-    height: "100%",
-    left: 0,
-    top: 0,
-  });
-  const [loaded, setLoaded] = useState(0);
-  useEffect(() => {
-    const fit = () => {
-      const parent = view.current,
-        image = img.current;
-      if (!parent || !image?.naturalWidth) return;
-      const width = parent.clientWidth,
-        height = parent.clientHeight;
-      const mobile = width < 760;
-      // Landscape phones: a thin strip, so show the floor-level rooms and labels.
-      const short = !exterior && height < 500 && width > height;
-      const street = image.currentSrc.includes(
-        "/assets/storefront-street-mobile",
-      );
-      // Desktop storefront: always show the whole building, top to sidewalk.
-      const whole = exterior && !street;
-      const cover = Math.max(
-        width / image.naturalWidth,
-        height / image.naturalHeight,
-      );
-      // Fill the screen, but never crop more than ~6% of the storefront's
-      // height; only ultra-wide screens show plain bands at the sides.
-      const contain = Math.min(
-        width / image.naturalWidth,
-        height / image.naturalHeight,
-      );
-      // Inside: zoom past the empty foreground floor so the bins, booth,
-      // mural and bar fill the frame and the room reads bigger.
-      const scale = whole
-        ? Math.min(cover, contain * 1.06)
-        : exterior
-          ? cover
-          : short
-            ? cover
-            : cover * (mobile ? ROOM_ZOOM_PHONE : ROOM_ZOOM);
-      const w = image.naturalWidth * scale,
-        h = image.naturalHeight * scale;
-      setGeometry({
-        width: w,
-        height: h,
-        left: !exterior ? 0 : (width - w) / 2,
-        top: exterior
-          ? whole || width > height
-            ? (height - h) / 2
-            : 0
-          : ((height - h) *
-              (short ? 68 : mobile ? scene.mobileFocalY : scene.focalY)) /
-            100,
-      });
-    };
-    fit();
-    const observer = new ResizeObserver(fit);
-    if (view.current) observer.observe(view.current);
-    return () => observer.disconnect();
-  }, [loaded, scene, exterior]);
-  useEffect(() => {
-    const element = view.current;
-    if (!element || exterior) return;
-    const maximum = element.scrollWidth - element.clientWidth;
-    const focal = element.clientWidth < 760 ? scene.mobileFocalX : scene.focalX;
-    element.scrollLeft = maximum * (panPosition.current ?? focal / 100);
-    syncPan();
-  }, [geometry, exterior, scene.focalX, scene.mobileFocalX]);
-  const hotspots = scene.hotspots.filter((hotspot) =>
-    destinationVisible(hotspot.href, content),
-  );
-  const door = scene.hotspots.find(
-    (hotspot) => hotspot.href.split(/[?#]/)[0] === "/inside",
-  );
-  const effect = content.scenes.windowEffect || "none";
-  const doorHref = door?.href || "/inside";
-  const doorLabel =
-    content.scenes.doorBubble?.text.trim() ||
-    door?.label ||
-    content.labels.enter;
-  const doorSize = content.scenes.doorBubble?.size || "small";
-  const enhanced = enhancedPhoto(scene.image);
-  const photo = safeHref(enhanced?.src || scene.image, "");
-  // The photo fills the available canvas. The interior stays full resolution
-  // because visitors can pan across its much wider rendered image.
-  const sourceSet =
-    exterior && enhanced && enhanced.src !== enhanced.small
-      ? `${enhanced.small} 960w, ${enhanced.src} ${enhanced.width}w`
-      : undefined;
-  const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
-  // Use the expanded street photograph on phones, including landscape touch devices.
-  const portrait = exterior && Boolean(skyMask);
-  const PHONE = "(max-width: 760px), (hover: none) and (pointer: coarse)";
-  // The sky layer keeps the full photo (its clouds); the storefront itself is
-  // a cut-out with the sky removed, so the time-of-day sky shows cleanly.
-  const skySource = portrait && (
-    <source
-      media={PHONE}
-      srcSet="/assets/storefront-street-mobile-solid.webp"
-      width={1024}
-      height={1536}
-    />
-  );
-  const mobileSource = portrait && (
-    <source
-      media={PHONE}
-      srcSet="/assets/storefront-street-mobile-cut-small.webp 640w, /assets/storefront-street-mobile-cut.webp 1024w"
-      sizes="100vw"
-      width={1024}
-      height={1536}
-    />
-  );
-  return (
-    <>
-      <div
-        className={`scene-viewport ${exterior ? "exterior-scene" : "interior-scene"}`}
-        ref={view}
-        role={exterior ? undefined : "region"}
-        aria-label={exterior ? undefined : "Look around Pixelated Records"}
-        aria-describedby={
-          !exterior && pan.enabled ? "room-pan-hint" : undefined
-        }
-        tabIndex={!exterior && pan.enabled ? 0 : undefined}
-        onScroll={exterior ? undefined : syncPan}
-        onKeyDown={(event) => {
-          if (exterior || event.target !== event.currentTarget) return;
-          if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-            event.preventDefault();
-            look(event.key === "ArrowLeft" ? -1 : 1);
-          } else if (event.key === "Home" || event.key === "End") {
-            event.preventDefault();
-            event.currentTarget.scrollLeft =
-              event.key === "Home" ? 0 : event.currentTarget.scrollWidth;
-          }
-        }}
-        onPointerDown={(event) => {
-          if (
-            exterior ||
-            !pan.enabled ||
-            event.pointerType !== "mouse" ||
-            event.button !== 0
-          )
-            return;
-          suppressClick.current = false;
-          drag.current = {
-            x: event.clientX,
-            scroll: event.currentTarget.scrollLeft,
-            moved: false,
-          };
-        }}
-        onPointerMove={(event) => {
-          const current = drag.current;
-          if (!current) return;
-          const offset = event.clientX - current.x;
-          if (Math.abs(offset) > 5) {
-            current.moved = true;
-            suppressClick.current = true;
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }
-          if (current.moved) {
-            event.preventDefault();
-            event.currentTarget.scrollLeft = current.scroll - offset;
-          }
-        }}
-        onPointerUp={(event) => {
-          drag.current = null;
-          if (event.currentTarget.hasPointerCapture(event.pointerId))
-            event.currentTarget.releasePointerCapture(event.pointerId);
-        }}
-        onPointerCancel={() => {
-          drag.current = null;
-          suppressClick.current = false;
-        }}
-        onClickCapture={(event) => {
-          if (!suppressClick.current) return;
-          suppressClick.current = false;
-          event.preventDefault();
-          event.stopPropagation();
-        }}
-      >
-        {exterior && skyMask && sky && (
-          <div
-            className="storefront-fill"
-            aria-hidden="true"
-            style={
-              {
-                "--sky-top": sky.top,
-                "--sky-horizon-color": sky.horizon,
-              } as CSSProperties
-            }
-          ></div>
-        )}
-        <div
-          className={`scene-plane${portrait ? " has-street-portrait" : ""}`}
-          style={
-            sky
-              ? ({
-                  ...geometry,
-                  "--sky-daylight": sky.daylight,
-                } as CSSProperties)
-              : geometry
-          }
-        >
-          {skyMask && sky && (
-            <div
-              className="storefront-sky"
-              aria-hidden="true"
-              data-sky-phase={sky.phase}
-              style={
-                {
-                  "--sky-daylight": sky.daylight,
-                  "--sky-top": sky.top,
-                  "--sky-horizon-color": sky.horizon,
-                  "--sky-stars": sky.stars,
-                } as CSSProperties
-              }
-            >
-              <picture>
-                {skySource}
-                <img
-                  className="sky-day"
-                  src={photo}
-                  srcSet={sourceSet}
-                  sizes="100vw"
-                  alt=""
-                />
-              </picture>
-              <div className="sky-stars" />
-            </div>
-          )}
-          <picture className="scene-picture">
-            {mobileSource}
-            <img
-              ref={img}
-              src={photo}
-              srcSet={sourceSet}
-              sizes={exterior ? "100vw" : undefined}
-              alt={scene.alt}
-              className="scene-photo"
-              style={
-                skyMask
-                  ? {
-                      maskImage: `url("${skyMask}")`,
-                      WebkitMaskImage: `url("${skyMask}")`,
-                      maskSize: "100% 100%",
-                      WebkitMaskSize: "100% 100%",
-                      maskRepeat: "no-repeat",
-                      WebkitMaskRepeat: "no-repeat",
-                    }
-                  : undefined
-              }
-              loading="eager"
-              fetchPriority="high"
-              draggable={exterior ? undefined : false}
-              onLoad={() => setLoaded((value) => value + 1)}
-            />
-          </picture>
-          {portrait && (
-            <div className="street-extras">
-              <picture>
-                <source
-                  media={PHONE}
-                  srcSet="/assets/storefront-street-mobile-night-small.webp 640w, /assets/storefront-street-mobile-night.webp 1024w"
-                  sizes="100vw"
-                />
-                <img
-                  className="street-night"
-                  src="/assets/storefront-wide-night.webp"
-                  srcSet="/assets/storefront-wide-night-small.webp 960w, /assets/storefront-wide-night.webp 2672w"
-                  sizes="100vw"
-                  alt=""
-                  aria-hidden="true"
-                />
-              </picture>
-              <span className="street-window-glow is-left" aria-hidden="true" />
-              <span className="street-window-glow is-right" aria-hidden="true" />
-              {effect !== "none" && (
-                <span
-                  className={`street-floaters is-${effect}`}
-                  aria-hidden="true"
-                >
-                  {FLOATERS.map((f, i) => (
-                    <span
-                      key={i}
-                      style={
-                        {
-                          left: `calc(var(--win-${f.side}-x) + var(--win-${f.side}-w) * ${f.at})`,
-                          animationDelay: `${f.delay}s`,
-                          "--drift": `${f.drift}px`,
-                        } as CSSProperties
-                      }
-                    >
-                      {effect === "music" ? f.note : f.laugh}
-                    </span>
-                  ))}
-                </span>
-              )}
-              <A href={doorHref} className={`door-bubble is-${doorSize}`}>
-                {doorLabel}
-              </A>
-            </div>
-          )}
-          {!exterior &&
-            hotspots.map((hotspot) => (
-              <div
-                key={hotspot.id}
-                className={`scene-hotspot ${exterior ? "door-hotspot" : "room-hotspot"}`}
-                style={{
-                  left: `${hotspot.x}%`,
-                  top: `${hotspot.y}%`,
-                  width: `${hotspot.width}%`,
-                  height: `${hotspot.height}%`,
-                }}
-              >
-                <A
-                  href={hotspot.href}
-                  className={`hotspot-link ${exterior ? "door-link" : ""}`}
-                >
-                  {exterior ? (
-                    <span>{hotspot.label || content.labels.enter}</span>
-                  ) : (
-                    <>
-                      {hotspot.direction === "left" && <ArrowLeft size={17} />}
-                      <span>{hotspot.label || "Explore"}</span>
-                      {hotspot.direction === "right" ? (
-                        <ArrowRight size={17} />
-                      ) : hotspot.direction === "forward" ? (
-                        <ArrowUpRight size={17} />
-                      ) : null}
-                    </>
-                  )}
-                </A>
-              </div>
-            ))}
-        </div>
-        <div className="scene-shade" aria-hidden="true" />
-      </div>
-      {!exterior && pan.enabled && (
-        <div className="scene-pan-controls">
-          <button
-            type="button"
-            aria-label="Look left"
-            disabled={!pan.left}
-            onClick={() => look(-1)}
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <span id="room-pan-hint">
-            <span className="pan-touch">Swipe</span>
-            <span className="pan-mouse">Drag</span> to look around
-          </span>
-          <button
-            type="button"
-            aria-label="Look right"
-            disabled={!pan.right}
-            onClick={() => look(1)}
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      )}
     </>
   );
 }
@@ -749,73 +324,80 @@ function Home({
   page: Page;
   now: Date;
 }) {
-  const entrance = content.scenes.exterior.hotspots.find(
-    (hotspot) => hotspot.href.split(/[?#]/)[0] === "/inside",
-  );
+  const find = (id: string) =>
+    content.pages.find((entry) => entry.id === id && entry.visible);
+  const about = find("about"),
+    bar = find("bar"),
+    booth = find("booth"),
+    calendar = find("calendar"),
+    recordShop = find("record-shop"),
+    records = find("records"),
+    location = find("location");
   return (
-    <>
+    <OnePageContext.Provider value={true}>
       <section className="home-hero" aria-labelledby="home-title">
-        <Scene
-          content={content}
-          scene={content.scenes.exterior}
-          exterior
-          sky={storefrontSky(now)}
-        />
+        <figure className="stack-photo">
+          <Photo
+            src={content.scenes.exterior.image}
+            alt={content.scenes.exterior.alt}
+            priority
+          />
+        </figure>
       </section>
-      <section className="scene-caption pov-visually-hidden">
+      <section className="scene-caption stack-intro">
         <div>
           <Eyebrow>{page.eyebrow}</Eyebrow>
           <h1 id="home-title">{page.title}</h1>
         </div>
         <p>{page.description}</p>
       </section>
-      <nav className="home-entry" aria-label="Enter the store">
-        <A href={entrance?.href || "/inside"} className="home-entry-link">
-          {entrance?.label || content.labels.enter}
-        </A>
-      </nav>
-      <nav className="sky-nav" aria-label="Main">
-        {content.navigation
-          .filter((link) => link.visible && destinationVisible(link.href, content))
-          .map((link) => (
-            <A key={link.id} href={link.href} className="sky-nav-link">
-              {link.label}
-            </A>
-          ))}
-      </nav>
       <Sections sections={page.sections} content={content} />
-    </>
-  );
-}
-function Interior({ content, page }: { content: SiteContent; page: Page }) {
-  return (
-    <>
-      <div className="room-intro pov-visually-hidden">
-        <div>
-          <Eyebrow>{page.eyebrow}</Eyebrow>
-          <h1>{page.title}</h1>
+      {about && (
+        <div id="about" className="page-section">
+          <AboutPage content={content} page={about} />
         </div>
-        <p>{page.description}</p>
-      </div>
-      <section className="interior-hero" aria-label="Explore Pixelated Records">
-        <nav className="room-exit" aria-label="Leave the store">
-          <A href="/" className="room-exit-link">
-            <ArrowLeft size={16} /> Leave
-          </A>
-        </nav>
-        <Scene content={content} scene={content.scenes.interior} />
-      </section>
-      <Sections sections={page.sections} content={content} />
-    </>
+      )}
+      {bar && (
+        <div id="bar" className="page-section">
+          <BarPage content={content} page={bar} />
+        </div>
+      )}
+      {booth && (
+        <div id="events" className="page-section">
+          <SpacePage content={content} page={booth} kind="booth" now={now} />
+        </div>
+      )}
+      {calendar && (
+        <div id="calendar" className="page-section">
+          <CalendarPage content={content} page={calendar} now={now} />
+        </div>
+      )}
+      {(recordShop || records) && (
+        <div id="records" className="page-section">
+          {recordShop && (
+            <SpacePage
+              content={content}
+              page={recordShop}
+              kind="record-shop"
+              now={now}
+            />
+          )}
+          {records && <RecordsPage content={content} page={records} />}
+        </div>
+      )}
+      {location && (
+        <div id="location" className="page-section">
+          <LocationPage content={content} page={location} now={now} />
+        </div>
+      )}
+      <OnePageContext.Provider value={false}>
+        <BookingSection content={content} />
+      </OnePageContext.Provider>
+    </OnePageContext.Provider>
   );
 }
-function BackToRoom({ content }: { content: SiteContent }) {
-  return (
-    <A href="/inside" className="text-link back-link">
-      <ArrowLeft size={16} />
-      {content.labels.backToRoom}
-    </A>
-  );
+function BackToRoom(_: { content: SiteContent }) {
+  return null;
 }
 function SpacePage({
   content,
@@ -1338,11 +920,7 @@ function EventDetail({
     </>
   );
 }
-// The supplied bar photo has a gilded frame on the back wall. When that photo
-// is in use, the frame itself becomes the drinks-menu button.
-const FRAMED_BAR_IMAGE = "/assets/bar.webp";
 function BarPage({ content, page }: { content: SiteContent; page: Page }) {
-  const framed = page.image === FRAMED_BAR_IMAGE;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuDialog = useRef<HTMLDialogElement>(null);
   const menuTrigger = useRef<HTMLButtonElement>(null);
@@ -1385,24 +963,7 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
   };
   return (
     <>
-      <section className={`space-hero space-bar ${framed ? "is-framed" : ""}`}>
-        {framed && (
-          <button
-            ref={menuTrigger}
-            type="button"
-            className="bar-frame-button"
-            aria-haspopup="dialog"
-            aria-expanded={menuOpen}
-            aria-controls="bar-menu-dialog"
-            onClick={openMenu}
-          >
-            <span className="bar-frame-label">Bar Menu</span>
-            <span className="bar-frame-hint">
-              <BookOpen size={18} aria-hidden="true" />
-              View drinks
-            </span>
-          </button>
-        )}
+      <section className="space-hero space-bar">
         <div className="space-photo">
           <Photo src={page.image} alt={page.imageAlt} priority />
         </div>
@@ -1410,23 +971,21 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
           <BackToRoom content={content} />
           <h1>{page.eyebrow || page.title}</h1>
           <p>{page.description}</p>
-          {!framed && (
-            <div className="button-row">
-              <button
-                ref={menuTrigger}
-                type="button"
-                className="pov-link drinks-trigger"
-                aria-haspopup="dialog"
-                aria-expanded={menuOpen}
-                aria-controls="bar-menu-dialog"
-                onClick={openMenu}
-              >
-                <BookOpen size={24} aria-hidden="true" />
-                <span>View drinks menu</span>
-                <ChevronRight size={24} aria-hidden="true" />
-              </button>
-            </div>
-          )}
+          <div className="button-row">
+            <button
+              ref={menuTrigger}
+              type="button"
+              className="pov-link drinks-trigger"
+              aria-haspopup="dialog"
+              aria-expanded={menuOpen}
+              aria-controls="bar-menu-dialog"
+              onClick={openMenu}
+            >
+              <BookOpen size={24} aria-hidden="true" />
+              <span>View drinks menu</span>
+              <ChevronRight size={24} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </section>
       <dialog
@@ -1540,17 +1099,9 @@ function AboutPage({ content, page }: { content: SiteContent; page: Page }) {
           <div className="prose">
             <p>{page.description}</p>
           </div>
-          <A href="/inside" className="button dark-button">
-            {content.labels.enter}
-            <ArrowUpRight size={18} />
-          </A>
         </div>
         <div className="about-image">
           <Photo src={page.image} alt={page.imageAlt} priority />
-          <div className="about-caption">
-            <span>{content.location.neighborhood}</span>
-            <span>{content.brand.descriptor}</span>
-          </div>
         </div>
       </section>
       <Sections sections={page.sections} content={content} />
@@ -1577,9 +1128,6 @@ function RecordsPage({ content, page }: { content: SiteContent; page: Page }) {
         </div>
         <div className="records-image">
           <Photo src={page.image} alt={page.imageAlt} priority />
-          <div className="record-orbit" aria-hidden="true">
-            <Disc3 size={96} strokeWidth={0.75} />
-          </div>
         </div>
       </section>
       <Sections sections={page.sections} content={content} />
@@ -1815,6 +1363,7 @@ function CustomPage({ content, page }: { content: SiteContent; page: Page }) {
   );
 }
 function BookingSection({ content }: { content: SiteContent }) {
+  if (useContext(OnePageContext)) return null;
   return (
     <section className="booking-section section-wrap">
       <div className="booking-disc" aria-hidden="true">
@@ -1926,122 +1475,6 @@ export function PublicExperience({
       if (part) observer.observe(part);
     return () => observer.disconnect();
   }, [preview]);
-  // Phones: when the background photo is cropped, a horizontal drag slides
-  // it sideways. Vertical scrolling, buttons and carousels keep working.
-  const [panHint, setPanHint] = useState<"off" | "show" | "hide">("off");
-  useEffect(() => {
-    const root = frame.current;
-    const main = root?.querySelector<HTMLElement>("main");
-    const backdrop = root?.querySelector<HTMLElement>(".page-photo-backdrop");
-    const img = backdrop?.querySelector<HTMLImageElement>("img");
-    if (!root || !main || !backdrop || !img) return;
-    const framed = root.classList.contains("bar-framed");
-    let pan = 0.5;
-    let overflow = 0;
-    const apply = () => {
-      if (framed)
-        root.style.setProperty("--photo-pan-x", `${-pan * overflow}px`);
-      else img.style.objectPosition = `${pan * 100}% 50%`;
-    };
-    const measure = () => {
-      const box = backdrop.getBoundingClientRect();
-      const ratio = img.naturalWidth / img.naturalHeight || 4 / 3;
-      const drawn = Math.max(box.width, box.height * ratio);
-      const was = overflow;
-      overflow = Math.max(0, drawn - box.width);
-      backdrop.classList.toggle("is-pannable", overflow > 8);
-      if (framed && was === 0 && overflow > 0) {
-        // start from wherever the frame-centred layout put the photo
-        const left = img.getBoundingClientRect().left - box.left;
-        pan = Math.min(1, Math.max(0, -left / overflow));
-      }
-      if (root.style.getPropertyValue("--photo-pan-x") || !framed) apply();
-      setPanHint((hint) =>
-        overflow > 8 &&
-        hint === "off" &&
-        window.matchMedia(
-          "(max-width: 760px), (hover: none) and (pointer: coarse)",
-        ).matches
-          ? "show"
-          : overflow <= 8
-            ? "off"
-            : hint,
-      );
-    };
-    const skip = (target: EventTarget | null) => {
-      let el = target instanceof Element ? target : null;
-      while (el && el !== main) {
-        if (el.matches("input, select, textarea, dialog, [data-no-pan]"))
-          return true;
-        const style = getComputedStyle(el);
-        if (
-          /(auto|scroll)/.test(style.overflowX) &&
-          el.scrollWidth > el.clientWidth + 1
-        )
-          return true;
-        el = el.parentElement;
-      }
-      return false;
-    };
-    let start: { x: number; y: number; pan: number; id: number } | null = null;
-    let dragging = false;
-    const down = (event: PointerEvent) => {
-      if (overflow <= 8 || !event.isPrimary || skip(event.target)) return;
-      start = { x: event.clientX, y: event.clientY, pan, id: event.pointerId };
-      dragging = false;
-    };
-    const move = (event: PointerEvent) => {
-      if (!start || event.pointerId !== start.id) return;
-      const dx = event.clientX - start.x;
-      const dy = event.clientY - start.y;
-      if (!dragging) {
-        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx))
-          return void (start = null);
-        if (Math.abs(dx) < 8) return;
-        dragging = true;
-        setPanHint((hint) => (hint === "show" ? "hide" : hint));
-      }
-      pan = Math.min(1, Math.max(0, start.pan - dx / overflow));
-      apply();
-    };
-    const up = () => {
-      start = null;
-    };
-    const swallowClick = (event: MouseEvent) => {
-      if (dragging) {
-        event.preventDefault();
-        event.stopPropagation();
-        dragging = false;
-      }
-    };
-    measure();
-    img.addEventListener("load", measure);
-    const observer = new ResizeObserver(measure);
-    observer.observe(backdrop);
-    main.addEventListener("pointerdown", down);
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    window.addEventListener("pointercancel", up);
-    main.addEventListener("click", swallowClick, true);
-    const timer = window.setTimeout(
-      () => setPanHint((hint) => (hint === "show" ? "hide" : hint)),
-      4000,
-    );
-    return () => {
-      img.removeEventListener("load", measure);
-      observer.disconnect();
-      main.removeEventListener("pointerdown", down);
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-      window.removeEventListener("pointercancel", up);
-      main.removeEventListener("click", swallowClick, true);
-      window.clearTimeout(timer);
-      root.style.removeProperty("--photo-pan-x");
-      img.style.objectPosition = "";
-      backdrop.classList.remove("is-pannable");
-      setPanHint("off");
-    };
-  }, [pageId, eventId]);
   const now = useClock(initialNow),
     [paused, setPaused] = useState(false),
     page = content.pages.find((p) => p.id === pageId)!;
@@ -2052,9 +1485,6 @@ export function PublicExperience({
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
   }, []);
-  const immersive = ["home", "inside", "booth", "bar", "record-shop"].includes(
-    pageId,
-  );
   const sceneImage =
     pageId === "home"
       ? content.scenes.exterior.image
@@ -2092,9 +1522,6 @@ export function PublicExperience({
       case "home":
         body = <Home content={content} page={page} now={now} />;
         break;
-      case "inside":
-        body = <Interior content={content} page={page} />;
-        break;
       case "booth":
       case "record-shop":
         body = (
@@ -2127,7 +1554,7 @@ export function PublicExperience({
       <ContentContext.Provider value={content}>
         <div
           ref={frame}
-          className={`public-site photo-layout page-${pageId} ${immersive ? "is-immersive" : ""} ${preview ? "is-preview" : ""} ${pageId === "bar" && !event && page.image === FRAMED_BAR_IMAGE ? "bar-framed" : ""}`}
+          className={`public-site stacked-layout page-${pageId}${preview ? " is-preview" : ""}`}
           style={style}
           data-motion={paused ? "paused" : "playing"}
         >
@@ -2144,25 +1571,9 @@ export function PublicExperience({
           )}
           <SiteHeader content={content} now={now} />
           <main id="main-content">
-            {pageId !== "home" && pageId !== "inside" && (
-              <div className="page-photo-backdrop" aria-hidden="true">
-                <Photo src={sceneImage} alt="" priority />
-              </div>
-            )}
             <div className="page-scroll">{body}</div>
-            {panHint !== "off" && (
-              <p
-                className={`pan-hint${panHint === "hide" ? " is-hidden" : ""}`}
-                aria-hidden="true"
-              >
-                <ChevronLeft size={16} />
-                <span className="pan-hint-mouse">Drag to look around</span>
-                <span className="pan-hint-touch">Swipe</span>
-                <ChevronRight size={16} />
-              </p>
-            )}
           </main>
-          <Footer content={content} immersive />
+          <Footer content={content} />
         </div>
       </ContentContext.Provider>
     </PreviewContext.Provider>
