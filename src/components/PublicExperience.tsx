@@ -316,6 +316,18 @@ function SiteHeader({ content, now }: { content: SiteContent; now: Date }) {
     </>
   );
 }
+// Little notes or laughs that drift up out of the two front windows.
+const FLOATERS = [
+  { x: 19, delay: 0, drift: -6, note: "♪", laugh: "ha" },
+  { x: 27, delay: 1.6, drift: 5, note: "♫", laugh: "ha-ha" },
+  { x: 33, delay: 3.1, drift: -4, note: "♪", laugh: "ha" },
+  { x: 66, delay: 0.8, drift: 6, note: "♫", laugh: "haha" },
+  { x: 73, delay: 2.4, drift: -5, note: "♪", laugh: "ha" },
+  { x: 80, delay: 3.8, drift: 4, note: "♬", laugh: "ha-ha" },
+];
+// How far the inside photo zooms in past the bare foreground floor.
+const ROOM_ZOOM = 1.22;
+const ROOM_ZOOM_PHONE = 1.1;
 function Scene({
   content,
   scene,
@@ -378,6 +390,8 @@ function Scene({
       const width = parent.clientWidth,
         height = parent.clientHeight;
       const mobile = width < 760;
+      // Landscape phones: a thin strip, so show the floor-level rooms and labels.
+      const short = !exterior && height < 500 && width > height;
       const street = image.currentSrc.includes(
         "/assets/storefront-street-mobile",
       );
@@ -393,7 +407,15 @@ function Scene({
         width / image.naturalWidth,
         height / image.naturalHeight,
       );
-      const scale = whole ? Math.min(cover, contain * 1.06) : cover;
+      // Inside: zoom past the empty foreground floor so the bins, booth,
+      // mural and bar fill the frame and the room reads bigger.
+      const scale = whole
+        ? Math.min(cover, contain * 1.06)
+        : exterior
+          ? cover
+          : short
+            ? cover
+            : cover * (mobile ? ROOM_ZOOM_PHONE : ROOM_ZOOM);
       const w = image.naturalWidth * scale,
         h = image.naturalHeight * scale;
       setGeometry({
@@ -404,7 +426,9 @@ function Scene({
           ? whole || width > height
             ? (height - h) / 2
             : 0
-          : ((height - h) * (mobile ? scene.mobileFocalY : scene.focalY)) / 100,
+          : ((height - h) *
+              (short ? 68 : mobile ? scene.mobileFocalY : scene.focalY)) /
+            100,
       });
     };
     fit();
@@ -423,6 +447,16 @@ function Scene({
   const hotspots = scene.hotspots.filter((hotspot) =>
     destinationVisible(hotspot.href, content),
   );
+  const door = scene.hotspots.find(
+    (hotspot) => hotspot.href.split(/[?#]/)[0] === "/inside",
+  );
+  const effect = content.scenes.windowEffect || "none";
+  const doorHref = door?.href || "/inside";
+  const doorLabel =
+    content.scenes.doorBubble?.text.trim() ||
+    door?.label ||
+    content.labels.enter;
+  const doorSize = content.scenes.doorBubble?.size || "small";
   const enhanced = enhancedPhoto(scene.image);
   const photo = safeHref(enhanced?.src || scene.image, "");
   // The photo fills the available canvas. The interior stays full resolution
@@ -434,10 +468,22 @@ function Scene({
   const skyMask = exterior && sky ? storefrontSkyMask(scene.image) : undefined;
   // Use the expanded street photograph on phones, including landscape touch devices.
   const portrait = exterior && Boolean(skyMask);
+  const PHONE = "(max-width: 760px), (hover: none) and (pointer: coarse)";
+  // The sky layer keeps the full photo (its clouds); the storefront itself is
+  // a cut-out with the sky removed, so the time-of-day sky shows cleanly.
+  const skySource = portrait && (
+    <source
+      media={PHONE}
+      srcSet="/assets/storefront-street-mobile-solid.webp"
+      width={1024}
+      height={1536}
+    />
+  );
   const mobileSource = portrait && (
     <source
-      media="(max-width: 760px), (hover: none) and (pointer: coarse)"
-      srcSet="/assets/storefront-street-mobile-solid.webp"
+      media={PHONE}
+      srcSet="/assets/storefront-street-mobile-cut-small.webp 640w, /assets/storefront-street-mobile-cut.webp 1024w"
+      sizes="100vw"
       width={1024}
       height={1536}
     />
@@ -524,7 +570,14 @@ function Scene({
         )}
         <div
           className={`scene-plane${portrait ? " has-street-portrait" : ""}`}
-          style={geometry}
+          style={
+            sky
+              ? ({
+                  ...geometry,
+                  "--sky-daylight": sky.daylight,
+                } as CSSProperties)
+              : geometry
+          }
         >
           {skyMask && sky && (
             <div
@@ -541,7 +594,7 @@ function Scene({
               }
             >
               <picture>
-                {mobileSource}
+                {skySource}
                 <img
                   className="sky-day"
                   src={photo}
@@ -580,6 +633,44 @@ function Scene({
               onLoad={() => setLoaded((value) => value + 1)}
             />
           </picture>
+          {portrait && (
+            <div className="street-extras">
+              <img
+                className="street-night"
+                src="/assets/storefront-street-mobile-night-small.webp"
+                srcSet="/assets/storefront-street-mobile-night-small.webp 640w, /assets/storefront-street-mobile-night.webp 1024w"
+                sizes="100vw"
+                alt=""
+                aria-hidden="true"
+              />
+              <span className="street-window-glow is-left" aria-hidden="true" />
+              <span className="street-window-glow is-right" aria-hidden="true" />
+              {effect !== "none" && (
+                <span
+                  className={`street-floaters is-${effect}`}
+                  aria-hidden="true"
+                >
+                  {FLOATERS.map((f, i) => (
+                    <span
+                      key={i}
+                      style={
+                        {
+                          left: `${f.x}%`,
+                          animationDelay: `${f.delay}s`,
+                          "--drift": `${f.drift}px`,
+                        } as CSSProperties
+                      }
+                    >
+                      {effect === "music" ? f.note : f.laugh}
+                    </span>
+                  ))}
+                </span>
+              )}
+              <A href={doorHref} className={`door-bubble is-${doorSize}`}>
+                {doorLabel}
+              </A>
+            </div>
+          )}
           {!exterior &&
             hotspots.map((hotspot) => (
               <div
@@ -698,22 +789,6 @@ function Interior({ content, page }: { content: SiteContent; page: Page }) {
         </nav>
         <Scene content={content} scene={content.scenes.interior} />
       </section>
-      <nav className="room-mobile-links" aria-label="Explore the room">
-        {content.scenes.interior.hotspots
-          .filter((h) => destinationVisible(h.href, content))
-          .map((h) => (
-            <A key={h.id} href={h.href}>
-              {h.direction === "left" ? (
-                <ArrowLeft />
-              ) : h.direction === "right" ? (
-                <ArrowRight />
-              ) : (
-                <ArrowUpRight />
-              )}
-              {h.label}
-            </A>
-          ))}
-      </nav>
       <Sections sections={page.sections} content={content} />
     </>
   );
@@ -2064,7 +2139,9 @@ export function PublicExperience({
                 className={`pan-hint${panHint === "hide" ? " is-hidden" : ""}`}
                 aria-hidden="true"
               >
-                <ChevronLeft size={16} /> Drag to look around{" "}
+                <ChevronLeft size={16} />
+                <span className="pan-hint-mouse">Drag to look around</span>
+                <span className="pan-hint-touch">Swipe</span>
                 <ChevronRight size={16} />
               </p>
             )}

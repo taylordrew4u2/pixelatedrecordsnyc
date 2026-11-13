@@ -152,6 +152,10 @@ export type SiteContent = {
       duskStart: number;
       nightStart: number;
     };
+    /** Optional fun touch floating out of the storefront windows. */
+    windowEffect?: "none" | "music" | "laughter";
+    /** The speech bubble on the front door (phones). */
+    doorBubble?: { text: string; size: "small" | "medium" | "large" };
   };
   labels: {
     menu: string;

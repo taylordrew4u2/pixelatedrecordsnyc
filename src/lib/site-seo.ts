@@ -119,6 +119,22 @@ export function applyEditorialDefaults(
   return next;
 }
 
+// Verified venue location (Google Maps place for 792 Onderdonk Avenue).
+export const VENUE_GEO = { latitude: 40.7023993, longitude: -73.9048206 };
+export const VENUE_MAP =
+  "https://www.google.com/maps/place/?q=place_id:ChIJp90R_w9dwokRE0mMtzH1X0M";
+
+export function websiteStructuredData(content: SiteContent, origin: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": new URL("/#website", origin).href,
+    name: content.brand.name,
+    url: new URL("/", origin).href,
+    publisher: { "@id": new URL("/#business", origin).href },
+  };
+}
+
 export function businessStructuredData(content: SiteContent, origin: string) {
   const location = content.location;
   const address = location.address.match(
@@ -157,7 +173,7 @@ export function businessStructuredData(content: SiteContent, origin: string) {
     content.scenes.exterior.image;
   return {
     "@context": "https://schema.org",
-    "@type": ["Store", "BarOrPub"],
+    "@type": ["Store", "BarOrPub", "MusicVenue"],
     "@id": new URL("/#business", origin).href,
     name: content.brand.name,
     description: content.pages.find((page) => page.id === "about")?.description,
@@ -176,15 +192,16 @@ export function businessStructuredData(content: SiteContent, origin: string) {
       : location.address,
     ...(location.phone ? { telephone: location.phone } : {}),
     ...(location.email ? { email: location.email } : {}),
-    ...(location.latitude && location.longitude
-      ? {
-          geo: {
-            "@type": "GeoCoordinates",
-            latitude: location.latitude,
-            longitude: location.longitude,
-          },
-        }
-      : {}),
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: location.latitude || VENUE_GEO.latitude,
+      longitude: location.longitude || VENUE_GEO.longitude,
+    },
+    hasMap: VENUE_MAP,
+    containedInPlace: {
+      "@type": "Place",
+      name: `${location.neighborhood}, New York`,
+    },
     ...(hours.length ? { openingHoursSpecification: hours } : {}),
     ...(content.bar.categories.some(
       (category) =>
