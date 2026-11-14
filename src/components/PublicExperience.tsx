@@ -560,9 +560,11 @@ function Home({
         aria-labelledby="home-title"
       >
         <SectionPhoto page={exterior} priority />
-        <div className="op-wordmark">
-          <h1 id="home-title">{page.title}</h1>
-        </div>
+        {/* The name is on the awning in the photo; the heading stays for
+            search engines and screen readers only. */}
+        <h1 id="home-title" className="pov-visually-hidden">
+          {page.title}
+        </h1>
       </section>
       {records && <PhotoSection id="records" page={records} />}
       {bar && <BarPage content={content} page={bar} />}
