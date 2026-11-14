@@ -48,7 +48,21 @@ const corePages = [
   "about",
   "records",
   "location",
+  "book",
 ];
+// The website is one page; these are its sections, top to bottom, with the
+// names used in the site's navigation.
+const SECTION_ORDER: { id: string; name: string; anchor: string }[] = [
+  { id: "home", name: "Exterior landing", anchor: "/" },
+  { id: "records", name: "Records", anchor: "/#records" },
+  { id: "bar", name: "Bar", anchor: "/#bar" },
+  { id: "events", name: "Events", anchor: "/#events" },
+  { id: "calendar", name: "Calendar", anchor: "/#calendar" },
+  { id: "book", name: "Book an Event", anchor: "/#book" },
+  { id: "about", name: "About", anchor: "/#about" },
+  { id: "location", name: "Contact", anchor: "/#contact" },
+];
+const sectionInfo = (id: string) => SECTION_ORDER.find((s) => s.id === id);
 const blankSection = (): Section => ({
   id: uid("section"),
   type: "text",
@@ -172,59 +186,37 @@ export function PagesEditor({
     <>
       {!onlyPage && (
         <Panel
-          title="Your pages"
-          description="Choose a page to edit. Hidden pages can be restored at any time."
-          actions={
-            <button
-              type="button"
-              className="ad-button"
-              onClick={() => {
-                const id = uid("page");
-                update((d) =>
-                  d.pages.push({
-                    id,
-                    title: "New page",
-                    eyebrow: "",
-                    description: "",
-                    image: "",
-                    imageAlt: "",
-                    visible: true,
-                    seoTitle: "",
-                    seoDescription: "",
-                    shareImage: "",
-                    sections: [],
-                  }),
-                );
-                setSelected(id);
-              }}
-            >
-              <Plus size={16} />
-              Add page
-            </button>
-          }
+          title="Page sections"
+          description="The website is one scrolling page. These are its sections, top to bottom, in the same order as the navigation. Choose one to edit its heading, text and photo. Hiding a section also removes it from the navigation."
         >
           <div className="ad-page-grid">
-            {content.pages.map((p) => (
-              <button
-                type="button"
-                key={p.id}
-                className={`ad-page-choice ${p.id === page.id ? "selected" : ""}`}
-                onClick={() => setSelected(p.id)}
-              >
-                <strong>{p.title || p.id}</strong>
-                <span>
-                  {pageUrl(p.id)}
-                  {!p.visible ? " · Hidden" : ""}
-                </span>
-                <ArrowRight size={16} />
-              </button>
-            ))}
+            {SECTION_ORDER.map((info, index) => {
+              const p = content.pages.find((entry) => entry.id === info.id);
+              if (!p) return null;
+              return (
+                <button
+                  type="button"
+                  key={p.id}
+                  className={`ad-page-choice ${p.id === page.id ? "selected" : ""}`}
+                  onClick={() => setSelected(p.id)}
+                >
+                  <strong>
+                    {String(index + 1).padStart(2, "0")} {info.name}
+                  </strong>
+                  <span>
+                    {info.anchor}
+                    {!p.visible ? " · Hidden" : ""}
+                  </span>
+                  <ArrowRight size={16} />
+                </button>
+              );
+            })}
           </div>
         </Panel>
       )}
       <Panel
-        title={`${page.title || page.id} page`}
-        description="These changes are saved as a draft until you publish."
+        title={`${sectionInfo(page.id)?.name || page.title || page.id} section`}
+        description={`Appears at ${sectionInfo(page.id)?.anchor || pageUrl(page.id)} on the website. Changes are saved as a draft until you publish.`}
         actions={
           <ItemActions
             name={page.title || "page"}
@@ -264,7 +256,7 @@ export function PagesEditor({
         }
       >
         <Toggle
-          label="Show this page"
+          label="Show this section"
           disabled={page.id === "home"}
           checked={page.id === "home" ? true : page.visible}
           onChange={(v) =>
@@ -278,26 +270,31 @@ export function PagesEditor({
           }
           help={
             page.id === "home"
-              ? "The homepage stays visible so the website always has an entrance."
-              : "Turning this off archives the page and hides its menu link."
+              ? "The exterior landing always shows so the website has a front door."
+              : "Turning this off hides the section and its navigation link."
           }
         />
         <div className="ad-two-col">
           <Field
-            label="Page heading"
+            label="Heading"
             value={page.title}
             onChange={(v) => patch({ title: v })}
           />
           <Field
-            label="Small heading above the title"
+            label="Small label above the heading (Calendar only)"
             value={page.eyebrow}
             onChange={(v) => patch({ eyebrow: v })}
           />
         </div>
         <TextArea
-          label="Introduction"
+          label="Text"
           value={page.description}
           onChange={(v) => patch({ description: v })}
+          help={
+            page.id === "home"
+              ? "Not shown on the landing (it shows only the photo and name); used by search engines and link previews."
+              : undefined
+          }
         />
         {!corePages.includes(page.id) && (
           <Field
@@ -331,7 +328,7 @@ export function PagesEditor({
         )}
         <div className="ad-two-col">
           <ImageField
-            label="Page photograph"
+            label="Full-screen photo"
             value={sceneKey ? content.scenes[sceneKey].image : page.image}
             onChange={(v) =>
               update((d) => {
@@ -342,8 +339,8 @@ export function PagesEditor({
             }
             help={
               sceneKey
-                ? "This is the same photo used in Photos & Scene. Adjust its clickable areas there."
-                : undefined
+                ? "The storefront photo at the top of the website (also under Top photo)."
+                : "Fills the section behind the text box. The file itself is never edited."
             }
           />
           <div>
@@ -577,102 +574,10 @@ export function PagesEditor({
       </Panel>
       {!onlyPage && (
         <Panel
-          title="Main menu"
-          description="The hamburger menu appears throughout the website."
-          actions={
-            <button
-              type="button"
-              className="ad-button"
-              onClick={() =>
-                update((d) =>
-                  d.navigation.push({
-                    id: uid("nav"),
-                    label: "New link",
-                    href: "/events",
-                    visible: true,
-                  }),
-                )
-              }
-            >
-              <Plus size={16} />
-              Add menu link
-            </button>
-          }
+          title="Navigation"
+          description="The navigation always lists the sections in page order: Records · Bar · Events · Calendar · Book an Event · About · Contact. It updates automatically when a section is shown or hidden."
         >
-          <div className="ad-stacked">
-            {content.navigation.map((item, index) => (
-              <div key={item.id} className="ad-inline-editor">
-                <div className="ad-two-col">
-                  <Field
-                    label="Menu label"
-                    value={item.label}
-                    onChange={(v) =>
-                      update((d) => {
-                        d.navigation[index].label = v;
-                      })
-                    }
-                  />
-                  <Field
-                    label="Page or URL"
-                    value={item.href}
-                    onChange={(v) =>
-                      update((d) => {
-                        d.navigation[index].href = v;
-                      })
-                    }
-                  />
-                </div>
-                <div className="ad-subheading">
-                  <Toggle
-                    label="Visible"
-                    checked={item.visible}
-                    onChange={(v) =>
-                      update((d) => {
-                        d.navigation[index].visible = v;
-                      })
-                    }
-                  />
-                  <ItemActions
-                    name={item.label}
-                    onUp={
-                      index > 0
-                        ? () =>
-                            update((d) => {
-                              d.navigation = move(
-                                d.navigation,
-                                index,
-                                index - 1,
-                              );
-                            })
-                        : undefined
-                    }
-                    onDown={
-                      index < content.navigation.length - 1
-                        ? () =>
-                            update((d) => {
-                              d.navigation = move(
-                                d.navigation,
-                                index,
-                                index + 1,
-                              );
-                            })
-                        : undefined
-                    }
-                    onDelete={() => {
-                      if (
-                        confirm(
-                          "Remove this menu link? The page will remain available.",
-                        )
-                      )
-                        update((d) => {
-                          d.navigation.splice(index, 1);
-                        });
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          {null}
         </Panel>
       )}
     </>

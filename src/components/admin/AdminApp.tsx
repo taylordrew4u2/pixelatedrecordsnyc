@@ -82,13 +82,13 @@ type Tab =
   | "settings";
 const tabs: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "pages", label: "Pages & navigation", icon: LayoutTemplate },
+  { id: "pages", label: "Page sections", icon: LayoutTemplate },
   { id: "photos", label: "Top photo", icon: ImageIcon },
   { id: "events", label: "Events", icon: CalendarDays },
   { id: "bar", label: "Bar menu", icon: Wine },
-  { id: "about", label: "About us", icon: FileText },
+  { id: "about", label: "About", icon: FileText },
   { id: "records", label: "Records", icon: Music2 },
-  { id: "location", label: "Location & hours", icon: MapPin },
+  { id: "location", label: "Contact & hours", icon: MapPin },
   { id: "appearance", label: "Appearance", icon: Palette },
   { id: "settings", label: "Settings", icon: Settings },
 ];
@@ -99,7 +99,7 @@ const headings: Record<Tab, { title: string; subtitle: string }> = {
   },
   pages: {
     title: "Tell your story.",
-    subtitle: "The words, photographs, and pages that make the place yours.",
+    subtitle: "Every section of your one-page website, top to bottom.",
   },
   photos: {
     title: "Set the scene.",
@@ -119,7 +119,7 @@ const headings: Record<Tab, { title: string; subtitle: string }> = {
   },
   records: {
     title: "For the record.",
-    subtitle: "Make the coming-soon page yours while the shop takes shape.",
+    subtitle: "The Records section: your curated used vinyl.",
   },
   location: {
     title: "We’ll meet you here.",
@@ -158,11 +158,9 @@ async function request<T>(url: string, init: RequestInit = {}): Promise<T> {
       ...init.headers,
     },
   });
-  const body = await response
-    .json()
-    .catch(() => ({
-      error: "The server returned an unreadable response. Please try again.",
-    }));
+  const body = await response.json().catch(() => ({
+    error: "The server returned an unreadable response. Please try again.",
+  }));
   if (!response.ok)
     throw new RequestError(
       body.error || "The request could not be completed.",
