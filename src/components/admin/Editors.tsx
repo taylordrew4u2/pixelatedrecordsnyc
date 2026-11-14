@@ -279,6 +279,11 @@ export function PagesEditor({
             label="Heading"
             value={page.title}
             onChange={(v) => patch({ title: v })}
+            help={
+              page.id === "home"
+                ? "Hidden on the landing (the name is on the awning); read by search engines and screen readers."
+                : undefined
+            }
           />
           <Field
             label="Small label above the heading (Calendar only)"
@@ -292,7 +297,7 @@ export function PagesEditor({
           onChange={(v) => patch({ description: v })}
           help={
             page.id === "home"
-              ? "Not shown on the landing (it shows only the photo and name); used by search engines and link previews."
+              ? "Not shown on the landing (it shows only the storefront photo); used by search engines and link previews."
               : undefined
           }
         />
