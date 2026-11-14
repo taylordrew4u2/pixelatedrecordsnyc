@@ -14,16 +14,12 @@ import photoColors from "@/lib/photo-colors.json";
 import { enhancedPhoto } from "@/lib/photo-assets";
 import {
   ArrowUpRight,
-  ArrowRight,
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
   ArrowDown,
   X,
-  Menu as MenuIcon,
   Disc3,
-  BookOpen,
   MapPin,
   CalendarDays,
   Clock,
@@ -40,7 +36,6 @@ import {
   eventTime,
   publicEvents,
   tonightEvents,
-  headerTonightEvent,
   upcomingEvents,
 } from "@/lib/events";
 import { destinationVisible, safeHref } from "@/lib/links";
@@ -557,9 +552,6 @@ function Home({
     image: content.scenes.exterior.image,
     imageAlt: content.scenes.exterior.alt,
   };
-  const first = ONE_PAGE_SECTIONS.find((section) =>
-    sectionVisible(content, section.page),
-  );
   return (
     <OnePageContext.Provider value={true}>
       <section
@@ -571,12 +563,6 @@ function Home({
         <div className="op-wordmark">
           <h1 id="home-title">{page.title}</h1>
         </div>
-        {first && (
-          <A href={`/#${first.id}`} className="op-cta op-scroll-cue">
-            Scroll to {first.label}
-            <ChevronDown size={20} aria-hidden="true" />
-          </A>
-        )}
       </section>
       {records && <PhotoSection id="records" page={records} />}
       {bar && <BarPage content={content} page={bar} />}
