@@ -395,3 +395,58 @@ export const seedContent = applyEditorialDefaults(
   { ...legacySeedContent, bar: confirmedBarMenu },
   legacySeedContent,
 );
+
+// One-page blueprint: section headings and copy, plus the Book an Event
+// section (its button opens the booking form set under Booking).
+export const BLUEPRINT_COPY: Record<
+  string,
+  {
+    title: string;
+    eyebrow?: string;
+    description: string;
+    image?: string;
+    imageAlt?: string;
+  }
+> = {
+  records: {
+    title: "Records",
+    description: "Shop our curated selection of used vinyl records.",
+    image: "/assets/record-shop.webp",
+    imageAlt: "Record bins and framed album art in the Pixelated Records shop.",
+  },
+  bar: { title: "Bar", description: "Full bar. Happy hour from 3 to 9." },
+  events: {
+    title: "Events",
+    description: "Open Decks, comedy nights and DJ nights.",
+  },
+  calendar: { title: "Upcoming events", eyebrow: "Calendar", description: "" },
+  about: { title: "About", description: "" },
+  location: { title: "Contact", description: "" },
+};
+export const BOOK_PAGE = {
+  id: "book",
+  title: "Book an Event",
+  eyebrow: "BOOK AN EVENT",
+  description: "Host your own event at Pixelated Records.",
+  image: "/assets/interior.webp",
+  imageAlt:
+    "The main floor at Pixelated Records, with the DJ booth, record bins and red banquette.",
+  visible: true,
+  seoTitle: "Book an Event | Pixelated Records",
+  seoDescription:
+    "Host your own event at Pixelated Records in Ridgewood, Queens.",
+  shareImage: "/assets/interior.webp",
+  sections: [],
+};
+for (const entry of seedContent.pages) {
+  const copy = BLUEPRINT_COPY[entry.id];
+  if (!copy) continue;
+  entry.title = copy.title;
+  if (copy.eyebrow) entry.eyebrow = copy.eyebrow;
+  if (copy.description) entry.description = copy.description;
+  if (copy.image) entry.image = copy.image;
+  if (copy.imageAlt) entry.imageAlt = copy.imageAlt;
+}
+seedContent.pages.push(structuredClone(BOOK_PAGE));
+seedContent.brand.accent = "#dcf55d";
+seedContent.labels.book = "Open booking form";

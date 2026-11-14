@@ -29,6 +29,10 @@ export const confirmedBarMenu: SiteContent["bar"] = {
     "Cocktails, wine, beer, zero-proof drinks, and coffee at Pixelated Records in Ridgewood, Queens.",
   menuNotice:
     "Menu dated October 26, 2026. Ask at the bar about availability and premium spirit pricing.",
+  happyHour: {
+    text: "3 to 9",
+    specials: ["$5 margaritas", "$7 well drinks", "$7 shot and beer"],
+  },
   categories: [
     category("specialty-cocktails", "Specialty cocktails", "", [
       [

@@ -20,15 +20,17 @@ function render(content: SiteContent, pageId = "home", preview = false) {
   );
 }
 
-test("home is one scrolling page of untouched photos with every section anchored", () => {
+test("home is one scrolling page of untouched photo files with every blueprint section anchored", () => {
   const html = render(fixture());
   for (const id of [
-    "about",
+    "home",
+    "records",
     "bar",
     "events",
     "calendar",
-    "records",
-    "location",
+    "book",
+    "about",
+    "contact",
   ])
     assert.match(html, new RegExp(`id="${id}"`));
   // The storefront is the original photograph, with no sky, night or overlays.
@@ -39,7 +41,7 @@ test("home is one scrolling page of untouched photos with every section anchored
   );
   const links = anchors(html).map((anchor) => anchor.href);
   assert.ok(links.includes("/#bar"));
-  assert.ok(links.includes("/#location"));
+  assert.ok(links.includes("/#contact"));
   assert.ok(!links.some((href) => href.startsWith("/inside")));
 });
 
@@ -95,8 +97,6 @@ function cards(html: string) {
 test("archived pages disappear from hardcoded scene, menu, and footer links", () => {
   for (const [pageId, archived] of [
     ["home", ["inside", "events", "bar", "location"]],
-    ["booth", ["inside", "events", "location"]],
-    ["record-shop", ["inside", "about", "records", "location"]],
   ] as const) {
     const content = fixture();
     // Match the public API shape: archived pages are absent from the payload.
@@ -111,6 +111,9 @@ test("archived pages disappear from hardcoded scene, menu, and footer links", ()
         `${pageId} must not link to archived /${id}`,
       );
     }
+    // Hidden sections drop out of the navigation too.
+    for (const anchor of ["#events", "#bar", "#contact"])
+      assert.ok(!links.includes(`/${anchor}`), `${anchor} is hidden`);
     assert.equal(
       links.includes("/admin"),
       false,
@@ -351,33 +354,40 @@ test("custom public navigation cannot advertise the direct-only admin route", ()
   );
 });
 
-test("header links tonight's event flyer with local start time and an accurate live label", () => {
-  const content = fixture();
-  content.events = [event("tonight-flyer", "2026-01-14T21:00:00-05:00")];
-  let header = anchors(render(content)).find((anchor) =>
-    anchor.attributes.includes("header-now"),
+test("fixed navigation lists the seven blueprint sections in order", () => {
+  const html = render(fixture());
+  const nav = html.slice(
+    html.indexOf('class="op-nav"'),
+    html.indexOf("</nav>", html.indexOf('class="op-nav"')),
   );
-  assert.equal(header?.href, "/events/tonight-flyer");
-  assert.match(header?.inner || "", /tonight-flyer/);
-  assert.match(header?.inner || "", /9 PM/);
-  assert.doesNotMatch(header?.inner || "", /Live now/);
-  content.events[0] = event("live-flyer", "2026-01-14T18:00:00-05:00");
-  header = anchors(render(content, "home", true)).find((anchor) =>
-    anchor.attributes.includes("header-now"),
+  const labels = [...nav.matchAll(/>([^<>]+)<\/a>/g)].map((m) => m[1]);
+  assert.deepEqual(labels, [
+    "Records",
+    "Bar",
+    "Events",
+    "Calendar",
+    "Book an Event",
+    "About",
+    "Contact",
+  ]);
+  assert.match(
+    html,
+    /class="op-calendar-bar"[^>]*href="\/#calendar"|href="\/#calendar"[^>]*class="op-calendar-bar"/,
   );
-  assert.equal(header?.href, "/events/live-flyer?preview=1");
-  assert.match(header?.inner || "", /Live now/);
-  assert.match(header?.inner || "", /6 PM/);
 });
 
-test("header falls back to the events page without inventing a live show", () => {
+test("calendar lineup shows upcoming flyers soonest first, linking to each event", () => {
   const content = fixture();
+  content.events = [
+    event("later-show", "2026-01-20T21:00:00-05:00"),
+    event("tonight-flyer", "2026-01-14T21:00:00-05:00"),
+    event("past-show", "2026-01-10T21:00:00-05:00"),
+  ];
+  const html = render(content);
+  const flyers = anchors(html)
+    .filter((anchor) => anchor.attributes.includes("op-flyer-link"))
+    .map((anchor) => anchor.href);
+  assert.deepEqual(flyers, ["/events/tonight-flyer", "/events/later-show"]);
   content.events = [];
-  const header = anchors(render(content)).find((anchor) =>
-    anchor.attributes.includes("header-now"),
-  );
-  assert.equal(header?.href, "/#events");
-  assert.match(header?.inner || "", /Good vibes happening now/i);
-  assert.match(header?.inner || "", /7:00 PM/);
-  assert.doesNotMatch(header?.inner || "", /Live now/);
+  assert.match(render(content), /class="op-empty"/);
 });

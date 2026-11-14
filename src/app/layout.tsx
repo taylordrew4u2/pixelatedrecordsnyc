@@ -11,6 +11,7 @@ import "./public-theme.css";
 import "./pov-theme.css";
 import "./photo-layout.css";
 import "./stacked-layout.css";
+import "./onepage.css";
 // A fresh request nonce is required for public pages and the admin UI alike.
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
