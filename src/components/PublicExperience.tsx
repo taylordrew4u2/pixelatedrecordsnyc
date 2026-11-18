@@ -418,14 +418,16 @@ function FlyerLineup({ content, now }: { content: SiteContent; now: Date }) {
         )}
       </div>
     );
+  const single = edges.start && edges.end;
   return (
-    <div className="op-lineup">
+    <div className={`op-lineup${single ? " is-static" : ""}`}>
       <button
         type="button"
         className="op-arrow op-prev"
         aria-label="Previous flyers"
         aria-controls="flyer-track"
         disabled={edges.start}
+        hidden={single}
         onClick={() => step(-1)}
       >
         <ChevronLeft size={24} aria-hidden="true" />
@@ -461,6 +463,15 @@ function FlyerLineup({ content, now }: { content: SiteContent; now: Date }) {
             </A>
           </article>
         ))}
+        {content.location.instagram && events.length < 4 && (
+          <div className="op-flyer op-flyer-next" role="listitem">
+            <p>More nights are announced on Instagram first.</p>
+            <A href={content.location.instagram} className="op-cta">
+              <Instagram size={18} aria-hidden="true" />
+              Follow for new dates
+            </A>
+          </div>
+        )}
       </div>
       <button
         type="button"
@@ -468,6 +479,7 @@ function FlyerLineup({ content, now }: { content: SiteContent; now: Date }) {
         aria-label="Next flyers"
         aria-controls="flyer-track"
         disabled={edges.end}
+        hidden={single}
         onClick={() => step(1)}
       >
         <ChevronRight size={24} aria-hidden="true" />
@@ -532,24 +544,33 @@ function ContactSection({
               )}
             </dd>
           </div>
-          <div>
-            <dt>Get in touch</dt>
-            <dd className="op-touch">
-              {location.email && (
-                <A href={`mailto:${location.email}`}>{location.email}</A>
-              )}
-              {location.phone && (
-                <A href={`tel:${location.phone.replace(/[^+\d]/g, "")}`}>
-                  {location.phone}
-                </A>
-              )}
-              {location.instagram && <A href={location.instagram}>Instagram</A>}
-            </dd>
-          </div>
+          {(location.email || location.phone) && (
+            <div>
+              <dt>Get in touch</dt>
+              <dd className="op-touch">
+                {location.email && (
+                  <A href={`mailto:${location.email}`}>{location.email}</A>
+                )}
+                {location.phone && (
+                  <A href={`tel:${location.phone.replace(/[^+\d]/g, "")}`}>
+                    {location.phone}
+                  </A>
+                )}
+              </dd>
+            </div>
+          )}
         </dl>
-        <A href={directions} className="op-cta">
-          Get directions
-        </A>
+        <div className="op-contact-actions">
+          <A href={directions} className="op-cta">
+            Get directions
+          </A>
+          {location.instagram && (
+            <A href={location.instagram} className="op-cta op-cta-outline">
+              <Instagram size={18} aria-hidden="true" />
+              Instagram
+            </A>
+          )}
+        </div>
       </div>
       <div className="op-map">
         <iframe
@@ -598,8 +619,29 @@ function Home({
         <h1 id="home-title" className="pov-visually-hidden">
           {page.title}
         </h1>
+        {/* A small hint that the page continues below the storefront. */}
+        {records && (
+          <A href="/#records" className="op-landing-cue">
+            Records · Bar · Events
+            <ArrowDown size={18} aria-hidden="true" />
+          </A>
+        )}
       </section>
-      {records && <PhotoSection id="records" page={records} />}
+      {records && (
+        <PhotoSection
+          id="records"
+          page={records}
+          after={
+            contact && (
+              <span className="op-actions">
+                <A href="/#contact" className="op-cta">
+                  Visit the shop
+                </A>
+              </span>
+            )
+          }
+        />
+      )}
       {bar && <BarPage content={content} page={bar} />}
       {events && (
         <PhotoSection
@@ -622,7 +664,6 @@ function Home({
           aria-labelledby="calendar-title"
         >
           <div className="op-calendar-head">
-            <p className="op-kicker">{calendar.eyebrow}</p>
             <h2 id="calendar-title">{calendar.title}</h2>
             {calendar.description && <p>{calendar.description}</p>}
           </div>

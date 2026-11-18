@@ -9,7 +9,7 @@
   --op-panel: #1b1b1b;
   --op-dark: #242424;
   --op-cream: #f2ecdf;
-  --op-mono: "Space Grotesk", ui-monospace, monospace;
+  --op-mono: "Barlow Condensed", "DM Sans", Arial, sans-serif;
   --op-side: clamp(16px, 5vw, 72px);
   font-family: "DM Sans", Arial, sans-serif;
 }
@@ -230,7 +230,7 @@ html:has(.public-site.page-home) {
   border: 0;
   border-radius: 0;
   font-family: var(--op-mono);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -269,9 +269,10 @@ html:has(.public-site.page-home) {
   list-style: none;
 }
 .public-site .op-specials li {
-  padding: 10px 14px;
-  color: var(--op-lime-ink);
-  background: var(--op-cream);
+  padding: 8px 12px;
+  color: var(--op-cream);
+  background: none;
+  box-shadow: inset 0 0 0 1px rgb(242 236 223 / 55%);
   font-family: var(--op-mono);
   font-size: 14px;
   font-weight: 700;
@@ -702,4 +703,131 @@ html:has(.public-site.page-home) {
 .public-site.stacked-layout .op-cta:hover {
   color: var(--op-cream);
   background: var(--op-panel);
+}
+
+/* Design pass (November 18, 2026) ---------------------------------------- */
+/* Logo link meets the 44px touch minimum. */
+.public-site.stacked-layout .op-header .brand-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+/* Small hint at the foot of the storefront that the page continues. */
+.public-site.page-home .op-landing {
+  position: relative;
+}
+.public-site.page-home .op-landing-cue {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+  font-family: var(--op-mono);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.public-site.page-home .op-landing-cue:focus-visible {
+  outline: 3px solid var(--op-cream);
+  outline-offset: 3px;
+}
+/* Event details reads as a button, not a footnote. */
+.public-site.page-home .op-flyer-more {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 10px 16px;
+  color: var(--op-cream);
+  font-family: var(--op-mono);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site.page-home .op-flyer-link:hover .op-flyer-more {
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+}
+/* With few flyers, an Instagram card fills the row. */
+.public-site.page-home .op-flyer-next {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  aspect-ratio: 4 / 5;
+  padding: 28px;
+  border: 1px solid rgb(242 236 223 / 30%);
+}
+.public-site.page-home .op-flyer-next p {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.public-site.page-home .op-arrow[hidden] {
+  display: none;
+}
+.public-site.page-home .op-lineup.is-static {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Contact actions: directions plus an Instagram button, both full size. */
+.public-site.page-home .op-contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.public-site .op-cta.op-cta-outline,
+.public-site.stacked-layout .op-cta.op-cta-outline {
+  color: var(--op-cream);
+  background: none;
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site.stacked-layout .op-cta.op-cta-outline:hover {
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+}
+/* Footer links readable and tappable on phones. */
+.public-site.stacked-layout .venue-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 16px;
+}
+/* Barlow Condensed runs narrow; small labels need more size to stay legible. */
+.public-site .op-kicker,
+.public-site.page-home .op-contact dt,
+.public-site.page-home .op-flyer-date {
+  font-size: 17px;
+}
+.public-site.stacked-layout .op-menu-trigger,
+.public-site .op-close {
+  font-size: 18px;
+}
+@media (max-width: 960px) {
+  .public-site.stacked-layout .op-menu-trigger {
+    font-size: 18px;
+  }
+  .public-site.page-home .op-landing-cue {
+    bottom: 16px;
+    font-size: 16px;
+  }
+  .public-site.page-home .op-contact-actions .op-cta {
+    width: 100%;
+    min-height: 56px;
+  }
+  .public-site.page-home .op-flyer-next {
+    flex-basis: 76vw;
+  }
 }
