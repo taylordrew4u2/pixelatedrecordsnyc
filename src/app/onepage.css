@@ -17,9 +17,15 @@ html:has(.public-site.stacked-layout) {
   /* Anchors land just below the fixed header. */
   scroll-padding-top: 68px;
 }
+/* No vertical scroll snapping: Safari, Firefox and mobile browsers resizing
+   their toolbars made proximity snap yank the page between sections. */
 html:has(.public-site.page-home) {
-  scroll-snap-type: y proximity;
   scroll-behavior: smooth;
+}
+@media (min-width: 961px) {
+  html:has(.public-site.stacked-layout) {
+    scroll-padding-top: 76px;
+  }
 }
 @media (max-width: 960px) {
   html:has(.public-site.stacked-layout) {
@@ -28,7 +34,6 @@ html:has(.public-site.page-home) {
 }
 @media (prefers-reduced-motion: reduce) {
   html:has(.public-site.page-home) {
-    scroll-snap-type: none;
     scroll-behavior: auto;
   }
 }
@@ -166,7 +171,6 @@ html:has(.public-site.page-home) {
 .public-site.page-home .op-section {
   position: relative;
   min-height: calc(100svh - var(--op-header));
-  scroll-snap-align: start;
   scroll-margin-top: 0;
   color: var(--op-cream);
   background: var(--op-panel);
@@ -829,5 +833,100 @@ html:has(.public-site.page-home) {
   }
   .public-site.page-home .op-flyer-next {
     flex-basis: 76vw;
+  }
+}
+
+/* Desktop pass (November 18, 2026) --------------------------------------- */
+/* Phones keep their full-width action bars; these rules apply from 961px. */
+@media (min-width: 961px) {
+  /* Header: larger wordmark, readable links, Book an Event as the one
+     outlined action. */
+  .public-site.stacked-layout {
+    --op-header: 76px;
+  }
+  .public-site.stacked-layout .op-header .brand-link img {
+    width: 230px;
+  }
+  .public-site.stacked-layout .op-nav {
+    align-items: center;
+    gap: 4px 28px;
+  }
+  .public-site.stacked-layout .op-nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 17px;
+  }
+  .public-site.stacked-layout .op-nav-link[href="/#book"] {
+    padding: 0 16px;
+    box-shadow: inset 0 0 0 2px var(--op-lime);
+  }
+  .public-site.stacked-layout .op-nav-link[href="/#book"]::after {
+    display: none;
+  }
+  .public-site.stacked-layout .op-nav-link[href="/#book"]:hover,
+  .public-site.stacked-layout .op-nav-link[href="/#book"].is-active {
+    color: var(--op-lime-ink);
+    background: var(--op-lime);
+  }
+
+  /* Section actions sit inside the dark panel instead of floating below. */
+  .public-site.page-home .op-photo:has(> .op-actions) > .op-panel {
+    margin-bottom: 0;
+    padding-bottom: 8px;
+  }
+  .public-site.page-home .op-photo > .op-actions {
+    width: calc(100% - 2 * var(--op-side));
+    max-width: 600px;
+    margin: 0 var(--op-side) 40px;
+    padding: 20px 30px 32px;
+    background: var(--op-panel);
+  }
+  .public-site.page-home .op-photo > .op-actions .op-cta {
+    min-height: 56px;
+    padding: 14px 24px;
+    font-size: 20px;
+  }
+  .public-site .op-specials li {
+    font-size: 16px;
+  }
+
+  /* Calendar: bigger flyers, centred when they all fit. */
+  .public-site.page-home .op-flyer {
+    flex-basis: clamp(300px, 24vw, 380px);
+  }
+  .public-site.page-home .op-lineup.is-static .op-track {
+    justify-content: center;
+  }
+
+  /* Contact: even split, top-aligned, map matches the details. */
+  .public-site.page-home .op-contact {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+  .public-site.page-home .op-contact-details {
+    align-self: start;
+  }
+  .public-site.page-home .op-map {
+    aspect-ratio: auto;
+    min-height: 420px;
+  }
+
+  /* Footer fine print. */
+  .public-site.stacked-layout .venue-footer,
+  .public-site.stacked-layout .venue-footer-meta span {
+    font-size: 14px;
+  }
+}
+/* Very wide screens: let the panels and their text grow. */
+@media (min-width: 1600px) {
+  .public-site.page-home .op-panel,
+  .public-site.page-home .op-photo > .op-actions {
+    max-width: 680px;
+  }
+  .public-site.page-home .op-panel p {
+    font-size: 24px;
   }
 }
