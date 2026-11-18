@@ -1,10 +1,10 @@
 /* One-page site from the owner's blueprint: fixed navigation, full-screen
-   photo sections with a dark text panel, lime actions, a swipeable flyer
+   photo sections with a dark text panel, red actions, a swipeable flyer
    lineup and full-screen overlays. Photo files are shown as supplied;
    object-fit only chooses which part fills the screen. */
 .public-site.stacked-layout {
   --op-header: 68px;
-  --op-lime: var(--accent, #dcf55d);
+  --op-lime: var(--accent, #ff0a05);
   --op-lime-ink: #181614;
   --op-panel: #1b1b1b;
   --op-dark: #242424;
@@ -693,7 +693,7 @@ html:has(.public-site.page-home) {
   }
 }
 
-/* Older button styles must not recolour the lime actions. */
+/* Older button styles must not recolour the red actions. */
 .public-site.stacked-layout .op-cta,
 .public-site.stacked-layout .op-cta.drinks-trigger {
   color: var(--op-lime-ink);

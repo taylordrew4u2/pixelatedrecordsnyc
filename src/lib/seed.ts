@@ -448,5 +448,5 @@ for (const entry of seedContent.pages) {
   if (copy.imageAlt) entry.imageAlt = copy.imageAlt;
 }
 seedContent.pages.push(structuredClone(BOOK_PAGE));
-seedContent.brand.accent = "#dcf55d";
+seedContent.brand.accent = "#ff0a05";
 seedContent.labels.book = "Open booking form";
