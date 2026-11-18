@@ -17,9 +17,15 @@ html:has(.public-site.stacked-layout) {
   /* Anchors land just below the fixed header. */
   scroll-padding-top: 68px;
 }
+/* No vertical scroll snapping: Safari, Firefox and mobile browsers resizing
+   their toolbars made proximity snap yank the page between sections. */
 html:has(.public-site.page-home) {
-  scroll-snap-type: y proximity;
   scroll-behavior: smooth;
+}
+@media (min-width: 961px) {
+  html:has(.public-site.stacked-layout) {
+    scroll-padding-top: 76px;
+  }
 }
 @media (max-width: 960px) {
   html:has(.public-site.stacked-layout) {
@@ -28,7 +34,6 @@ html:has(.public-site.page-home) {
 }
 @media (prefers-reduced-motion: reduce) {
   html:has(.public-site.page-home) {
-    scroll-snap-type: none;
     scroll-behavior: auto;
   }
 }
@@ -166,7 +171,6 @@ html:has(.public-site.page-home) {
 .public-site.page-home .op-section {
   position: relative;
   min-height: calc(100svh - var(--op-header));
-  scroll-snap-align: start;
   scroll-margin-top: 0;
   color: var(--op-cream);
   background: var(--op-panel);
