@@ -182,6 +182,24 @@ function useClock(initialNow: string) {
   }, []);
   return now;
 }
+// Opens a dialog as a modal, falling back to a plain open dialog on browsers
+// where showModal is missing or throws (older iOS Safari, already-open states).
+function openDialog(dialog: HTMLDialogElement | null) {
+  if (!dialog || dialog.open) return;
+  try {
+    dialog.showModal();
+  } catch {
+    dialog.setAttribute("open", "");
+  }
+}
+function closeDialog(dialog: HTMLDialogElement | null) {
+  if (!dialog) return;
+  try {
+    dialog.close();
+  } catch {
+    dialog.removeAttribute("open");
+  }
+}
 function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
@@ -192,10 +210,10 @@ function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
   );
   useEffect(() => {
     if (open) {
-      modal.current?.showModal();
+      openDialog(modal.current);
       document.body.style.overflow = "hidden";
     } else {
-      modal.current?.close();
+      closeDialog(modal.current);
       document.body.style.overflow = "";
     }
     return () => {
@@ -241,10 +259,18 @@ function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
           className="brand-link"
           ariaLabel={`${content.brand.name}, back to the top`}
         >
+          {/* Owner request: the header shows only the PIXELATED wordmark,
+              without the small red RECORDS banner, unless admin set a
+              different logo. */}
           <img
-            src={safeHref(content.brand.logoLight, "/assets/logo-light.png")}
-            width="220"
-            height="64"
+            src={
+              !content.brand.logoLight ||
+              content.brand.logoLight === "/assets/logo-light.png"
+                ? "/assets/logo-pixelated.png"
+                : safeHref(content.brand.logoLight, "/assets/logo-light.png")
+            }
+            width="1200"
+            height="173"
             alt={content.brand.name}
           />
         </A>
@@ -253,8 +279,14 @@ function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
         </nav>
         <button
           ref={trigger}
+          type="button"
           className="menu-trigger op-menu-trigger"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            // Open inside the tap itself so mobile Safari treats it as a
+            // user gesture; state follows for focus and scroll locking.
+            openDialog(modal.current);
+            setOpen(true);
+          }}
           aria-haspopup="dialog"
           aria-expanded={open}
           aria-controls="main-menu"
@@ -266,6 +298,7 @@ function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
         id="main-menu"
         className="nav-dialog op-menu"
         ref={modal}
+        onClose={() => setOpen(false)}
         onCancel={(event) => {
           event.preventDefault();
           close();
@@ -1152,12 +1185,12 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
     const dialog = menuDialog.current;
     if (!dialog) return;
     if (menuOpen) {
-      dialog.showModal();
+      openDialog(dialog);
       const previousOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = previousOverflow;
-        dialog.close();
+        closeDialog(dialog);
         menuTrigger.current?.focus();
       };
     }
@@ -1169,6 +1202,7 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
   const happyHour = content.bar.happyHour;
   const specials = (happyHour?.specials || []).filter(Boolean);
   const openMenu = () => {
+    openDialog(menuDialog.current);
     setMenuOpen(true);
     // One short, optional pulse; unsupported browsers still open the menu.
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -1218,6 +1252,7 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
         className="bar-menu-dialog"
         aria-labelledby="bar-menu-title"
         onCancel={() => setMenuOpen(false)}
+        onClose={() => setMenuOpen(false)}
         onClick={(event) => {
           if (event.target === menuDialog.current) setMenuOpen(false);
         }}
@@ -1650,6 +1685,13 @@ function Footer({
   );
 }
 
+// The owner replaced the blueprint lime with the logo's pixelated red. Saved
+// content that still carries the old lime shows the red instead.
+const LEGACY_LIME = /^#dcf55d$/i;
+const PIXEL_RED = "#ff0a05";
+function siteAccent(value: string) {
+  return !value || LEGACY_LIME.test(value) ? PIXEL_RED : value;
+}
 function contrastInk(hex: string) {
   let value = hex.replace("#", "").slice(0, 6);
   if (value.length === 3)
@@ -1728,13 +1770,14 @@ export function PublicExperience({
           content.pages.find((entry) => entry.id === "booth")?.image ||
           content.scenes.interior.image;
   const sampled = photoColors[sceneImage as keyof typeof photoColors];
+  const accent = siteAccent(content.brand.accent);
   const style = {
     "--photo-paper": sampled?.paper || content.brand.foreground,
     "--ink": content.brand.background,
     "--photo-ink": content.brand.background,
-    "--photo-accent": sampled?.accent || content.brand.accent,
-    "--accent-ink": contrastInk(content.brand.accent),
-    "--accent": content.brand.accent,
+    "--photo-accent": sampled?.accent || accent,
+    "--accent-ink": contrastInk(accent),
+    "--accent": accent,
     "--bg": content.brand.background,
     "--fg": content.brand.foreground,
     "--button-radius":

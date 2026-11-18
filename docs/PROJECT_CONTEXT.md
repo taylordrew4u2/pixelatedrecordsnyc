@@ -16,12 +16,13 @@ Reconciled November 12, 2026 from the owner's shared **Branch · Write Website P
 The owner supplied a three-part blueprint (Website Specification, Visual Website Blueprint, Mobile Website Blueprint). Build to it:
 
 - **One page, eight anchors in this order:** `#home` (exterior), `#records`, `#bar`, `#events`, `#calendar`, `#book`, `#about`, `#contact`. Fixed navigation: Records · Bar · Events · Calendar · Book an Event · About · Contact (active section highlighted). Phones: compact header with MENU opening a full-screen list that closes on selection. Old page URLs redirect to their section (`src/lib/sections.ts`); event pages stay.
-- **Full-screen photo sections** with a dark text panel and lime actions, as in the wireframes. Photo files are never edited; CSS `object-fit: cover` only chooses the visible area. No filters, effects or decorations.
+- **Full-screen photo sections** with a dark text panel and red actions, as in the wireframes. Photo files are never edited; CSS `object-fit: cover` only chooses the visible area. No filters, effects or decorations.
 - **Bar:** "Full bar. Happy hour from 3 to 9." with specials $5 margaritas, $7 well drinks, $7 shot and beer (admin: Bar menu → Happy hour). View full menu opens a full-screen overlay.
-- **Events** ends in a full-width lime "Explore upcoming events" bar linking to `#calendar`.
+- **Events** ends in a full-width red "Explore upcoming events" bar linking to `#calendar`.
 - **Calendar:** horizontal flyer lineup of upcoming published events, soonest first, uncropped 4:5 frames, swipe plus prev/next arrows; flyers open their event page (owner's choice). Empty state links to Instagram.
 - **Book an Event:** main-floor photo; the button opens the existing Google Form (owner's choice, Settings → booking URL). Copy lives on the `book` page.
-- **Accent:** lime `#dcf55d` (owner chose the blueprint colour).
+- **Accent:** pixelated logo red `#ff0a05` (owner, November 18, 2026; replaces the blueprint lime `#dcf55d`, which saved content now maps to red).
+- **Header logo:** only the PIXELATED wordmark (`public/assets/logo-pixelated.png`, cropped from `logo-light.png`), without the small red RECORDS banner, at 190px desktop / 150px phone (owner, November 18, 2026). Footer and other uses keep the full logo.
 - Scroll snap is proximity-only; disabled with smooth scrolling under reduced motion.
 
 ## Latest visual decisions
