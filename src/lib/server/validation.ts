@@ -1,3 +1,4 @@
+import { FONT_KEYS, SIZE_LIMITS } from "../theme";
 import type { SiteContent } from "@/lib/types";
 import { ApiError } from "./errors";
 
@@ -183,6 +184,36 @@ const schema = object({
     foreground: color,
     font: oneOf("sans", "serif"),
     buttonStyle: oneOf("square", "rounded", "pill"),
+    surface: optional(color),
+    accentText: optional(color),
+    headingFont: optional(oneOf(...FONT_KEYS)),
+    bodyFont: optional(oneOf(...FONT_KEYS)),
+    labelFont: optional(oneOf(...FONT_KEYS)),
+    sizes: optional(
+      object({
+        panelWidth: optional(
+          number(SIZE_LIMITS.panelWidth[0], SIZE_LIMITS.panelWidth[1], true),
+        ),
+        boxPadding: optional(
+          number(SIZE_LIMITS.boxPadding[0], SIZE_LIMITS.boxPadding[1], true),
+        ),
+        headingSize: optional(
+          number(SIZE_LIMITS.headingSize[0], SIZE_LIMITS.headingSize[1], true),
+        ),
+        textSize: optional(
+          number(SIZE_LIMITS.textSize[0], SIZE_LIMITS.textSize[1], true),
+        ),
+        buttonSize: optional(
+          number(SIZE_LIMITS.buttonSize[0], SIZE_LIMITS.buttonSize[1], true),
+        ),
+        flyerWidth: optional(
+          number(SIZE_LIMITS.flyerWidth[0], SIZE_LIMITS.flyerWidth[1], true),
+        ),
+        logoWidth: optional(
+          number(SIZE_LIMITS.logoWidth[0], SIZE_LIMITS.logoWidth[1], true),
+        ),
+      }),
+    ),
   }),
   navigation: array(
     object({ id, label: title, href: url(), visible: boolean }),

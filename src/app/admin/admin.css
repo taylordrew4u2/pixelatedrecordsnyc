@@ -2625,3 +2625,19 @@
   outline: 3px solid var(--ad-red);
   outline-offset: 2px;
 }
+
+/* Appearance: small text buttons for resets. */
+.ad-link-button {
+  justify-self: start;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0;
+  color: var(--ad-red);
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}

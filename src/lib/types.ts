@@ -1,3 +1,4 @@
+import type { FontKey } from "./theme";
 export type PageId =
   | "home"
   | "inside"
@@ -136,6 +137,30 @@ export type SiteContent = {
     foreground: string;
     font: "sans" | "serif";
     buttonStyle: "square" | "rounded" | "pill";
+    /** Background of the Calendar and Contact sections. */
+    surface?: string;
+    /** Text colour on accent buttons; omitted means automatic contrast. */
+    accentText?: string;
+    headingFont?: FontKey;
+    bodyFont?: FontKey;
+    labelFont?: FontKey;
+    /** Owner sizing. Omitted values keep the designed defaults. */
+    sizes?: {
+      /** Text box width on desktop, in pixels. */
+      panelWidth?: number;
+      /** Padding inside text boxes, percent of the default. */
+      boxPadding?: number;
+      /** Section headings, percent of the default. */
+      headingSize?: number;
+      /** Body text, percent of the default. */
+      textSize?: number;
+      /** Buttons, percent of the default. */
+      buttonSize?: number;
+      /** Calendar flyer card width on desktop, in pixels. */
+      flyerWidth?: number;
+      /** Header logo width on desktop, in pixels. */
+      logoWidth?: number;
+    };
   };
   navigation: NavItem[];
   assets: Asset[];

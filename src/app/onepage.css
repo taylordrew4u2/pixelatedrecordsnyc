@@ -11,7 +11,11 @@
   --op-cream: #f2ecdf;
   --op-mono: "Barlow Condensed", "DM Sans", Arial, sans-serif;
   --op-side: clamp(16px, 5vw, 72px);
-  font-family: "DM Sans", Arial, sans-serif;
+  --op-cream-rgb: 242 236 223;
+  --op-head-font: "DM Sans", Arial, sans-serif;
+  --op-body-font: "DM Sans", Arial, sans-serif;
+  --op-radius: 0px;
+  font-family: var(--op-body-font);
 }
 html:has(.public-site.stacked-layout) {
   /* Anchors land just below the fixed header. */
@@ -141,7 +145,7 @@ html:has(.public-site.page-home) {
   color: var(--op-lime-ink);
   background: var(--op-lime);
   border: 0;
-  border-radius: 0;
+  border-radius: var(--op-radius);
   font-family: var(--op-mono);
   font-size: 14px;
   font-weight: 700;
@@ -161,7 +165,7 @@ html:has(.public-site.page-home) {
   padding: 18px 0;
   font-size: 28px;
   font-weight: 700;
-  border-bottom: 1px solid rgb(242 236 223 / 30%);
+  border-bottom: 1px solid rgb(var(--op-cream-rgb) / 30%);
 }
 .public-site .op-menu .op-nav-link::after {
   display: none;
@@ -204,7 +208,7 @@ html:has(.public-site.page-home) {
 .public-site.page-home .op-contact h2 {
   margin: 0;
   color: var(--op-cream);
-  font-family: "DM Sans", Arial, sans-serif;
+  font-family: var(--op-head-font);
   font-size: clamp(40px, 5vw, 64px);
   font-weight: 700;
   line-height: 1.02;
@@ -232,7 +236,7 @@ html:has(.public-site.page-home) {
   color: var(--op-lime-ink);
   background: var(--op-lime);
   border: 0;
-  border-radius: 0;
+  border-radius: var(--op-radius);
   font-family: var(--op-mono);
   font-size: 18px;
   font-weight: 700;
@@ -276,7 +280,7 @@ html:has(.public-site.page-home) {
   padding: 8px 12px;
   color: var(--op-cream);
   background: none;
-  box-shadow: inset 0 0 0 1px rgb(242 236 223 / 55%);
+  box-shadow: inset 0 0 0 1px rgb(var(--op-cream-rgb) / 55%);
   font-family: var(--op-mono);
   font-size: 14px;
   font-weight: 700;
@@ -297,7 +301,7 @@ html:has(.public-site.page-home) {
 .public-site.page-home .op-wordmark h1 {
   margin: 0;
   color: var(--op-cream);
-  font-family: "DM Sans", Arial, sans-serif;
+  font-family: var(--op-head-font);
   font-size: clamp(40px, 7vw, 96px);
   font-weight: 700;
   line-height: 1;
@@ -361,7 +365,7 @@ html:has(.public-site.page-home) {
   color: var(--op-lime-ink);
   background: var(--op-lime);
   border: 0;
-  border-radius: 0;
+  border-radius: var(--op-radius);
   cursor: pointer;
 }
 .public-site.page-home .op-arrow:disabled {
@@ -401,7 +405,7 @@ html:has(.public-site.page-home) {
   display: block;
   aspect-ratio: 4 / 5;
   margin-bottom: 8px;
-  background: #111;
+  background: color-mix(in srgb, var(--op-panel) 80%, black);
   overflow: hidden;
 }
 .public-site.page-home .op-flyer-art img {
@@ -446,7 +450,7 @@ html:has(.public-site.page-home) {
   gap: 18px;
   max-width: 560px;
   padding: 28px;
-  border: 1px solid rgb(242 236 223 / 30%);
+  border: 1px solid rgb(var(--op-cream-rgb) / 30%);
   font-size: 18px;
 }
 
@@ -542,7 +546,7 @@ html:has(.public-site.page-home) {
   z-index: 2;
   margin-bottom: 24px;
   background: var(--op-panel);
-  border-bottom: 1px solid rgb(242 236 223 / 25%);
+  border-bottom: 1px solid rgb(var(--op-cream-rgb) / 25%);
 }
 .public-site .bar-menu-dialog .op-menu-brand {
   color: var(--op-lime);
@@ -551,7 +555,7 @@ html:has(.public-site.page-home) {
 .public-site .bar-menu-dialog h2#bar-menu-title {
   margin: 0 0 10px;
   color: var(--op-cream);
-  font-family: "DM Sans", Arial, sans-serif;
+  font-family: var(--op-head-font);
   font-size: clamp(48px, 7vw, 88px);
   font-weight: 700;
   line-height: 1;
@@ -560,7 +564,7 @@ html:has(.public-site.page-home) {
 .public-site
   .bar-menu-dialog
   :is(.bar-menu-intro, .menu-note, .category-description) {
-  color: rgb(242 236 223 / 80%);
+  color: rgb(var(--op-cream-rgb) / 80%);
 }
 .public-site .bar-menu-dialog .menu-categories {
   display: grid;
@@ -576,16 +580,16 @@ html:has(.public-site.page-home) {
 .public-site .bar-menu-dialog .drink-category h3 {
   padding-bottom: 12px;
   color: var(--op-cream);
-  font-family: "DM Sans", Arial, sans-serif;
+  font-family: var(--op-head-font);
   font-size: 28px;
   font-weight: 700;
   text-transform: none;
-  border-bottom: 1px solid rgb(242 236 223 / 35%);
+  border-bottom: 1px solid rgb(var(--op-cream-rgb) / 35%);
 }
 .public-site .bar-menu-dialog .drink-item {
   color: var(--op-cream);
   background: none;
-  border-color: rgb(242 236 223 / 20%);
+  border-color: rgb(var(--op-cream-rgb) / 20%);
 }
 .public-site .bar-menu-dialog .drink-item :is(h4, span, p) {
   color: inherit;
@@ -771,7 +775,7 @@ html:has(.public-site.page-home) {
   gap: 20px;
   aspect-ratio: 4 / 5;
   padding: 28px;
-  border: 1px solid rgb(242 236 223 / 30%);
+  border: 1px solid rgb(var(--op-cream-rgb) / 30%);
 }
 .public-site.page-home .op-flyer-next p {
   margin: 0;
@@ -857,15 +861,15 @@ html:has(.public-site.page-home) {
     min-height: 44px;
     font-size: 17px;
   }
-  .public-site.stacked-layout .op-nav-link[href="/#book"] {
+  .public-site.stacked-layout .op-nav-book {
     padding: 0 16px;
     box-shadow: inset 0 0 0 2px var(--op-lime);
   }
-  .public-site.stacked-layout .op-nav-link[href="/#book"]::after {
+  .public-site.stacked-layout .op-nav-book::after {
     display: none;
   }
-  .public-site.stacked-layout .op-nav-link[href="/#book"]:hover,
-  .public-site.stacked-layout .op-nav-link[href="/#book"].is-active {
+  .public-site.stacked-layout .op-nav-book:hover,
+  .public-site.stacked-layout .op-nav-book.is-active {
     color: var(--op-lime-ink);
     background: var(--op-lime);
   }
@@ -928,5 +932,124 @@ html:has(.public-site.page-home) {
   }
   .public-site.page-home .op-panel p {
     font-size: 24px;
+  }
+}
+
+/* Studio button shape applies to every action, not just the main ones. */
+.public-site .op-landing-cue,
+.public-site.page-home .op-flyer-more,
+.public-site .op-specials li,
+.public-site.stacked-layout .op-nav-book,
+.public-site .bar-menu-dialog .menu-category-picker select {
+  border-radius: var(--op-radius);
+}
+.public-site.page-home .op-panel {
+  border-radius: min(var(--op-radius), 14px);
+}
+
+/* Studio sizes ------------------------------------------------------------ */
+/* Each value multiplies or replaces the designed default only when the owner
+   sets it in Studio → Appearance → Sizes. */
+.public-site.page-home .op-panel h2,
+.public-site.page-home .op-calendar-head h2,
+.public-site.page-home .op-contact h2 {
+  font-size: calc(clamp(40px, 5vw, 64px) * var(--op-heading-scale, 1));
+}
+.public-site.page-home .op-panel p {
+  font-size: calc(clamp(17px, 1.6vw, 22px) * var(--op-text-scale, 1));
+}
+.public-site.page-home .op-calendar-head p:not(.op-kicker) {
+  font-size: calc(18px * var(--op-text-scale, 1));
+}
+.public-site.page-home .op-flyer-next p {
+  font-size: calc(22px * var(--op-text-scale, 1));
+}
+.public-site.page-home .op-contact dd {
+  font-size: calc(22px * var(--op-text-scale, 1));
+}
+.public-site .op-cta {
+  min-height: calc(48px * var(--op-button-scale, 1));
+  font-size: calc(18px * var(--op-button-scale, 1));
+}
+.public-site.page-home .op-panel {
+  max-width: var(--op-panel-width, 600px);
+  padding: calc(28px * var(--op-pad-scale, 1))
+    calc(30px * var(--op-pad-scale, 1)) calc(32px * var(--op-pad-scale, 1));
+}
+@media (min-width: 961px) {
+  .public-site.stacked-layout .op-header .brand-link img {
+    width: var(--op-logo-width, 230px);
+  }
+  .public-site.page-home .op-photo > .op-actions {
+    max-width: var(--op-panel-width, 600px);
+    padding: calc(20px * var(--op-pad-scale, 1))
+      calc(30px * var(--op-pad-scale, 1)) calc(32px * var(--op-pad-scale, 1));
+  }
+  .public-site.page-home .op-photo > .op-actions .op-cta {
+    min-height: calc(56px * var(--op-button-scale, 1));
+    font-size: calc(20px * var(--op-button-scale, 1));
+  }
+  .public-site.page-home .op-flyer {
+    flex-basis: var(--op-flyer-width, clamp(300px, 24vw, 380px));
+  }
+}
+@media (min-width: 1600px) {
+  .public-site.page-home .op-panel,
+  .public-site.page-home .op-photo > .op-actions {
+    max-width: var(--op-panel-width, 680px);
+  }
+  .public-site.page-home .op-panel p {
+    font-size: calc(24px * var(--op-text-scale, 1));
+  }
+}
+@media (max-width: 960px) {
+  .public-site.stacked-layout .op-header .brand-link img {
+    width: min(60vw, calc(var(--op-logo-width, 230px) * 0.652));
+  }
+  .public-site.page-home .op-panel h2,
+  .public-site.page-home .op-calendar-head h2,
+  .public-site.page-home .op-contact h2 {
+    font-size: calc(40px * var(--op-heading-scale, 1));
+  }
+  .public-site.page-home .op-panel {
+    padding: calc(22px * var(--op-pad-scale, 1))
+      calc(20px * var(--op-pad-scale, 1)) calc(24px * var(--op-pad-scale, 1));
+  }
+  .public-site.page-home .op-actions .op-cta {
+    min-height: calc(64px * var(--op-button-scale, 1));
+  }
+  .public-site.page-home .op-contact .op-cta,
+  .public-site.page-home .op-contact-actions .op-cta {
+    min-height: calc(56px * var(--op-button-scale, 1));
+  }
+  .public-site.page-home .op-contact dd {
+    font-size: calc(19px * var(--op-text-scale, 1));
+  }
+  .public-site.page-home .op-flyer,
+  .public-site.page-home .op-flyer-next {
+    flex-basis: min(76vw, var(--op-flyer-width, 76vw));
+  }
+}
+
+/* With rounded corners, the action area joins the text box seamlessly. */
+@media (min-width: 961px) {
+  .public-site.page-home .op-photo:has(> .op-actions) > .op-panel {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .public-site.page-home .op-photo > .op-actions {
+    border-radius: 0 0 min(var(--op-radius), 14px) min(var(--op-radius), 14px);
+  }
+}
+@media (max-width: 960px) {
+  .public-site .op-menu .op-nav-book {
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+@media (max-width: 960px) {
+  /* Edge-to-edge action bars stay square whatever the corner setting. */
+  .public-site.page-home .op-photo > .op-actions .op-cta {
+    border-radius: 0;
   }
 }
