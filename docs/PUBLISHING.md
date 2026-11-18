@@ -162,3 +162,23 @@ A production deployment must still include the two existing Functions-only authe
 `applyEditorialDefaults` replaces exact untouched launch SEO/empty-state defaults on reads. Custom owner text and uploaded social images survive; existing source photo references resolve to the enhanced files. Canonical URLs use `SITE_URL`. The business schema includes confirmed hours only. Keep supplied address, social links, hours and menu information current in Studio.
 
 Local test credentials belong in `.env.development.local`, not `.env.local`: the Next.js Netlify adapter copies production-readable `.env*` files into its server bundle. `scripts/check-deploy-env.mjs` now stops a deployment if one of those files declares admin credentials. These local test credentials differ from production. Preview checks must confirm `/api/auth/session` reports `configured: false`.
+
+
+### Deploying from a Mac (November 18, 2026)
+
+`netlify deploy --build` packages the server function from the local `node_modules`. On an Apple Silicon Mac that bundles only the macOS `sharp` binaries, and every `/api/media/*` image then returns 500 on Netlify's Linux functions. The build itself still needs the macOS binaries, so add the Linux ones alongside before deploying:
+
+```sh
+npm ci
+mkdir -p /tmp/prsharp && cd /tmp/prsharp
+npm pack @img/sharp-linux-x64@0.34.5 @img/sharp-libvips-linux-x64@1.2.4
+for p in sharp-linux-x64 sharp-libvips-linux-x64; do
+  rm -rf ~/pixelatedrecordsnyc/node_modules/@img/$p
+  mkdir -p ~/pixelatedrecordsnyc/node_modules/@img/$p
+  tar -xzf img-$p-*.tgz -C ~/pixelatedrecordsnyc/node_modules/@img/$p --strip-components=1
+done
+cd ~/pixelatedrecordsnyc
+npx netlify-cli deploy --build --prod --context production --skip-functions-cache
+```
+
+Match the versions to `node_modules/sharp/package.json` `optionalDependencies`. After deploying, confirm a flyer URL such as `/api/media/<id>` returns 200.

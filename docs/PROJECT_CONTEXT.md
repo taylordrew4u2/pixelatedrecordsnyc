@@ -23,6 +23,7 @@ The owner supplied a three-part blueprint (Website Specification, Visual Website
 - **Book an Event:** main-floor photo; the button opens the existing Google Form (owner's choice, Settings → booking URL). Copy lives on the `book` page.
 - **Accent:** pixelated logo red `#ff0a05` (owner, November 18, 2026; replaces the blueprint lime `#dcf55d`, which saved content now maps to red).
 - **Header logo:** only the PIXELATED wordmark (`public/assets/logo-pixelated.png`, cropped from `logo-light.png`), without the small red RECORDS banner, at 190px desktop / 150px phone (owner, November 18, 2026). Footer and other uses keep the full logo.
+- November 18, 2026 design pass (owner approved "all"): small red "Records · Bar · Events ↓" cue at the foot of the storefront; Records gets a "Visit the shop" action to Contact; happy-hour specials are outlined labels, not button-like boxes; Calendar hides its arrows when everything fits, shows "Event details" as an outlined button and adds an Instagram card when fewer than four events are listed; Contact has an Instagram button beside Get directions; section kickers removed for consistency; UI labels use Barlow Condensed (two typefaces: DM Sans + Barlow Condensed); footer links are 16px with 44px targets. Real weekly hours are still needed from the owner (admin: Location → hours).
 - Scroll snap is proximity-only; disabled with smooth scrolling under reduced motion.
 
 ## Latest visual decisions
