@@ -259,10 +259,18 @@ function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
           className="brand-link"
           ariaLabel={`${content.brand.name}, back to the top`}
         >
+          {/* Owner request: the header shows only the PIXELATED wordmark,
+              without the small red RECORDS banner, unless admin set a
+              different logo. */}
           <img
-            src={safeHref(content.brand.logoLight, "/assets/logo-light.png")}
-            width="220"
-            height="64"
+            src={
+              !content.brand.logoLight ||
+              content.brand.logoLight === "/assets/logo-light.png"
+                ? "/assets/logo-pixelated.png"
+                : safeHref(content.brand.logoLight, "/assets/logo-light.png")
+            }
+            width="1200"
+            height="173"
             alt={content.brand.name}
           />
         </A>

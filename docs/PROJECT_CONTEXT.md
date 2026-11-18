@@ -22,6 +22,7 @@ The owner supplied a three-part blueprint (Website Specification, Visual Website
 - **Calendar:** horizontal flyer lineup of upcoming published events, soonest first, uncropped 4:5 frames, swipe plus prev/next arrows; flyers open their event page (owner's choice). Empty state links to Instagram.
 - **Book an Event:** main-floor photo; the button opens the existing Google Form (owner's choice, Settings → booking URL). Copy lives on the `book` page.
 - **Accent:** pixelated logo red `#ff0a05` (owner, November 18, 2026; replaces the blueprint lime `#dcf55d`, which saved content now maps to red).
+- **Header logo:** only the PIXELATED wordmark (`public/assets/logo-pixelated.png`, cropped from `logo-light.png`), without the small red RECORDS banner, at 190px desktop / 150px phone (owner, November 18, 2026). Footer and other uses keep the full logo.
 - Scroll snap is proximity-only; disabled with smooth scrolling under reduced motion.
 
 ## Latest visual decisions
