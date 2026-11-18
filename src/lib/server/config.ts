@@ -60,11 +60,26 @@ export function getSupabaseConfig() {
   };
 }
 
+// Owner decision (November 18, 2026): the Studio password is fixed in code as
+// "weed" so nobody has to manage hosting settings. This is the scrypt hash of
+// that word. It is deliberately simple and is not a secret: anyone who reads
+// this file or guesses the word can edit the website. The sign-in throttle and
+// version history remain the safety net. To use a private password again,
+// return process.env.ADMIN_PASSWORD_HASH here.
+const FIXED_ADMIN_PASSWORD_HASH =
+  "scrypt:706978656c617465647265636f726473:05dac7a68ffd9a96d6126115c139fc29130225efa20505a92f4014c0dcc1523eec1d82712639c179186f852a83b6fd21093ac2087cd027900bddde9f8f68b296";
+
+export function adminPasswordHash() {
+  // Automated tests supply their own throwaway hash.
+  if (process.env.NODE_ENV === "test" && process.env.ADMIN_PASSWORD_HASH)
+    return process.env.ADMIN_PASSWORD_HASH;
+  return FIXED_ADMIN_PASSWORD_HASH;
+}
+
 export function authIsConfigured() {
   return (
-    /^scrypt:[a-f0-9]{32,128}:[a-f0-9]{128}$/i.test(
-      process.env.ADMIN_PASSWORD_HASH || "",
-    ) && (process.env.SESSION_SECRET || "").length >= 32
+    /^scrypt:[a-f0-9]{32,128}:[a-f0-9]{128}$/i.test(adminPasswordHash()) &&
+    (process.env.SESSION_SECRET || "").length >= 32
   );
 }
 

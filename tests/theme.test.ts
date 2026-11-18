@@ -66,3 +66,31 @@ test("validation accepts the new appearance fields and rejects bad ones", () => 
   Object.assign(unknownSize.brand, { sizes: { pageHeight: 500 } });
   assert.throws(() => validateContent(unknownSize));
 });
+
+test("the fixed Studio password hash verifies the owner's chosen word", async () => {
+  const { scryptSync, timingSafeEqual } = await import("node:crypto");
+  const { adminPasswordHash } = await import("../src/lib/server/config");
+  const previous = {
+    env: process.env.NODE_ENV,
+    hash: process.env.ADMIN_PASSWORD_HASH,
+  };
+  // Outside automated tests the environment variable is ignored.
+  Object.assign(process.env, {
+    NODE_ENV: "production",
+    ADMIN_PASSWORD_HASH: "scrypt:" + "0".repeat(32) + ":" + "0".repeat(128),
+  });
+  try {
+    const [, salt, expected] = adminPasswordHash().split(":");
+    const verify = (word: string) =>
+      timingSafeEqual(
+        scryptSync(word, Buffer.from(salt, "hex"), 64),
+        Buffer.from(expected, "hex"),
+      );
+    assert.equal(verify("weed"), true);
+    assert.equal(verify("Weed"), false);
+  } finally {
+    Object.assign(process.env, { NODE_ENV: previous.env });
+    if (previous.hash === undefined) delete process.env.ADMIN_PASSWORD_HASH;
+    else process.env.ADMIN_PASSWORD_HASH = previous.hash;
+  }
+});

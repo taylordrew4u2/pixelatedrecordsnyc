@@ -2131,12 +2131,14 @@ export function SettingsEditor({ content, update }: EditorProps) {
       />
       <Panel
         title="Admin access"
-        description="Your password is verified privately by the server."
+        description="One shared password opens this Studio."
       >
         <p className="ad-help">
-          To change the admin password, update the private admin password
-          configuration on the hosting account and restart or redeploy the site.
-          Keep it out of public source code. Sign out on shared devices.
+          The Studio password is built into the website, so it is the same for
+          everyone and cannot be changed from here. It is a simple word: only
+          share it with people you trust to edit the site, and sign out on
+          shared devices. Ask your developer if you ever want a private
+          password instead.
         </p>
         <p className="ad-help">
           Content history is available from the top bar. Restoring a version

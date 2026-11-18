@@ -549,9 +549,15 @@ test("unconfigured Vercel production refuses writes and never selects ephemeral 
       seedContent.brand.name,
     );
     delete process.env.VERCEL;
+    // Outside tests the Studio password is the fixed word, not the env hash.
+    await assert.rejects(
+      () =>
+        authenticatePassword(request("/api/auth/login", "POST"), password),
+      status(401),
+    );
     const localProductionCookie = await authenticatePassword(
       request("/api/auth/login", "POST"),
-      password,
+      "weed",
     );
     assert.match(localProductionCookie, /; Secure/);
   });
