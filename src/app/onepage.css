@@ -1053,3 +1053,325 @@ html:has(.public-site.page-home) {
     border-radius: 0;
   }
 }
+
+/* Polish pass (November 19, 2026) ---------------------------------------- */
+/* Gentle feedback on every action; off under reduced motion. */
+.public-site .op-cta,
+.public-site .op-landing-cue,
+.public-site .op-calendar-bar,
+.public-site.page-home .op-flyer-more,
+.public-site.page-home .op-arrow,
+.public-site.stacked-layout .op-nav-book {
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+.public-site .op-landing-cue:hover,
+.public-site .op-calendar-bar:hover {
+  color: var(--op-cream);
+  background: var(--op-panel);
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site.page-home .op-arrow:hover:not(:disabled) {
+  color: var(--op-cream);
+  background: var(--op-panel);
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site .op-cta:active,
+.public-site .op-landing-cue:active,
+.public-site .op-calendar-bar:active {
+  filter: brightness(0.9);
+}
+.public-site.page-home .op-flyer-art img {
+  transition: transform 220ms ease;
+}
+.public-site.page-home .op-flyer-link:hover .op-flyer-art img {
+  transform: scale(1.02);
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-site * {
+    transition: none !important;
+  }
+  .public-site.page-home .op-flyer-link:hover .op-flyer-art img {
+    transform: none;
+  }
+}
+
+/* Calendar: cards line up under the heading and use the room. */
+@media (min-width: 961px) {
+  .public-site.page-home .op-lineup.is-static .op-track {
+    justify-content: flex-start;
+  }
+  .public-site.page-home .op-flyer {
+    flex-basis: var(--op-flyer-width, clamp(320px, 27vw, 430px));
+  }
+}
+/* Tablets: flyers stay a sensible size instead of nearly full width. */
+@media (min-width: 600px) and (max-width: 960px) {
+  .public-site.page-home .op-flyer,
+  .public-site.page-home .op-flyer-next {
+    flex-basis: min(46vw, var(--op-flyer-width, 380px));
+  }
+  .public-site.page-home .op-panel {
+    max-width: min(var(--op-panel-width, 600px), calc(100% - 32px));
+  }
+}
+
+/* Contact: the map fills the height of the section on desktop. */
+@media (min-width: 961px) {
+  .public-site.page-home .op-contact {
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .public-site.page-home .op-map {
+    height: 100%;
+    min-height: 420px;
+  }
+}
+
+/* Footer: readable fine print with room to breathe. */
+.public-site.stacked-layout .venue-footer,
+.public-site.stacked-layout .venue-footer-meta span {
+  font-size: 14px;
+}
+
+/* Event pages match the one-page design. */
+.public-site.stacked-layout .event-detail {
+  padding: 40px var(--op-side) 64px;
+  color: var(--op-cream);
+  background: var(--op-dark);
+}
+.public-site.stacked-layout .event-detail .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-bottom: 20px;
+  color: var(--op-cream);
+  font-family: var(--op-mono);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.public-site.stacked-layout .event-detail .back-link:hover {
+  color: var(--op-lime);
+}
+.public-site.stacked-layout .event-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 64px);
+  max-width: 1200px;
+}
+.public-site.stacked-layout .event-poster {
+  background: color-mix(in srgb, var(--op-panel) 80%, black);
+}
+.public-site.stacked-layout .event-poster img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+.public-site.stacked-layout .event-detail .eyebrow {
+  color: var(--op-lime);
+  font-family: var(--op-mono);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.public-site.stacked-layout .event-detail h1 {
+  margin: 8px 0 20px;
+  color: var(--op-cream);
+  font-family: var(--op-head-font);
+  font-size: calc(clamp(36px, 4.6vw, 60px) * var(--op-heading-scale, 1));
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.public-site.stacked-layout .event-facts {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 18px 0;
+  border-block: 1px solid rgb(var(--op-cream-rgb) / 25%);
+}
+.public-site.stacked-layout .event-facts p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--op-cream);
+  font-size: calc(18px * var(--op-text-scale, 1));
+  line-height: 1.4;
+}
+.public-site.stacked-layout .event-facts svg {
+  flex: none;
+  color: var(--op-lime);
+}
+.public-site.stacked-layout .event-notice {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+  font-family: var(--op-mono);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.public-site.stacked-layout .event-detail .prose p {
+  max-width: 60ch;
+  margin: 0 0 24px;
+  color: var(--op-cream);
+  font-size: calc(18px * var(--op-text-scale, 1));
+  line-height: 1.55;
+}
+.public-site.stacked-layout .event-detail .button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.public-site.stacked-layout .event-detail .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: calc(52px * var(--op-button-scale, 1));
+  padding: 12px 22px;
+  border: 0;
+  border-radius: var(--op-radius);
+  font-family: var(--op-mono);
+  font-size: calc(18px * var(--op-button-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+.public-site.stacked-layout .event-detail .button.primary {
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+}
+.public-site.stacked-layout .event-detail .button.outline {
+  color: var(--op-cream);
+  background: none;
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site.stacked-layout .event-detail .button:hover {
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+}
+.public-site.stacked-layout .event-detail .button.primary:hover {
+  color: var(--op-cream);
+  background: var(--op-panel);
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site.stacked-layout .event-detail .button:focus-visible,
+.public-site.stacked-layout .event-detail .back-link:focus-visible {
+  outline: 3px solid var(--op-cream);
+  outline-offset: 3px;
+}
+.public-site.stacked-layout .event-detail .muted.small {
+  margin-top: 18px;
+  color: rgb(var(--op-cream-rgb) / 75%);
+  font-size: 14px;
+}
+@media (max-width: 760px) {
+  .public-site.stacked-layout .event-detail {
+    padding: 20px 16px 40px;
+  }
+  .public-site.stacked-layout .event-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .public-site.stacked-layout .event-detail .button {
+    width: 100%;
+    min-height: calc(56px * var(--op-button-scale, 1));
+  }
+}
+
+/* Event pages span the full width; their booking strip matches the design. */
+.public-site.stacked-layout .event-detail.section-wrap {
+  max-width: none;
+  margin: 0;
+}
+.public-site.stacked-layout .event-detail p.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  /* An older phone rule forces 12px with !important. */
+  font-size: 17px !important;
+}
+.public-site.stacked-layout .booking-section.section-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: none;
+  margin: 0;
+  padding: 48px var(--op-side);
+  color: var(--op-cream);
+  background: var(--op-panel);
+  border-top: 1px solid rgb(var(--op-cream-rgb) / 20%);
+}
+.public-site.stacked-layout .booking-section .booking-disc,
+.public-site.stacked-layout .booking-section .eyebrow {
+  display: none;
+}
+.public-site.stacked-layout .booking-section h2 {
+  max-width: 28ch;
+  margin: 0;
+  color: var(--op-cream);
+  font-family: var(--op-head-font);
+  font-size: calc(clamp(26px, 2.8vw, 38px) * var(--op-heading-scale, 1));
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.public-site.stacked-layout .booking-section .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: calc(56px * var(--op-button-scale, 1));
+  padding: 14px 24px;
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+  border: 0;
+  border-radius: var(--op-radius);
+  font-family: var(--op-mono);
+  font-size: calc(20px * var(--op-button-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+.public-site.stacked-layout .booking-section .button:hover {
+  color: var(--op-cream);
+  background: var(--op-dark);
+  box-shadow: inset 0 0 0 2px var(--op-lime);
+}
+.public-site.stacked-layout .booking-section .button:focus-visible {
+  outline: 3px solid var(--op-cream);
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .public-site.stacked-layout .booking-section.section-wrap {
+    padding: 32px 16px;
+  }
+  .public-site.stacked-layout .booking-section .button {
+    width: 100%;
+  }
+}
