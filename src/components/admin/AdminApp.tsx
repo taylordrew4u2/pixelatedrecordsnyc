@@ -40,7 +40,15 @@ import {
   Wine,
   X,
   AlertCircle,
+  Compass,
 } from "lucide-react";
+import {
+  GUIDE_STEPS,
+  GuidePanel,
+  GuideWelcome,
+  guideWasOffered,
+  rememberGuide,
+} from "./SetupGuide";
 import type { Asset, ContentState, SiteContent } from "@/lib/types";
 import {
   AppearanceEditor,
@@ -326,6 +334,17 @@ export default function AdminApp() {
   const [notice, setNotice] = useState<Notice | null>(null),
     [conflict, setConflict] = useState(false),
     [showHistory, setShowHistory] = useState(false);
+  // Guided tour: offered once after sign-in, restartable from the menu.
+  const [guideOffer, setGuideOffer] = useState(false),
+    [guideStep, setGuideStep] = useState<number | null>(null);
+  const goToGuideStep = (next: number) => {
+    const clamped = Math.max(0, Math.min(GUIDE_STEPS.length - 1, next));
+    setGuideOffer(false);
+    setGuideStep(clamped);
+    setTab(GUIDE_STEPS[clamped].tab);
+    setMobileNav(false);
+    window.scrollTo({ top: 0 });
+  };
   const [picker, setPicker] = useState<{
       select?: (src: string) => void;
     } | null>(null),
@@ -431,6 +450,7 @@ export default function AdminApp() {
         request<ContentState>("/api/admin/content"),
       ]);
       setSession(nextSession);
+      if (!guideWasOffered()) setGuideOffer(true);
       if (pending.current) {
         const prior = pending.current;
         pending.current = null;
@@ -845,6 +865,10 @@ export default function AdminApp() {
               <ArrowUpRight size={17} />
               View live website
             </a>
+            <button type="button" onClick={() => goToGuideStep(0)}>
+              <Compass size={17} />
+              Guided tour
+            </button>
             <button type="button" onClick={logout} disabled={!!busy}>
               <LogOut size={17} />
               Sign out
@@ -1272,6 +1296,30 @@ export default function AdminApp() {
             </footer>
           </main>
         </div>
+        {guideOffer && guideStep === null && (
+          <GuideWelcome
+            onStart={() => goToGuideStep(0)}
+            onSkip={() => {
+              rememberGuide("skipped");
+              setGuideOffer(false);
+            }}
+          />
+        )}
+        {guideStep !== null && (
+          <GuidePanel
+            step={guideStep}
+            onStep={goToGuideStep}
+            onClose={(finished) => {
+              rememberGuide(finished ? "finished" : "skipped");
+              setGuideStep(null);
+              if (finished)
+                setNotice({
+                  tone: "info",
+                  text: "Tour complete. Restart it any time from Guided tour in the menu.",
+                });
+            }}
+          />
+        )}
         {showHistory && (
           <Modal
             title="Version history"

@@ -20,6 +20,15 @@ import type {
   Hours,
 } from "@/lib/types";
 import {
+  FONT_KEYS,
+  FONT_OPTIONS,
+  resolveTheme,
+  SIZE_LIMITS,
+  THEME_DEFAULTS,
+  type FontKey,
+  type SizeKey,
+} from "@/lib/theme";
+import {
   ColorField,
   Empty,
   Field,
@@ -28,6 +37,7 @@ import {
   move,
   NumberField,
   Panel,
+  Range,
   Select,
   slugify,
   TextArea,
@@ -1722,10 +1732,35 @@ export function LocationEditor({ content, update }: EditorProps) {
   );
 }
 
+const fontOptions = FONT_KEYS.map((key) => ({
+  value: key,
+  label: FONT_OPTIONS[key].label,
+}));
+const sizeControls: { key: SizeKey; label: string; suffix: string }[] = [
+  { key: "panelWidth", label: "Text box width (desktop)", suffix: "px" },
+  { key: "boxPadding", label: "Space inside text boxes", suffix: "%" },
+  { key: "headingSize", label: "Heading size", suffix: "%" },
+  { key: "textSize", label: "Text size", suffix: "%" },
+  { key: "buttonSize", label: "Button size", suffix: "%" },
+  { key: "flyerWidth", label: "Calendar flyer width (desktop)", suffix: "px" },
+  { key: "logoWidth", label: "Header logo width", suffix: "px" },
+];
+
 export function AppearanceEditor({ content, update }: EditorProps) {
   const brand = content.brand;
+  const theme = resolveTheme(brand);
   const patch = (values: Partial<SiteContent["brand"]>) =>
-    update((d) => Object.assign(d.brand, values));
+    update((d) => {
+      Object.assign(d.brand, values);
+      // Undefined means "use the default"; drop it so saved data stays clean.
+      for (const key of Object.keys(values) as (keyof SiteContent["brand"])[])
+        if (values[key] === undefined) delete d.brand[key];
+    });
+  const sizeValue = (key: SizeKey) => brand.sizes?.[key] ?? SIZE_LIMITS[key][2];
+  const setSize = (key: SizeKey, value: number) =>
+    update((d) => {
+      d.brand.sizes = { ...(d.brand.sizes || {}), [key]: Math.round(value) };
+    });
   return (
     <>
       <Panel
@@ -1773,75 +1808,202 @@ export function AppearanceEditor({ content, update }: EditorProps) {
         </div>
       </Panel>
       <Panel
-        title="Colors & type"
-        description="Changes are previewed on the site before you publish."
+        title="Colors"
+        description="Every color on the site. Preview shows the draft on the live design before you publish."
       >
         <div className="ad-three-col">
           <ColorField
-            label="Accent color"
+            label="Accent (buttons, highlights, labels)"
             value={brand.accent}
             onChange={(v) => patch({ accent: v })}
           />
           <ColorField
-            label="Background color"
+            label="Button text"
+            value={brand.accentText || theme.accentText}
+            onChange={(v) => patch({ accentText: v })}
+          />
+          <ColorField
+            label="Text"
+            value={brand.foreground}
+            onChange={(v) => patch({ foreground: v })}
+          />
+          <ColorField
+            label="Header, menus and text boxes"
             value={brand.background}
             onChange={(v) => patch({ background: v })}
           />
           <ColorField
-            label="Text color"
-            value={brand.foreground}
-            onChange={(v) => patch({ foreground: v })}
+            label="Calendar and Contact background"
+            value={brand.surface || THEME_DEFAULTS.surface}
+            onChange={(v) => patch({ surface: v })}
           />
         </div>
-        <div className="ad-two-col">
+        {brand.accentText && (
+          <button
+            type="button"
+            className="ad-link-button"
+            onClick={() => patch({ accentText: undefined })}
+          >
+            Use automatic button text color
+          </button>
+        )}
+      </Panel>
+      <Panel
+        title="Fonts & buttons"
+        description="All fonts are included with the site, so they look the same on every device."
+      >
+        <div className="ad-three-col">
           <Select
-            label="Body typeface"
-            value={brand.font}
-            onChange={(v) => patch({ font: v as "sans" | "serif" })}
-            options={[
-              { value: "sans", label: "Clean sans serif — system font" },
-              { value: "serif", label: "Editorial serif — system font" },
-            ]}
-          />
-          <Select
-            label="Button shape"
-            value={brand.buttonStyle}
-            onChange={(v) =>
-              patch({ buttonStyle: v as SiteContent["brand"]["buttonStyle"] })
+            label="Headings"
+            value={
+              brand.headingFont ||
+              (brand.font === "serif" ? "georgia" : THEME_DEFAULTS.headingFont)
             }
-            options={[
-              { value: "square", label: "Square" },
-              { value: "rounded", label: "Soft corners" },
-              { value: "pill", label: "Pill" },
-            ]}
+            onChange={(v) => patch({ headingFont: v as FontKey })}
+            options={fontOptions}
+          />
+          <Select
+            label="Body text"
+            value={
+              brand.bodyFont ||
+              (brand.font === "serif" ? "georgia" : THEME_DEFAULTS.bodyFont)
+            }
+            onChange={(v) => patch({ bodyFont: v as FontKey })}
+            options={fontOptions}
+          />
+          <Select
+            label="Buttons, menu and small labels"
+            value={brand.labelFont || THEME_DEFAULTS.labelFont}
+            onChange={(v) => patch({ labelFont: v as FontKey })}
+            options={fontOptions}
           />
         </div>
+        <Select
+          label="Button and box corners"
+          value={brand.buttonStyle}
+          onChange={(v) =>
+            patch({ buttonStyle: v as SiteContent["brand"]["buttonStyle"] })
+          }
+          options={[
+            { value: "square", label: "Square" },
+            { value: "rounded", label: "Soft corners" },
+            { value: "pill", label: "Pill (round buttons)" },
+          ]}
+        />
+      </Panel>
+      <Panel
+        title="Sizes"
+        description="Resize text boxes, text, buttons and cards. 100% is the original design; phones scale to fit."
+      >
+        <div className="ad-two-col">
+          {sizeControls.map((control) => (
+            <Range
+              key={control.key}
+              label={control.label}
+              value={sizeValue(control.key)}
+              min={SIZE_LIMITS[control.key][0]}
+              max={SIZE_LIMITS[control.key][1]}
+              step={control.suffix === "px" ? 10 : 5}
+              suffix={control.suffix}
+              onChange={(v) => setSize(control.key, v)}
+            />
+          ))}
+        </div>
+        {brand.sizes && Object.keys(brand.sizes).length > 0 && (
+          <button
+            type="button"
+            className="ad-link-button"
+            onClick={() => patch({ sizes: undefined })}
+          >
+            Reset all sizes
+          </button>
+        )}
+      </Panel>
+      <Panel
+        title="Preview"
+        description="A quick look at your choices. Use Preview at the top to see the whole site."
+      >
         <div
           className="ad-theme-preview"
           style={{
-            background: brand.background,
-            color: brand.foreground,
-            fontFamily:
-              brand.font === "serif" ? "Georgia, serif" : "Arial, sans-serif",
+            background: theme.surface,
+            color: theme.foreground,
+            fontFamily: theme.bodyFont,
           }}
         >
-          <span className="ad-eyebrow">APPEARANCE PREVIEW</span>
-          <h3>{brand.name}</h3>
-          <p>Keep the words easy to read, day or night.</p>
-          <span
+          <div
             style={{
-              background: brand.accent,
-              borderRadius:
-                brand.buttonStyle === "pill"
-                  ? 99
-                  : brand.buttonStyle === "rounded"
-                    ? 8
-                    : 0,
+              background: theme.background,
+              padding: `${Math.round(24 * (sizeValue("boxPadding") / 100))}px`,
+              maxWidth: Math.min(sizeValue("panelWidth"), 560),
+              borderRadius: theme.radius === "0px" ? 0 : 14,
             }}
           >
-            Your button style
-          </span>
+            <span
+              className="ad-eyebrow"
+              style={{ color: theme.accent, fontFamily: theme.labelFont }}
+            >
+              APPEARANCE PREVIEW
+            </span>
+            <h3
+              style={{
+                fontFamily: theme.headingFont,
+                fontSize: `${Math.round(36 * (sizeValue("headingSize") / 100))}px`,
+              }}
+            >
+              {brand.name}
+            </h3>
+            <p
+              style={{
+                fontSize: `${Math.round(17 * (sizeValue("textSize") / 100))}px`,
+              }}
+            >
+              Full bar. Happy hour from 3 to 9.
+            </p>
+            <span
+              style={{
+                display: "inline-block",
+                padding: "12px 18px",
+                color: theme.accentText,
+                background: theme.accent,
+                borderRadius: theme.radius,
+                fontFamily: theme.labelFont,
+                fontSize: `${Math.round(18 * (sizeValue("buttonSize") / 100))}px`,
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+              }}
+            >
+              View full menu
+            </span>
+          </div>
         </div>
+        <button
+          type="button"
+          className="ad-link-button"
+          onClick={() => {
+            if (
+              window.confirm(
+                "Reset all colors, fonts, corners and sizes to the Pixelated Records defaults? Logos and text are kept.",
+              )
+            )
+              patch({
+                accent: THEME_DEFAULTS.accent,
+                accentText: undefined,
+                background: THEME_DEFAULTS.background,
+                surface: undefined,
+                foreground: THEME_DEFAULTS.foreground,
+                font: "sans",
+                headingFont: undefined,
+                bodyFont: undefined,
+                labelFont: undefined,
+                buttonStyle: THEME_DEFAULTS.buttonStyle,
+                sizes: undefined,
+              });
+          }}
+        >
+          Reset look to Pixelated Records defaults
+        </button>
       </Panel>
     </>
   );
@@ -1969,12 +2131,14 @@ export function SettingsEditor({ content, update }: EditorProps) {
       />
       <Panel
         title="Admin access"
-        description="Your password is verified privately by the server."
+        description="One shared password opens this Studio."
       >
         <p className="ad-help">
-          To change the admin password, update the private admin password
-          configuration on the hosting account and restart or redeploy the site.
-          Keep it out of public source code. Sign out on shared devices.
+          The Studio password is built into the website, so it is the same for
+          everyone and cannot be changed from here. It is a simple word: only
+          share it with people you trust to edit the site, and sign out on
+          shared devices. Ask your developer if you ever want a private
+          password instead.
         </p>
         <p className="ad-help">
           Content history is available from the top bar. Restoring a version

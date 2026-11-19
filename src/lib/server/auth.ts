@@ -5,7 +5,7 @@ import {
   scrypt,
   timingSafeEqual,
 } from "node:crypto";
-import { authIsConfigured, getStorageMode } from "./config";
+import { adminPasswordHash, authIsConfigured, getStorageMode } from "./config";
 import { ApiError, storageUnavailable } from "./errors";
 import { readLocalJson, withLocalLock, writeLocalJson } from "./local";
 import { supabaseRequest, supabaseRpc } from "./supabase";
@@ -20,7 +20,7 @@ type Attempt = { count: number; resetAt: number };
 
 function passwordVersion() {
   return createHash("sha256")
-    .update(process.env.ADMIN_PASSWORD_HASH || "")
+    .update(adminPasswordHash())
     .digest("hex")
     .slice(0, 24);
 }
@@ -158,7 +158,7 @@ export async function requireAuthentication(request: Request) {
 
 export async function verifyPassword(password: string) {
   if (!authIsConfigured()) return false;
-  const [, salt, expected] = process.env.ADMIN_PASSWORD_HASH!.split(":");
+  const [, salt, expected] = adminPasswordHash().split(":");
   const actual = await new Promise<Buffer>((resolve, reject) => {
     scrypt(
       password,

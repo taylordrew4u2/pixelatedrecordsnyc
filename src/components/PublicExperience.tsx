@@ -40,6 +40,7 @@ import {
 } from "@/lib/events";
 import { destinationVisible, safeHref } from "@/lib/links";
 import { sectionHref } from "@/lib/sections";
+import { resolveTheme } from "@/lib/theme";
 
 const PreviewContext = createContext(false);
 const ContentContext = createContext<SiteContent | null>(null);
@@ -244,7 +245,7 @@ function SiteHeader({ content }: { content: SiteContent; now?: Date }) {
     <A
       key={section.id}
       href={`/#${section.id}`}
-      className={`op-nav-link${active === section.id ? " is-active" : ""}`}
+      className={`op-nav-link${section.id === "book" ? " op-nav-book" : ""}${active === section.id ? " is-active" : ""}`}
       ariaCurrent={active === section.id ? "location" : undefined}
       onClick={onClick}
     >
@@ -1726,28 +1727,6 @@ function Footer({
   );
 }
 
-// The owner replaced the blueprint lime with the logo's pixelated red. Saved
-// content that still carries the old lime shows the red instead.
-const LEGACY_LIME = /^#dcf55d$/i;
-const PIXEL_RED = "#ff0a05";
-function siteAccent(value: string) {
-  return !value || LEGACY_LIME.test(value) ? PIXEL_RED : value;
-}
-function contrastInk(hex: string) {
-  let value = hex.replace("#", "").slice(0, 6);
-  if (value.length === 3)
-    value = value
-      .split("")
-      .map((c) => c + c)
-      .join("");
-  const channels = [0, 2, 4]
-    .map((offset) => parseInt(value.slice(offset, offset + 2), 16) / 255)
-    .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
-  const luminance =
-    0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
-  return luminance > 0.179 ? "#181614" : "#ffffff";
-}
-
 export function PublicExperience({
   content,
   pageId,
@@ -1811,13 +1790,26 @@ export function PublicExperience({
           content.pages.find((entry) => entry.id === "booth")?.image ||
           content.scenes.interior.image;
   const sampled = photoColors[sceneImage as keyof typeof photoColors];
-  const accent = siteAccent(content.brand.accent);
+  const theme = resolveTheme(content.brand);
+  const accent = theme.accent;
   const style = {
+    // Studio's Appearance settings drive the one-page design directly.
+    "--op-lime": theme.accent,
+    "--op-lime-ink": theme.accentText,
+    "--op-panel": theme.background,
+    "--op-dark": theme.surface,
+    "--op-cream": theme.foreground,
+    "--op-cream-rgb": theme.foregroundRgb,
+    "--op-head-font": theme.headingFont,
+    "--op-body-font": theme.bodyFont,
+    "--op-mono": theme.labelFont,
+    "--op-radius": theme.radius,
+    ...theme.sizes,
     "--photo-paper": sampled?.paper || content.brand.foreground,
     "--ink": content.brand.background,
     "--photo-ink": content.brand.background,
     "--photo-accent": sampled?.accent || accent,
-    "--accent-ink": contrastInk(accent),
+    "--accent-ink": theme.accentText,
     "--accent": accent,
     "--bg": content.brand.background,
     "--fg": content.brand.foreground,

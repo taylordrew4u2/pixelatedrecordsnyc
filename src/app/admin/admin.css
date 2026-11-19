@@ -2625,3 +2625,174 @@
   outline: 3px solid var(--ad-red);
   outline-offset: 2px;
 }
+
+/* Appearance: small text buttons for resets. */
+.ad-link-button {
+  justify-self: start;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0;
+  color: var(--ad-red);
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+/* Guided tour ------------------------------------------------------------- */
+.ad-guide-welcome {
+  display: grid;
+  gap: 14px;
+  width: min(520px, 100%);
+  padding: 32px;
+  color: var(--ad-ink);
+  background: var(--ad-paper);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px #0006;
+}
+.ad-guide-welcome h2 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+}
+.ad-guide-welcome p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.ad-guide-welcome small {
+  color: var(--ad-muted);
+  font-size: 13px;
+}
+.ad-guide-badge {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  background: var(--ad-red);
+  border-radius: 50%;
+}
+.ad-guide-welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+.ad-guide-welcome-actions .ad-button,
+.ad-guide footer .ad-button {
+  min-height: 46px;
+  font-size: 14px !important;
+}
+.ad-guide-joke {
+  padding: 10px 14px;
+  color: var(--ad-ink);
+  background: #f3efe2;
+  border-left: 3px solid var(--ad-red);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+.ad-guide {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 90;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  width: min(400px, calc(100vw - 40px));
+  max-height: min(620px, calc(100dvh - 40px));
+  color: var(--ad-ink);
+  background: var(--ad-paper);
+  border: 1px solid var(--ad-line);
+  border-radius: 14px;
+  box-shadow: 0 18px 48px #0000004d;
+  overflow: hidden;
+}
+.ad-guide header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 10px 18px;
+}
+.ad-guide-count {
+  color: var(--ad-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ad-guide-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--ad-ink);
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.ad-guide-close:hover {
+  background: #eaece3;
+}
+.ad-guide-progress {
+  height: 4px;
+  background: var(--ad-line);
+}
+.ad-guide-progress span {
+  display: block;
+  height: 100%;
+  background: var(--ad-red);
+  transition: width 0.2s;
+}
+.ad-guide-body {
+  padding: 16px 18px 6px;
+  overflow-y: auto;
+}
+.ad-guide-body h2 {
+  margin: 0 0 8px;
+  font-size: 21px;
+  line-height: 1.2;
+  outline: none;
+}
+.ad-guide-body p {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ad-guide-body ul {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding-left: 20px;
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+.ad-guide footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid var(--ad-line);
+}
+@media (max-width: 700px) {
+  .ad-guide {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    width: auto;
+    max-height: 58dvh;
+  }
+  .ad-guide-welcome {
+    padding: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ad-guide-progress span {
+    transition: none;
+  }
+}
