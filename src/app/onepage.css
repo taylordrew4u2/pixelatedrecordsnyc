@@ -1519,3 +1519,53 @@ html:has(.public-site.page-home) {
 .public-site.page-home .op-flyer-art {
   background: #000;
 }
+
+/* The Events bar uses the same condensed label face as every other action
+   bar, so it stays on one line on the narrowest phones. */
+.public-site.page-home .op-calendar-bar {
+  justify-content: center;
+  font-family: var(--op-mono);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+@media (max-width: 960px) {
+  .public-site.page-home .op-calendar-bar {
+    gap: 10px;
+    font-size: calc(18px * var(--op-button-scale, 1));
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .public-site .op-specials li {
+    font-size: 14px;
+  }
+}
+
+/* Touch screens: a tapped button must not stay in its hover colours after
+   the finger lifts (or after the page scrolls under a resting finger).
+   Each action keeps its normal look; the press still darkens it briefly. */
+@media (hover: none) {
+  .public-site .op-cta:hover,
+  .public-site.stacked-layout .op-cta:hover,
+  .public-site .op-landing-cue:hover,
+  .public-site .op-calendar-bar:hover,
+  .public-site.page-home .op-arrow:hover:not(:disabled),
+  .public-site.stacked-layout .event-detail .button.primary:hover,
+  .public-site.stacked-layout .booking-section .button:hover {
+    color: var(--op-lime-ink);
+    background: var(--op-lime);
+    box-shadow: none;
+  }
+  .public-site.stacked-layout .op-cta.op-cta-outline:hover,
+  .public-site.stacked-layout .event-detail .button.outline:hover,
+  .public-site.page-home .op-flyer-link:hover .op-flyer-more {
+    color: var(--op-cream);
+    background: none;
+    box-shadow: inset 0 0 0 2px var(--op-lime);
+  }
+  .public-site.page-home .op-flyer-link:hover .op-flyer-art img {
+    transform: none;
+  }
+  .public-site.page-home .op-flyer-link:hover .op-flyer-title {
+    color: inherit;
+  }
+}
