@@ -1569,3 +1569,20 @@ html:has(.public-site.page-home) {
     color: inherit;
   }
 }
+
+/* Touch tablets in landscape get the desktop links. Short links such as
+   "Bar" widen their tap area to 44px without moving anything: the padding
+   is cancelled by an equal negative margin and the underline stays under
+   the word. */
+@media (min-width: 961px) and (pointer: coarse) {
+  .public-site.stacked-layout .op-nav-link:not(.op-nav-book) {
+    justify-content: center;
+    min-width: 44px;
+    margin-inline: -9px;
+    padding-inline: 9px;
+  }
+  .public-site.stacked-layout .op-nav-link:not(.op-nav-book)::after {
+    left: 9px;
+    right: 9px;
+  }
+}
