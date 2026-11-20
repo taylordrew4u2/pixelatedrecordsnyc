@@ -11,7 +11,7 @@ import {
 } from "react";
 import Link from "next/link";
 import photoColors from "@/lib/photo-colors.json";
-import { enhancedPhoto, portraitPhoto } from "@/lib/photo-assets";
+import { enhancedPhoto, recordsSectionPhoto } from "@/lib/photo-assets";
 import {
   ArrowUpRight,
   ArrowLeft,
@@ -329,6 +329,8 @@ export const ONE_PAGE_SECTIONS = [
   { id: "about", label: "About", page: "about" },
   { id: "contact", label: "Contact", page: "location" },
 ] as const;
+const RECORDS_ALT =
+  "Crates of used vinyl records in the Pixelated Records shop, with framed album art on the wall above.";
 function sectionVisible(content: SiteContent, page: string) {
   return content.pages.some((entry) => entry.id === page && entry.visible);
 }
@@ -341,25 +343,13 @@ function SectionPhoto({
   priority?: boolean;
 }) {
   if (!page.image) return null;
-  const portrait = portraitPhoto(page.image);
-  const photo = (
+  return (
     <Photo
       src={page.image}
       alt={page.imageAlt}
       className="op-bg"
       priority={priority}
     />
-  );
-  if (!portrait) return photo;
-  return (
-    <picture>
-      <source
-        media="(orientation: portrait) and (max-width: 1100px)"
-        srcSet={`${portrait.small} 960w, ${portrait.src} ${portrait.width}w`}
-        sizes="100vw"
-      />
-      {photo}
-    </picture>
   );
 }
 function PhotoSection({
@@ -643,7 +633,14 @@ function Home({
       {records && (
         <PhotoSection
           id="records"
-          page={records}
+          page={{
+            ...records,
+            image: recordsSectionPhoto(records.image),
+            imageAlt:
+              recordsSectionPhoto(records.image) === records.image
+                ? records.imageAlt
+                : RECORDS_ALT,
+          }}
           after={
             contact && (
               <span className="op-actions">

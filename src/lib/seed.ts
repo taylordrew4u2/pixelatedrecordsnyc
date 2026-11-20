@@ -411,8 +411,9 @@ export const BLUEPRINT_COPY: Record<
   records: {
     title: "Records",
     description: "Shop our curated selection of used vinyl records.",
-    image: "/assets/record-shop.webp",
-    imageAlt: "Record bins and framed album art in the Pixelated Records shop.",
+    image: "/assets/record-bins.webp",
+    imageAlt:
+      "Crates of used vinyl records in the Pixelated Records shop, with framed album art on the wall above.",
   },
   bar: { title: "Bar", description: "Full bar. Happy hour from 3 to 9." },
   events: {
