@@ -11,7 +11,7 @@ import {
 } from "react";
 import Link from "next/link";
 import photoColors from "@/lib/photo-colors.json";
-import { enhancedPhoto } from "@/lib/photo-assets";
+import { enhancedPhoto, portraitPhoto } from "@/lib/photo-assets";
 import {
   ArrowUpRight,
   ArrowLeft,
@@ -341,13 +341,25 @@ function SectionPhoto({
   priority?: boolean;
 }) {
   if (!page.image) return null;
-  return (
+  const portrait = portraitPhoto(page.image);
+  const photo = (
     <Photo
       src={page.image}
       alt={page.imageAlt}
       className="op-bg"
       priority={priority}
     />
+  );
+  if (!portrait) return photo;
+  return (
+    <picture>
+      <source
+        media="(orientation: portrait) and (max-width: 1100px)"
+        srcSet={`${portrait.small} 960w, ${portrait.src} ${portrait.width}w`}
+        sizes="100vw"
+      />
+      {photo}
+    </picture>
   );
 }
 function PhotoSection({

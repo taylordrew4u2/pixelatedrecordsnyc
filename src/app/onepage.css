@@ -1375,3 +1375,125 @@ html:has(.public-site.page-home) {
     width: 100%;
   }
 }
+
+/* Device polish (November 20, 2026) -------------------------------------- */
+/* Each photo keeps its subject in view: the crop centre is chosen per
+   section instead of always the middle of the file. */
+.public-site.page-home #home .op-bg {
+  object-position: 50% 30%;
+}
+.public-site.page-home #bar .op-bg {
+  object-position: 45% 50%;
+}
+.public-site.page-home #events .op-bg {
+  object-position: 50% 35%;
+}
+.public-site.page-home #about .op-bg {
+  object-position: 55% 50%;
+}
+@media (orientation: portrait) and (max-width: 1100px) {
+  .public-site.page-home #records .op-bg {
+    object-position: 50% 30%;
+  }
+}
+
+/* One body size for the supporting copy in every section. */
+.public-site.page-home .op-calendar-head p:not(.op-kicker),
+.public-site.page-home .op-contact-details > p {
+  max-width: 56ch;
+  font-size: calc(clamp(17px, 1.6vw, 22px) * var(--op-text-scale, 1));
+  line-height: 1.45;
+}
+@media (min-width: 1600px) {
+  .public-site.page-home .op-calendar-head p:not(.op-kicker),
+  .public-site.page-home .op-contact-details > p {
+    font-size: calc(24px * var(--op-text-scale, 1));
+  }
+}
+
+/* Upright tablets: a wider text box and larger type than phones. */
+@media (min-width: 600px) and (max-width: 960px) and (orientation: portrait) {
+  .public-site.page-home .op-panel h2,
+  .public-site.page-home .op-calendar-head h2,
+  .public-site.page-home .op-contact h2 {
+    font-size: calc(52px * var(--op-heading-scale, 1));
+  }
+  .public-site.page-home .op-panel p,
+  .public-site.page-home .op-calendar-head p:not(.op-kicker),
+  .public-site.page-home .op-contact-details > p {
+    font-size: calc(20px * var(--op-text-scale, 1));
+  }
+  .public-site.page-home .op-panel {
+    padding: calc(30px * var(--op-pad-scale, 1))
+      calc(32px * var(--op-pad-scale, 1)) calc(34px * var(--op-pad-scale, 1));
+  }
+  .public-site .op-specials li {
+    font-size: 16px;
+  }
+}
+
+/* Phones held sideways: the screen is short, so the text box gets compact
+   and sits to the left, leaving most of the photo visible. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .public-site.page-home .op-photo {
+    min-height: calc(100svh - var(--op-header));
+  }
+  .public-site.page-home .op-panel {
+    max-width: min(var(--op-panel-width, 460px), 58vw);
+    margin-bottom: 12px;
+    padding: 14px 18px 16px;
+  }
+  .public-site.page-home .op-panel h2,
+  .public-site.page-home .op-calendar-head h2,
+  .public-site.page-home .op-contact h2 {
+    font-size: calc(30px * var(--op-heading-scale, 1));
+  }
+  .public-site.page-home .op-panel p,
+  .public-site.page-home .op-calendar-head p:not(.op-kicker),
+  .public-site.page-home .op-contact-details > p {
+    margin-top: 6px;
+    font-size: calc(15px * var(--op-text-scale, 1));
+    line-height: 1.4;
+  }
+  .public-site .op-specials {
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .public-site .op-specials li {
+    padding: 5px 8px;
+    font-size: 13px;
+  }
+  .public-site.page-home .op-actions .op-cta,
+  .public-site.page-home .op-calendar-bar {
+    min-height: calc(48px * var(--op-button-scale, 1));
+  }
+  .public-site.page-home .op-calendar,
+  .public-site.page-home .op-contact {
+    padding-top: 24px;
+    padding-bottom: 28px;
+  }
+  .public-site.page-home .op-flyer,
+  .public-site.page-home .op-flyer-next {
+    flex-basis: min(36vw, var(--op-flyer-width, 36vw));
+  }
+  .public-site.page-home #home .op-bg {
+    object-position: 50% 22%;
+  }
+  .public-site.page-home .op-landing-cue {
+    bottom: 12px;
+  }
+}
+
+/* Event pages: the flyer sits at its own shape with no filler bars. */
+.public-site.stacked-layout .event-poster {
+  display: flex;
+  justify-content: center;
+  background: none;
+}
+.public-site.stacked-layout .event-poster img {
+  width: auto;
+  max-width: 100%;
+  max-height: min(80vh, 760px);
+  aspect-ratio: auto;
+  object-fit: contain;
+}
