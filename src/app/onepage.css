@@ -1391,10 +1391,9 @@ html:has(.public-site.page-home) {
 .public-site.page-home #about .op-bg {
   object-position: 55% 50%;
 }
-@media (orientation: portrait) and (max-width: 1100px) {
-  .public-site.page-home #records .op-bg {
-    object-position: 50% 30%;
-  }
+/* Records: the vinyl crates sit in the lower part of the photo. */
+.public-site.page-home #records .op-bg {
+  object-position: 50% 62%;
 }
 
 /* One body size for the supporting copy in every section. */
@@ -1567,5 +1566,32 @@ html:has(.public-site.page-home) {
   }
   .public-site.page-home .op-flyer-link:hover .op-flyer-title {
     color: inherit;
+  }
+}
+
+/* Touch tablets in landscape get the desktop links. Short links such as
+   "Bar" widen their tap area to 44px without moving anything: the padding
+   is cancelled by an equal negative margin and the underline stays under
+   the word. */
+@media (min-width: 961px) and (pointer: coarse) {
+  .public-site.stacked-layout .op-nav-link:not(.op-nav-book) {
+    justify-content: center;
+    min-width: 44px;
+    margin-inline: -9px;
+    padding-inline: 9px;
+  }
+  .public-site.stacked-layout .op-nav-link:not(.op-nav-book)::after {
+    left: 9px;
+    right: 9px;
+  }
+}
+
+/* Phones: the crates sit low in the photo, behind the text box. A slight
+   zoom lifts them into the open part of the screen; the file is unchanged. */
+@media (orientation: portrait) and (max-width: 760px) {
+  .public-site.page-home #records .op-bg {
+    top: -35%;
+    height: 135%;
+    object-position: 50% 50%;
   }
 }
