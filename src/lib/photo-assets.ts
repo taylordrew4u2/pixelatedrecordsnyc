@@ -44,3 +44,18 @@ const roomPhotos = {
 export function enhancedPhoto(src: string) {
   return roomPhotos[src as keyof typeof roomPhotos];
 }
+
+// Portrait screens (phones and upright tablets) crop a landscape photo to a
+// narrow strip from its middle. Where the middle misses the subject, a real
+// portrait photo of the same place is shown instead. Only built-in photos
+// have an alternate, so owner uploads always show as chosen.
+const portraitPhotos: Record<string, ReturnType<typeof original>> = {
+  "/assets/record-shop.webp": original("record-bins", 1080),
+  "/assets/record-shop-rich.webp": original("record-bins", 1080),
+  "/assets/record-shop-rich-solid.webp": original("record-bins", 1080),
+  "/assets/records-solid.webp": original("record-bins", 1080),
+};
+
+export function portraitPhoto(src: string) {
+  return portraitPhotos[src];
+}
