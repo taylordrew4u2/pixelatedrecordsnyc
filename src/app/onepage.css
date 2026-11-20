@@ -1497,3 +1497,25 @@ html:has(.public-site.page-home) {
   aspect-ratio: auto;
   object-fit: contain;
 }
+
+/* Small laptops and tablets held sideways: the full desktop header needs
+   room, so the wordmark and link spacing shrink until 1200px. */
+@media (min-width: 961px) and (max-width: 1200px) {
+  .public-site.stacked-layout .op-header .brand-link img {
+    width: min(var(--op-logo-width, 230px), 170px);
+  }
+  .public-site.stacked-layout .op-nav {
+    gap: 4px clamp(14px, 1.6vw, 22px);
+  }
+  .public-site.stacked-layout .op-nav-link {
+    font-size: 16px;
+  }
+  .public-site.stacked-layout .op-nav-book {
+    padding: 0 12px;
+  }
+}
+
+/* Flyers sit on a true black mat, so black flyers have no visible frame. */
+.public-site.page-home .op-flyer-art {
+  background: #000;
+}
