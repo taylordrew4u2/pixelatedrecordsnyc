@@ -15,8 +15,8 @@ export default function NotFound() {
         that record.
       </h1>
       <p>This page isn’t here. There’s more waiting inside.</p>
-      <Link className="button primary" href="/">
-        Back to Pixelated ↗
+      <Link className="not-found-home" href="/">
+        Back to Pixelated
       </Link>
     </main>
   );
