@@ -1718,6 +1718,13 @@ function Footer({
         <span>
           © {new Date().getFullYear()} {content.brand.name}
         </span>
+        <span className="venue-footer-credit">
+          Created by{" "}
+          <A href="https://customtechbuilt4u.com">
+            4u Digital
+            <ArrowUpRight size={12} />
+          </A>
+        </span>
         <div>
           {content.location.socials.map((social) => (
             <A key={social.id} href={social.url}>

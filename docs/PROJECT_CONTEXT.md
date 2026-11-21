@@ -38,6 +38,7 @@ The owner supplied a three-part blueprint (Website Specification, Visual Website
   - **Netlify Pro:** the owner pays for it on purpose.
   - **Studio password:** stays as it is in code; do not suggest changing it.
   - **Hours:** the site keeps "Check our Instagram for the latest opening hours." permanently; do not ask for weekly hours.
+- November 21, 2026 (owner): every public page footer shows "Created by 4u Digital", linking to https://customtechbuilt4u.com (new tab), on all screen sizes.
 - Vertical scroll snap was removed on November 18, 2026 (owner: the page was "glitching and snapping" in some browsers). Sections still fill the screen; anchors land below the fixed header (58px phones, 76px from 961px). Smooth scrolling is off under reduced motion.
 
 ## Latest visual decisions

@@ -1595,3 +1595,12 @@ html:has(.public-site.page-home) {
     object-position: 50% 50%;
   }
 }
+
+/* Site credit in the footer, shown on every screen size. */
+.public-site .venue-footer-meta > span.venue-footer-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgb(var(--op-cream-rgb) / 75%);
+  font-size: 14px;
+}
