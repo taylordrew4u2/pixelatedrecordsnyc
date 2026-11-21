@@ -1604,3 +1604,90 @@ html:has(.public-site.page-home) {
   color: rgb(var(--op-cream-rgb) / 75%);
   font-size: 14px;
 }
+
+/* Storefront doors: Records, Bar and Events as three large red buttons at
+   the foot of the landing photo (owner, November 21, 2026: the single
+   small cue was hard to find). Phones get a full-width bar like the other
+   sections; wider screens a centred group. */
+.public-site.page-home .op-landing-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  display: flex;
+  gap: 12px;
+  transform: translateX(-50%);
+}
+.public-site.page-home .op-landing-door {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 180px;
+  min-height: calc(60px * var(--op-button-scale, 1));
+  padding: 14px 28px;
+  color: var(--op-lime-ink);
+  background: var(--op-lime);
+  border-radius: var(--op-radius);
+  box-shadow: 0 6px 24px rgb(0 0 0 / 45%);
+  font-family: var(--op-mono);
+  font-size: calc(24px * var(--op-button-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+.public-site.page-home .op-landing-door:focus-visible {
+  outline: 3px solid var(--op-cream);
+  outline-offset: 3px;
+}
+.public-site.page-home .op-landing-door:active {
+  filter: brightness(0.9);
+}
+@media (hover: hover) {
+  .public-site.page-home .op-landing-door:hover {
+    color: var(--op-cream);
+    background: var(--op-panel);
+    box-shadow: inset 0 0 0 2px var(--op-lime);
+  }
+}
+@media (max-width: 960px) {
+  .public-site.page-home .op-landing-nav {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    gap: 2px;
+    background: var(--op-panel);
+    transform: none;
+  }
+  .public-site.page-home .op-landing-door {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: calc(64px * var(--op-button-scale, 1));
+    padding: 12px 8px;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: calc(19px * var(--op-button-scale, 1));
+    gap: 6px;
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .public-site.page-home .op-landing-door {
+    min-height: calc(52px * var(--op-button-scale, 1));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-site.page-home .op-landing-door {
+    transition: none;
+  }
+}
+@media (min-width: 961px) {
+  .public-site.page-home .op-landing-door {
+    min-width: 220px;
+    min-height: calc(64px * var(--op-button-scale, 1));
+    font-size: calc(26px * var(--op-button-scale, 1));
+  }
+}
