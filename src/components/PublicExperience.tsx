@@ -374,8 +374,8 @@ function PhotoSection({
         <h2 id={`${id}-title`}>{page.title}</h2>
         {page.description && <p>{page.description}</p>}
         {children}
+        {after && <div className="op-panel-actions">{after}</div>}
       </div>
-      {after}
     </section>
   );
 }
@@ -659,11 +659,9 @@ function Home({
           }}
           after={
             contact && (
-              <span className="op-actions">
-                <A href="/#contact" className="op-cta">
-                  Visit the shop
-                </A>
-              </span>
+              <A href="/#contact" className="op-cta">
+                Visit the shop
+              </A>
             )
           }
         />
@@ -675,9 +673,9 @@ function Home({
           page={events}
           after={
             calendar && (
-              <A href="/#calendar" className="op-calendar-bar">
+              <A href="/#calendar" className="op-cta">
                 Explore upcoming events
-                <ArrowDown size={26} aria-hidden="true" />
+                <ArrowDown size={20} aria-hidden="true" />
               </A>
             )
           }
@@ -700,11 +698,7 @@ function Home({
         <PhotoSection
           id="book"
           page={book}
-          after={
-            <span className="op-actions">
-              <BookingButton content={content} className="op-cta" />
-            </span>
-          }
+          after={<BookingButton content={content} className="op-cta" />}
         />
       )}
       {about && <PhotoSection id="about" page={about} />}
@@ -1298,20 +1292,20 @@ function BarPage({ content, page }: { content: SiteContent; page: Page }) {
               ))}
             </ul>
           )}
+          <div className="op-panel-actions">
+            <button
+              ref={menuTrigger}
+              type="button"
+              className="op-cta drinks-trigger"
+              aria-haspopup="dialog"
+              aria-expanded={menuOpen}
+              aria-controls="bar-menu-dialog"
+              onClick={openMenu}
+            >
+              View full menu
+            </button>
+          </div>
         </div>
-        <span className="op-actions">
-          <button
-            ref={menuTrigger}
-            type="button"
-            className="op-cta drinks-trigger"
-            aria-haspopup="dialog"
-            aria-expanded={menuOpen}
-            aria-controls="bar-menu-dialog"
-            onClick={openMenu}
-          >
-            View full menu
-          </button>
-        </span>
       </section>
       <dialog
         id="bar-menu-dialog"

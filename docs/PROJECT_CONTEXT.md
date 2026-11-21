@@ -40,6 +40,7 @@ The owner supplied a three-part blueprint (Website Specification, Visual Website
   - **Hours:** the site keeps "Check our Instagram for the latest opening hours." permanently; do not ask for weekly hours.
 - November 21, 2026 (owner): every public page footer shows "Created by 4u Digital", linking to https://customtechbuilt4u.com (new tab), on all screen sizes.
 - November 21, 2026 (owner: Records, Bar and Events were "kinda hard to find"): the storefront now has three large red buttons, Records, Bar and Events, each jumping to its section. Phones and tablets show them as a full-width bar at the foot of the photo (64px tall, like other section actions); from 961px they are a centred group of 220px × 64px buttons.
+- November 21, 2026 (owner: section buttons such as "View full menu" were hard to find and blended into the next section; "that goes for all"): every section button now sits inside its dark text box (Records, Bar, Events, Book an Event), on all screen sizes, with photo visible below the box so each section ends clearly. This replaces the full-width red bars along the bottom edge on phones and the full-width Events bar on desktop. On phones the storefront Records/Bar/Events buttons sit in an inset dark box above the bottom edge.
 - Vertical scroll snap was removed on November 18, 2026 (owner: the page was "glitching and snapping" in some browsers). Sections still fill the screen; anchors land below the fixed header (58px phones, 76px from 961px). Smooth scrolling is off under reduced motion.
 
 ## Latest visual decisions
