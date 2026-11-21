@@ -370,9 +370,14 @@ test("fixed navigation lists the seven blueprint sections in order", () => {
     "About",
     "Contact",
   ]);
+  // The Events section's own button leads to the Calendar.
+  const events = html.slice(
+    html.indexOf('id="events"'),
+    html.indexOf('id="calendar"'),
+  );
   assert.match(
-    html,
-    /class="op-calendar-bar"[^>]*href="\/#calendar"|href="\/#calendar"[^>]*class="op-calendar-bar"/,
+    events,
+    /<a[^>]*href="\/#calendar"[^>]*>Explore upcoming events/,
   );
 });
 

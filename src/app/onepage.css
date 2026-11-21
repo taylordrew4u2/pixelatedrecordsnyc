@@ -1691,3 +1691,65 @@ html:has(.public-site.page-home) {
     font-size: calc(26px * var(--op-button-scale, 1));
   }
 }
+
+/* Section buttons live inside their dark text box (owner, November 21,
+   2026: bars along the bottom edge read as part of the next section).
+   Photo shows below every box, so each section ends clearly. */
+.public-site.page-home .op-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: calc(24px * var(--op-pad-scale, 1));
+}
+.public-site.page-home .op-panel-actions .op-cta {
+  min-height: calc(56px * var(--op-button-scale, 1));
+  padding: 14px 24px;
+  font-size: calc(20px * var(--op-button-scale, 1));
+  border-radius: var(--op-radius);
+}
+.public-site.page-home .op-photo > .op-panel,
+.public-site.page-home #events .op-panel {
+  margin-bottom: clamp(24px, 5vh, 56px);
+}
+@media (max-width: 960px) {
+  .public-site.page-home .op-panel-actions .op-cta {
+    flex: 1 1 100%;
+    width: 100%;
+    min-height: calc(56px * var(--op-button-scale, 1));
+    font-size: calc(19px * var(--op-button-scale, 1));
+  }
+  .public-site.page-home .op-photo > .op-panel,
+  .public-site.page-home #events .op-panel {
+    margin-bottom: 24px;
+  }
+
+  /* Storefront doors: an inset dark box, not a bar on the bottom edge. */
+  .public-site.page-home .op-landing-nav {
+    left: 16px;
+    right: 16px;
+    bottom: 24px;
+    gap: 8px;
+    padding: 8px;
+    background: var(--op-panel);
+    border-radius: min(var(--op-radius), 14px);
+  }
+  .public-site.page-home .op-landing-door {
+    min-height: calc(56px * var(--op-button-scale, 1));
+    border-radius: var(--op-radius);
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .public-site.page-home .op-panel-actions {
+    margin-top: 12px;
+  }
+  .public-site.page-home .op-panel-actions .op-cta {
+    min-height: calc(48px * var(--op-button-scale, 1));
+  }
+  .public-site.page-home .op-photo > .op-panel,
+  .public-site.page-home #events .op-panel {
+    margin-bottom: 16px;
+  }
+  .public-site.page-home .op-landing-nav {
+    bottom: 12px;
+  }
+}
