@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   title: "Pixelated Records | Vinyl, Bar & Events in Ridgewood",
   description:
     "A record shop, bar, and event space at 792 Onderdonk Avenue in Ridgewood, Queens.",
-  icons: { icon: "/assets/favicon.png", apple: "/assets/mark.png" },
+  icons: { icon: "/assets/favicon.png", apple: "/apple-touch-icon.png" },
 };
 export default function RootLayout({
   children,

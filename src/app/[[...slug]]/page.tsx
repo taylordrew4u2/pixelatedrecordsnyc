@@ -57,7 +57,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    icons: { icon: content.brand.favicon },
+    icons: { icon: content.brand.favicon, apple: "/apple-touch-icon.png" },
     robots: preview ? { index: false, follow: false } : undefined,
     openGraph: {
       type: "website",
