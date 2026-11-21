@@ -622,12 +622,28 @@ function Home({
         <h1 id="home-title" className="pov-visually-hidden">
           {page.title}
         </h1>
-        {/* A small hint that the page continues below the storefront. */}
-        {records && (
-          <A href="/#records" className="op-landing-cue">
-            Records · Bar · Events
-            <ArrowDown size={18} aria-hidden="true" />
-          </A>
+        {/* Three clear doors into the venue, right on the storefront. */}
+        {(records || bar || events) && (
+          <nav className="op-landing-nav" aria-label="Go inside">
+            {records && (
+              <A href="/#records" className="op-landing-door">
+                Records
+                <ArrowDown size={20} aria-hidden="true" />
+              </A>
+            )}
+            {bar && (
+              <A href="/#bar" className="op-landing-door">
+                Bar
+                <ArrowDown size={20} aria-hidden="true" />
+              </A>
+            )}
+            {events && (
+              <A href="/#events" className="op-landing-door">
+                Events
+                <ArrowDown size={20} aria-hidden="true" />
+              </A>
+            )}
+          </nav>
         )}
       </section>
       {records && (
@@ -1717,6 +1733,13 @@ function Footer({
       <div className="venue-footer-meta">
         <span>
           © {new Date().getFullYear()} {content.brand.name}
+        </span>
+        <span className="venue-footer-credit">
+          Created by{" "}
+          <A href="https://customtechbuilt4u.com">
+            4u Digital
+            <ArrowUpRight size={12} />
+          </A>
         </span>
         <div>
           {content.location.socials.map((social) => (
